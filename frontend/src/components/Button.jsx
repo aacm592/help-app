@@ -1,4 +1,4 @@
-export default function Button({ onClick, dark, children, className }) {
+export default function Button({ onClick, dark, children, className, type }) {
   const outline = () => {
     return dark ? "outline-white" : "outline-purple-800";
   };
@@ -6,7 +6,8 @@ export default function Button({ onClick, dark, children, className }) {
   return (
     <button
       onClick={onClick}
-      className={`flex flex-row items-center outline-1 rounded-2xl ${outline()} cursor-pointer transition active:scale-95 ${className}`}
+      type={type}
+      className={`flex flex-row items-center outline-1 rounded-full ${outline()} cursor-pointer transition active:scale-95 ${className}`}
     >
       {children}
     </button>
