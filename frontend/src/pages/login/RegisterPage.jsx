@@ -2,9 +2,9 @@ import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState } from "react";
-import Input from "../components/Input";
-import Button from "../components/Button";
-import { register } from "../services/authService";
+import Input from "../../components/Input";
+import Button from "../../components/Button";
+import { register } from "../../services/authService";
 import { useNavigate } from "react-router-dom";
 
 const registroSchema = z

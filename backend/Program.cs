@@ -24,14 +24,13 @@ builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowReactApp",
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:3000") 
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
-        });
+    options.AddPolicy("AllowLocalhost",
+        builder => builder.WithOrigins("http://localhost:5173", "http://localhost:5174",
+                "https://localhost:5173", "https://localhost:5174")
+            .AllowAnyMethod()
+            .AllowAnyHeader());
 });
+
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -50,7 +49,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 builder.Services.AddControllers()
-    .AddJsonOptions(options => 
+    .AddJsonOptions(options =>
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
     );
 
@@ -61,13 +60,13 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-  app.UseSwagger();
-  app.UseSwaggerUI();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowReactApp");
+app.UseCors("AllowLocalhost");
 
 app.UseAuthentication();
 app.UseAuthorization();

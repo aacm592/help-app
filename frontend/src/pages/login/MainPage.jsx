@@ -1,6 +1,6 @@
-import Button from "../components/Button";
-import logo from "../assets/florDeLiz.png";
-import LoginComponent from "../components/LoginComponent";
+import Button from "../../components/Button";
+import logo from "../../assets/florDeLiz.png";
+import LoginComponent from "../../components/LoginComponent";
 import { useNavigate } from "react-router-dom";
 
 function MainPage() {
