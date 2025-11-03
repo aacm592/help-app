@@ -56,6 +56,7 @@ export default function RegisterPage() {
     try {
       const response = await register(data);
 
+      nav("/");
       console.log("¡Registro exitoso!", response);
       methods.reset();
     } catch (error) {

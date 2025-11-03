@@ -8,24 +8,41 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const storedToken = localStorage.getItem("ASBToken");
-    if (storedToken) {
+    const storedUser = localStorage.getItem("ASBUser");
+
+    if (storedToken && storedUser) {
       setToken(storedToken);
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        console.error("Error parsing stored user", e);
+        localStorage.removeItem("ASBToken");
+        localStorage.removeItem("ASBUser");
+        return;
+      }
       setIsAuthenticated(true);
     }
   }, []);
 
   const handleLogin = (authData) => {
     const authToken = authData.token;
-    setToken(authToken);
-    setIsAuthenticated(true);
-    localStorage.setItem("token", authToken);
+    const authUser = authData.user;
+
+    if (authToken && authUser) {
+      setToken(authToken);
+      setUser(authUser);
+      setIsAuthenticated(true);
+      localStorage.setItem("ASBToken", authToken);
+      localStorage.setItem("ASBUser", JSON.stringify(authUser));
+    }
   };
 
   const handleLogout = () => {
     setToken(null);
     setUser(null);
     setIsAuthenticated(false);
-    localStorage.removeItem("token");
+    localStorage.removeItem("ASBToken");
+    localStorage.removeItem("ASBUser");
   };
 
   return (

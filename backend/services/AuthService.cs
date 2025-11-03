@@ -71,8 +71,13 @@ public class AuthService: IAuthService
       throw new ApplicationException("Credenciales inválidas.");
 
     string token = GenerateJwtToken(user);
-    return new LoginResponseDto { Token = token };
-  }
+    var userResponse = _mapper.Map<UserResponseDto>(user);
+
+    return new LoginResponseDto 
+    { 
+      Token = token, 
+      User = userResponse
+    };  }
 
   private int CalculateAge(DateTime dateOfBirth)
   {

@@ -2,10 +2,11 @@ import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 import Input from "./Input";
 import Button from "./Button";
 import { login } from "../services/authService";
+import { useAuth } from "../contexts/AuthContext";
 
 const loginSchema = z.object({
   nombreUsuario: z
@@ -23,7 +24,8 @@ export default function LoginComponent() {
   const iconClass = "material-symbols-outlined text-green-600 !text-4xl";
 
   const [loginError, setLoginError] = useState(null);
-
+  const { handleLogin } = useAuth();
+  const navigate = useNavigate();
   const methods = useForm({
     resolver: zodResolver(loginSchema),
   });
@@ -34,7 +36,8 @@ export default function LoginComponent() {
     try {
       const response = await login(data);
 
-      console.log("¡Login exitoso!", response.token);
+      handleLogin(response);
+      navigate("/home");
     } catch (error) {
       const errorMessage = error.message || "Ocurrió un error";
 
