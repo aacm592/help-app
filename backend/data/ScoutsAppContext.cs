@@ -24,6 +24,12 @@ public class ScoutsAppContext: DbContext
   {
     base.OnModelCreating(modelBuilder);
 
+    // Siembra de datos para la tabla Tipos
+    modelBuilder.Entity<Tipo>().HasData(
+      new Tipo { Id = 1, Nombre = "Scout" },
+      new Tipo { Id = 2, Nombre = "Dirigente" }
+    );
+    
     modelBuilder.Entity<Tipo>()
       .HasMany(t => t.Permisos)
       .WithMany(p => p.Tipos)
