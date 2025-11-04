@@ -26,5 +26,12 @@ namespace backend.repositories
       await _context.SaveChangesAsync(); 
       return user;
     }
+    
+    public async Task<User?> GetByIdAsync(int id)
+    {
+      return await _context.Users
+        .Include(u => u.Unidades)
+        .FirstOrDefaultAsync(u => u.Id == id);
+    }
   }
 }

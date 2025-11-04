@@ -6,7 +6,6 @@ public class Rama
   public string Nombre { get; set; }
   public int EdadMinima { get; set; }
   public int EdadMaxima { get; set; }
-  public string NivelAcceso { get; set; }
 
   public ICollection<Unidad> Unidades { get; set; } = new List<Unidad>();
 }

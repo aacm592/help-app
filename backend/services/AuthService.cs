@@ -89,19 +89,19 @@ public class AuthService: IAuthService
 
     return age;
   }
-
+  
   private string GenerateJwtToken(User user)
   {
     var tokenHandler = new JwtSecurityTokenHandler();
     var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]!);
     var claims = new List<Claim>
     {
-      new Claim(JwtRegisteredClaimNames.Sub, user.NombreUsuario),
-      new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-      new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-      new Claim(ClaimTypes.Name, user.Nombre),
-      new Claim(ClaimTypes.Role, user.TipoId.ToString()) 
+      new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()), 
+      new Claim(ClaimTypes.Name, user.NombreUsuario),
+      new Claim(ClaimTypes.Role, user.TipoId.ToString()),
+      new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
     };
+    
     var tokenDescriptor = new SecurityTokenDescriptor
     {
       Subject = new ClaimsIdentity(claims),
