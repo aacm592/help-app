@@ -21,15 +21,24 @@ public class UnidadRepository: IUnidadRepository
     return unidad;
   }
 
-  public async Task<Unidad?> GetByCodigo(string codigo)
-  {
-    return await _context.Unidades
-      .FirstOrDefaultAsync(u => u.Codigo.ToUpper() == codigo.ToUpper());
-  }
-
   public async Task<bool> CodigoExists(string codigo)
   {
     return await _context.Unidades
       .AnyAsync(u => u.Codigo.ToUpper() == codigo.ToUpper());
+  }
+  
+  public async Task<Unidad?> GetByCodigoAsync(string codigo)
+  {
+    return await _context.Unidades
+      .Include(u => u.Usuarios)
+      .Include(u => u.Rama)
+      .Include(u => u.GrupoScout)
+      .FirstOrDefaultAsync(u => u.Codigo == codigo);
+  }
+
+  public async Task UpdateAsync(Unidad unidad)
+  {
+    _context.Unidades.Update(unidad);
+    await _context.SaveChangesAsync();
   }
 }
