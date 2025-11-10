@@ -1,9 +1,11 @@
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/florDeLiz.png";
 import Button from "../components/Button";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function LogedInPage() {
   const { handleLogout, user } = useAuth();
+  const nav = useNavigate();
 
   return (
     <div className="bg-purple-600 min-h-screen h-full w-screen py-10 flex flex-col">
@@ -35,17 +37,23 @@ export default function LogedInPage() {
               camping
             </span>
             <p className="text-[16px] md:text-[20px] text-white">
-              Unirse a una manada
+              Unirse a una Unidad
             </p>
           </Button>
 
           {user?.tipoId === 2 && (
-            <Button dark className="space-x-5 px-6 py-1.5" onClick={() => {}}>
+            <Button
+              dark
+              className="space-x-5 px-6 py-1.5"
+              onClick={() => {
+                nav("/crear-unidad");
+              }}
+            >
               <span className="material-symbols-outlined text-white !text-4xl">
                 add
               </span>
               <p className="text-[16px] md:text-[20px] text-white">
-                Crear manada
+                Crear Unidad
               </p>
             </Button>
           )}

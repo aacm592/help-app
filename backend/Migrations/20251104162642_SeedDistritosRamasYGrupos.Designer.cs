@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using backend.data;
@@ -11,9 +12,11 @@ using backend.data;
 namespace backend.Migrations
 {
     [DbContext(typeof(ScoutsAppContext))]
-    partial class ScoutsAppContextModelSnapshot : ModelSnapshot
+    [Migration("20251104162642_SeedDistritosRamasYGrupos")]
+    partial class SeedDistritosRamasYGrupos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -167,7 +170,7 @@ namespace backend.Migrations
                         },
                         new
                         {
-                            Id = 2,
+                            Id = 3,
                             DistritoId = 2,
                             Nombre = "Cobija"
                         });
@@ -256,22 +259,22 @@ namespace backend.Migrations
                         new
                         {
                             Id = 2,
-                            EdadMaxima = 15,
+                            EdadMaxima = 14,
                             EdadMinima = 11,
                             Nombre = "Exploradores"
                         },
                         new
                         {
                             Id = 3,
-                            EdadMaxima = 18,
-                            EdadMinima = 15,
+                            EdadMaxima = 17,
+                            EdadMinima = 14,
                             Nombre = "Pioneros"
                         },
                         new
                         {
                             Id = 4,
-                            EdadMaxima = 21,
-                            EdadMinima = 18,
+                            EdadMaxima = 22,
+                            EdadMinima = 17,
                             Nombre = "Rovers"
                         });
                 });
@@ -316,6 +319,9 @@ namespace backend.Migrations
                     b.Property<string>("Codigo")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("GrupoId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("GrupoScoutId")
                         .HasColumnType("integer");

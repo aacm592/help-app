@@ -6,7 +6,7 @@ public class Unidad
   public string Nombre { get; set; }
   public string Codigo { get; set; }
 
-  public int GrupoId { get; set; }
+  public int GrupoScoutId { get; set; }
   public GrupoScout GrupoScout { get; set; }
 
   public int RamaId { get; set; }
