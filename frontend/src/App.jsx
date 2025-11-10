@@ -3,6 +3,7 @@ import MainPage from "./pages/login/MainPage";
 import RegisterPage from "./pages/login/RegisterPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import LogedInPage from "./pages/LogedInPage";
+import CreateUnidadPage from "./pages/CreateUnidadPage";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={<LogedInPage />} />
+          <Route path="/crear-unidad" element={<CreateUnidadPage />} />{" "}
         </Route>
       </Routes>
     </BrowserRouter>

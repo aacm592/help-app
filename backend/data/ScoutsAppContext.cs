@@ -47,7 +47,7 @@ public class ScoutsAppContext: DbContext
     // Siembra de Grupos Scout
     modelBuilder.Entity<GrupoScout>().HasData(
       new GrupoScout { Id = 1, Nombre = "Tunari", DistritoId = 1 },
-      new GrupoScout { Id = 3, Nombre = "Cobija", DistritoId = 2 }
+      new GrupoScout { Id = 2, Nombre = "Cobija", DistritoId = 2 }
     );
     
     modelBuilder.Entity<Tipo>()

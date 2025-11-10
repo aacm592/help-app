@@ -20,9 +20,15 @@ builder.Services.AddDbContext<ScoutsAppContext>(options =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITipoRepository, TipoRepository>();
 builder.Services.AddScoped<IUnidadRepository, UnidadRepository>();
+builder.Services.AddScoped<IRamaRepository, RamaRepository>();
+builder.Services.AddScoped<IGrupoScoutRepository, GrupoScoutRepository>();
+builder.Services.AddScoped<IDistritoRepository, DistritoRepository>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUnidadService, UnidadService>();
+builder.Services.AddScoped<IRamaService, RamaService>();
+builder.Services.AddScoped<IGrupoScoutService, GrupoScoutService>();
+builder.Services.AddScoped<IDistritoService, DistritoService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -60,19 +66,16 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-  // 1. Define el esquema de seguridad (JWT Bearer)
   options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
   {
     In = ParameterLocation.Header,
     Description = "Por favor ingresa el token JWT",
     Name = "Authorization",
-    Type = SecuritySchemeType.Http, // Usar Http para Bearer
+    Type = SecuritySchemeType.Http,
     BearerFormat = "JWT",
-    Scheme = "bearer" // 'bearer' en minúsculas
+    Scheme = "bearer"
   });
 
-  // 2. Añade el requisito de seguridad global
-  // Esto le dice a Swagger que use la definición "Bearer"
   options.AddSecurityRequirement(new OpenApiSecurityRequirement
   {
     {
