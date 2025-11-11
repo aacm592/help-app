@@ -1,3 +1,5 @@
+using backend.enums;
+
 namespace backend.data.models;
 
 public class ObjetivoUsuario
@@ -8,5 +10,5 @@ public class ObjetivoUsuario
   public int ObjetivoEducativoId { get; set; }
   public ObjetivoEducativo ObjetivoEducativo { get; set; }
 
-  public string Status { get; set; }
+  public ObjetivoStatus Status { get; set; }
 }

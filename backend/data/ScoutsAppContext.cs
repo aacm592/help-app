@@ -97,6 +97,8 @@ public class ScoutsAppContext: DbContext
       entity.HasOne(ou => ou.ObjetivoEducativo)
         .WithMany(o => o.UsuariosObjetivo)
         .HasForeignKey(ou => ou.ObjetivoEducativoId); 
+      entity.Property(ou => ou.Status)
+        .HasConversion<string>();
     });
   }
 }

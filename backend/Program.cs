@@ -25,6 +25,7 @@ builder.Services.AddScoped<IGrupoScoutRepository, GrupoScoutRepository>();
 builder.Services.AddScoped<IDistritoRepository, DistritoRepository>();
 builder.Services.AddScoped<IEtapaProgresionRepository, EtapaProgresionRepository>();
 builder.Services.AddScoped<IObjetivoEducativoRepository, ObjetivoEducativoRepository>();
+builder.Services.AddScoped<IObjetivoUsuarioRepository, ObjetivoUsuarioRepository>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUnidadService, UnidadService>();
@@ -33,6 +34,7 @@ builder.Services.AddScoped<IGrupoScoutService, GrupoScoutService>();
 builder.Services.AddScoped<IDistritoService, DistritoService>();
 builder.Services.AddScoped<IEtapaProgresionService, EtapaProgresionService>();
 builder.Services.AddScoped<IObjetivoEducativoService, ObjetivoEducativoService>();
+builder.Services.AddScoped<IObjetivoUsuarioService, ObjetivoUsuarioService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
