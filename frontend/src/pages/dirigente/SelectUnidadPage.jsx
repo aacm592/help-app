@@ -2,9 +2,10 @@ import { useNavigate } from "react-router-dom";
 import logo from "../../assets/florDeLiz.png";
 import Button from "../../components/Button";
 import { useAuth } from "../../contexts/AuthContext";
+import LogOutButton from "../../components/pageComponents/LogoutButton";
 
 export default function SelectUnidadPage() {
-  const { handleLogout, user } = useAuth();
+  const { user } = useAuth();
   const nav = useNavigate();
   const tieneUnidades = user?.unidades && user.unidades.length > 0;
 
@@ -14,18 +15,7 @@ export default function SelectUnidadPage() {
 
   return (
     <div className="bg-purple-600 min-h-screen h-full w-screen py-10 flex flex-col">
-      <div className="w-full px-4 sm:px-20 flex justify-end h-fit">
-        <Button
-          outline={false}
-          className={"w-fit flex-col justify-center items-center h-fit "}
-          onClick={handleLogout}
-        >
-          <span className="material-symbols-outlined text-white !text-4xl">
-            logout
-          </span>
-          <p className="text-white">Cerrar Sesión</p>
-        </Button>
-      </div>
+      <LogOutButton dark/>
 
       <div className="flex flex-col justify-center items-center h-full w-full gap-y-8 flex-grow">
         <h1 className="text-white">Bienvenido, {user?.nombre || "Usuario"}</h1>
