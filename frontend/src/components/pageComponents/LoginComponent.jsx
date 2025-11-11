@@ -3,10 +3,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Input from "./Input";
-import Button from "./Button";
-import { login } from "../services/authService";
-import { useAuth } from "../contexts/AuthContext";
+import Input from "../Input";
+import Button from "../Button";
+import { useAuth } from "../../contexts/AuthContext";
+import { login } from "../../services/authService";
 
 const loginSchema = z.object({
   nombreUsuario: z

@@ -7,4 +7,5 @@ public class UserResponseDto
   public string NombreUsuario { get; set; }
   public DateTime FechaNacimiento { get; set; }
   public int TipoId { get; set; }
+  public ICollection<UnidadResponseDto> Unidades { get; set; } = new List<UnidadResponseDto>();
 }

@@ -3,16 +3,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import Input from "../components/Input";
-import SelectInput from "../components/SelectInput";
-import Button from "../components/Button";
-import { getRamas } from "../services/ramasService";
+import Input from "../../components/Input";
+import SelectInput from "../../components/SelectInput";
+import Button from "../../components/Button";
+import { getRamas } from "../../services/ramasService";
 import {
   getGruposScout,
   getGruposScoutPorDistrito,
-} from "../services/grupoService";
-import { createUnidad } from "../services/unidadService";
-import { getDistritos } from "../services/distritoService";
+} from "../../services/grupoService";
+import { createUnidad } from "../../services/unidadService";
+import { getDistritos } from "../../services/distritoService";
+import { useAuth } from "../../contexts/AuthContext";
 
 const createUnidadSchema = z.object({
   nombre: z
@@ -36,6 +37,7 @@ export default function CreateUnidadPage() {
   const [grupos, setGrupos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [distritos, setDistritos] = useState([]);
+  const { addUnitToUser } = useAuth();
 
   const nav = useNavigate();
 
@@ -98,8 +100,8 @@ export default function CreateUnidadPage() {
   const submit = async (data) => {
     setApiError(null);
     try {
-      const response = await createUnidad(data);
-      console.log("Unidad creada!", response);
+      const nuevaUnidad = await createUnidad(data);
+      addUnitToUser(nuevaUnidad);
       nav("/home");
     } catch (error) {
       setApiError(`Error al crear la unidad: ${error.message}`);
