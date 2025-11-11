@@ -1,5 +1,6 @@
 using AutoMapper;
 using backend.data.models;
+using backend.dtos.request;
 using backend.dtos.responses;
 using backend.enums;
 using backend.repositories.interfaces;
@@ -12,18 +13,20 @@ public class ObjetivoUsuarioService: IObjetivoUsuarioService
   private readonly IUserRepository _userRepository;
   private readonly IObjetivoEducativoRepository _objetivoEducativoRepository;
   private readonly IObjetivoUsuarioRepository _objetivoUsuarioRepository;
+  private readonly IUnidadRepository _unidadRepository;
   private readonly IMapper _mapper;
 
   public ObjetivoUsuarioService(
     IUserRepository userRepository,
     IObjetivoEducativoRepository objetivoEducativoRepository,
     IObjetivoUsuarioRepository objetivoUsuarioRepository,
-    IMapper mapper)
+    IMapper mapper, IUnidadRepository unidadRepository)
   {
     _userRepository = userRepository;
     _objetivoEducativoRepository = objetivoEducativoRepository;
     _objetivoUsuarioRepository = objetivoUsuarioRepository;
     _mapper = mapper;
+    _unidadRepository = unidadRepository;
   }
   
   public async Task<ObjetivoUsuarioResponseDto> ElegirObjetivoAsync(int objetivoId, int usuarioId)
@@ -61,5 +64,61 @@ public class ObjetivoUsuarioService: IObjetivoUsuarioService
     relacionGuardada.ObjetivoEducativo = objetivo; 
         
     return _mapper.Map<ObjetivoUsuarioResponseDto>(relacionGuardada);
+  }
+  
+  public async Task<IEnumerable<PendingObjetivoDto>> GetPendingObjetivosByUnidadAsync(int unidadId, int dirigenteId)
+  {
+    var unidad = await _unidadRepository.GetByIdWithMiembrosAsync(unidadId);
+    if (unidad == null)
+      throw new ApplicationException("Unidad no encontrada.");
+
+    var esMiembroDirigente = unidad.Usuarios
+      .Any(u => u.Id == dirigenteId && u.Tipo.Nombre == "Dirigente");
+        
+    if (!esMiembroDirigente)
+      throw new ApplicationException("No tienes permiso para ver los objetivos de esta unidad.");
+
+    var scoutIds = unidad.Usuarios
+      .Where(u => u.Tipo.Nombre == "Scout")
+      .Select(u => u.Id);
+
+    if (!scoutIds.Any())
+      return new List<PendingObjetivoDto>();
+
+    var objetivosPendientes = await _objetivoUsuarioRepository.GetPendingByScoutIdsAsync(scoutIds);
+
+    return _mapper.Map<IEnumerable<PendingObjetivoDto>>(objetivosPendientes);
+  }
+  
+  public async Task<ObjetivoUsuarioResponseDto> ValidarObjetivoAsync(ValidarObjetivoDto dto, int dirigenteId)
+  {
+    var objetivoUsuario = await _objetivoUsuarioRepository.GetByUsuarioYObjetivoAsync(dto.UsuarioId, dto.ObjetivoId);
+
+    if (objetivoUsuario == null)
+      throw new ApplicationException("La solicitud de este objetivo no existe.");
+
+    if (objetivoUsuario.Status != ObjetivoStatus.Pendiente)
+      throw new ApplicationException("Este objetivo no está pendiente de validación.");
+
+    var scout = await _userRepository.GetByIdWithTipoAndUnidadesAsync(dto.UsuarioId);
+    if (scout == null || !scout.Unidades.Any())
+      throw new ApplicationException("El Scout no se encuentra o no pertenece a ninguna unidad.");
+
+    var unidadDelScout = scout.Unidades.First(); 
+    
+    var dirigente = await _userRepository.GetByIdWithTipoAndUnidadesAsync(dirigenteId);
+    if (dirigente == null)
+      throw new ApplicationException("Dirigente no encontrado.");
+
+    var dirigenteEstaEnUnidad = dirigente.Unidades.Any(u => u.Id == unidadDelScout.Id);
+
+    if (!dirigenteEstaEnUnidad)
+      throw new ApplicationException("No tienes permiso para validar objetivos de este Scout, ya que no pertenecen a tu misma unidad.");
+
+    objetivoUsuario.Status = ObjetivoStatus.Cumplido;
+
+    await _objetivoUsuarioRepository.UpdateAsync(objetivoUsuario);
+
+    return _mapper.Map<ObjetivoUsuarioResponseDto>(objetivoUsuario);
   }
 }

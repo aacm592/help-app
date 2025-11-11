@@ -40,4 +40,52 @@ public class ObjetivoUsuarioController : ControllerBase
       return StatusCode(500, $"Error interno: {ex.Message}");
     }
   }
+  
+  [Authorize(Roles = "2")]
+  [HttpGet("unidad/{unidadId:int}/pendientes")]
+  public async Task<IActionResult> GetPendientesPorUnidad(int unidadId)
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var dirigenteId))
+        return Unauthorized("Token de usuario inválido.");
+
+      var pendientes = await _objetivoUsuarioService.GetPendingObjetivosByUnidadAsync(unidadId, dirigenteId);
+        
+      return Ok(pendientes);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
+  
+  [Authorize(Roles = "2")]
+  [HttpPost("validar")]
+  public async Task<IActionResult> ValidarObjetivo([FromBody] ValidarObjetivoDto dto)
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var dirigenteId))
+        return Unauthorized("Token de usuario inválido.");
+
+      var resultado = await _objetivoUsuarioService.ValidarObjetivoAsync(dto, dirigenteId);
+        
+      return Ok(resultado);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
 }

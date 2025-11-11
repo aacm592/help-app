@@ -41,4 +41,12 @@ public class UnidadRepository: IUnidadRepository
     _context.Unidades.Update(unidad);
     await _context.SaveChangesAsync();
   }
+  
+  public async Task<Unidad?> GetByIdWithMiembrosAsync(int unidadId)
+  {
+    return await _context.Unidades
+      .Include(u => u.Usuarios)
+      .ThenInclude(user => user.Tipo)
+      .FirstOrDefaultAsync(u => u.Id == unidadId);
+  }
 }

@@ -8,4 +8,5 @@ public interface IUnidadRepository
   Task<bool> CodigoExists(string codigo);
   Task<Unidad?> GetByCodigoAsync(string codigo);
   Task UpdateAsync(Unidad unidad);
+  Task<Unidad?> GetByIdWithMiembrosAsync(int unidadId);
 }
