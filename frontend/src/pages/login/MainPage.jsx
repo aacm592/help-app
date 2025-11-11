@@ -1,7 +1,7 @@
 import Button from "../../components/Button";
 import logo from "../../assets/florDeLiz.png";
-import LoginComponent from "../../components/LoginComponent";
 import { useNavigate } from "react-router-dom";
+import LoginComponent from "../../components/pageComponents/LoginComponent";
 
 function MainPage() {
   const buttonClass = "space-x-5 px-6 py-1.5";

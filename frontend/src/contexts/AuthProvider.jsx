@@ -45,6 +45,18 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("ASBUser");
   };
 
+  const addUnitToUser = (newUnit) => {
+    if (user) {
+      const updatedUser = {
+        ...user,
+        unidades: [...(user.unidades || []), newUnit],
+      };
+
+      setUser(updatedUser);
+      localStorage.setItem("ASBUser", JSON.stringify(updatedUser));
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -53,6 +65,7 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated,
         handleLogin,
         handleLogout,
+        addUnitToUser,
       }}
     >
       {children}
