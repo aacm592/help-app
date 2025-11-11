@@ -23,12 +23,16 @@ builder.Services.AddScoped<IUnidadRepository, UnidadRepository>();
 builder.Services.AddScoped<IRamaRepository, RamaRepository>();
 builder.Services.AddScoped<IGrupoScoutRepository, GrupoScoutRepository>();
 builder.Services.AddScoped<IDistritoRepository, DistritoRepository>();
+builder.Services.AddScoped<IEtapaProgresionRepository, EtapaProgresionRepository>();
+builder.Services.AddScoped<IObjetivoEducativoRepository, ObjetivoEducativoRepository>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUnidadService, UnidadService>();
 builder.Services.AddScoped<IRamaService, RamaService>();
 builder.Services.AddScoped<IGrupoScoutService, GrupoScoutService>();
 builder.Services.AddScoped<IDistritoService, DistritoService>();
+builder.Services.AddScoped<IEtapaProgresionService, EtapaProgresionService>();
+builder.Services.AddScoped<IObjetivoEducativoService, ObjetivoEducativoService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 

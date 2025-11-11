@@ -19,6 +19,7 @@ public class ScoutsAppContext: DbContext
   public DbSet<ObjetivoEducativo> ObjetivosEducativos { get; set; }
   public DbSet<AreaCrecimiento> AreasCrecimiento { get; set; }
   public DbSet<EtapaProgresion> EtapasProgresion { get; set; }
+  public DbSet<ObjetivoUsuario> ObjetivosUsuario { get; set; }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
@@ -50,6 +51,27 @@ public class ScoutsAppContext: DbContext
       new GrupoScout { Id = 2, Nombre = "Cobija", DistritoId = 2 }
     );
     
+    
+    // Siembra de Etapas de progresión
+    modelBuilder.Entity<EtapaProgresion>().HasData(
+      new EtapaProgresion() { Id = 1, Nombre = "Pata tierna - Saltador", RamaId = 1},
+      new EtapaProgresion() { Id = 2, Nombre = "Rastreador - Cazador", RamaId = 1},
+      new EtapaProgresion() { Id = 3, Nombre = "Pista - Senda", RamaId = 2},
+      new EtapaProgresion() { Id = 4, Nombre = "Rumbo - Travesía", RamaId = 2},
+      new EtapaProgresion() { Id = 5, Nombre = "Busqueda - Encuentro - Desafío", RamaId = 3},
+      new EtapaProgresion() { Id = 6, Nombre = "Caminante - Aspirante - Rover", RamaId = 4}
+    );
+    
+    // Siembra de Áreas de Crecimiento
+    modelBuilder.Entity<AreaCrecimiento>().HasData(
+      new AreaCrecimiento { Id = 1, Nombre = "Corporalidad" },
+      new AreaCrecimiento { Id = 2, Nombre = "Carácter" },
+      new AreaCrecimiento { Id = 3, Nombre = "Afectividad" },
+      new AreaCrecimiento { Id = 4, Nombre = "Sociabilidad" },
+      new AreaCrecimiento { Id = 5, Nombre = "Espiritualidad" },
+      new AreaCrecimiento { Id = 6, Nombre = "Creatividad" }
+    );
+    
     modelBuilder.Entity<Tipo>()
       .HasMany(t => t.Permisos)
       .WithMany(p => p.Tipos)
@@ -59,18 +81,22 @@ public class ScoutsAppContext: DbContext
       .HasMany(u => u.Unidades)
       .WithMany(un => un.Usuarios)
       .UsingEntity(j => j.ToTable("UnidadUsuario"));
-        
-    modelBuilder.Entity<User>()
-      .HasMany(u => u.ObjetivosEducativos)
-      .WithMany(o => o.Usuarios)
-      .UsingEntity<Dictionary<string, object>>(
-        "ObjetivoUsuario",
-        j => j.HasOne<ObjetivoEducativo>().WithMany().HasForeignKey("ObjetivoId"),
-        j => j.HasOne<User>().WithMany().HasForeignKey("UsuarioId"),
-        j =>
-        {
-          j.Property<string>("Status").HasMaxLength(50);
-          j.HasKey("UsuarioId", "ObjetivoId");
-        });
+    
+    modelBuilder.Entity<EtapaProgresion>()
+      .HasOne(e => e.Rama)
+      .WithMany(r => r.EtapasProgresion)
+      .HasForeignKey(e => e.RamaId);
+    
+    modelBuilder.Entity<ObjetivoUsuario>(entity =>
+    {
+      entity.HasKey(ou => new { ou.UsuarioId, ou.ObjetivoEducativoId });
+      entity.HasOne(ou => ou.User)
+        .WithMany(u => u.ObjetivosUsuario)
+        .HasForeignKey(ou => ou.UsuarioId);
+
+      entity.HasOne(ou => ou.ObjetivoEducativo)
+        .WithMany(o => o.UsuariosObjetivo)
+        .HasForeignKey(ou => ou.ObjetivoEducativoId); 
+    });
   }
 }

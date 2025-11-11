@@ -11,5 +11,6 @@ public class CatalogProfile : Profile
     CreateMap<Rama, CatalogDto>();
     CreateMap<GrupoScout, CatalogDto>();
     CreateMap<Distrito, CatalogDto>();
+    CreateMap<EtapaProgresion, CatalogDto>();
   }
 }
