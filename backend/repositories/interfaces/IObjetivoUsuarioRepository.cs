@@ -10,4 +10,6 @@ public interface IObjetivoUsuarioRepository
   Task<ObjetivoUsuario?> GetByUsuarioYObjetivoAsync(int usuarioId, int objetivoId);
   Task UpdateAsync(ObjetivoUsuario objetivoUsuario);
   Task DeleteAsync(ObjetivoUsuario objetivoUsuario);
+  Task<ISet<int>> GetUserObjetivoIdsAsync(int usuarioId);
+  Task<IEnumerable<ObjetivoUsuario>> GetByUsuarioIdAsync(int usuarioId);
 }

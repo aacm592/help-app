@@ -149,4 +149,10 @@ public class ObjetivoUsuarioService: IObjetivoUsuarioService
 
     await _objetivoUsuarioRepository.DeleteAsync(objetivoUsuario);
   }
+  
+  public async Task<IEnumerable<ObjetivoUsuarioResponseDto>> GetMisObjetivosAsync(int usuarioId)
+  {
+    var objetivosDelUsuario = await _objetivoUsuarioRepository.GetByUsuarioIdAsync(usuarioId);
+    return _mapper.Map<IEnumerable<ObjetivoUsuarioResponseDto>>(objetivosDelUsuario);
+  }
 }

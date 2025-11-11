@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using backend.services.interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +20,22 @@ public class ObjetivoEducativoController : ControllerBase
   [HttpGet("etapa/{etapaId:int}")]
   public async Task<IActionResult> GetByEtapa(int etapaId)
   {
-    var objetivos = await _objetivoService.GetByEtapaIdAsync(etapaId);
-    return Ok(objetivos);
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      var objetivos = await _objetivoService.GetByEtapaIdAsync(etapaId, userId);
+      return Ok(objetivos);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
   }
 }

@@ -28,6 +28,7 @@ public class ObjetivoEducativoRepository: IObjetivoEducativoRepository
   {
     return await _context.ObjetivosEducativos
       .Include(o => o.EtapaProgresion)
+      .Include(o => o.AreaCrecimiento)
       .FirstOrDefaultAsync(o => o.Id == id);
   }
 }

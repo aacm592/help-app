@@ -9,4 +9,5 @@ public interface IObjetivoUsuarioService
   Task<IEnumerable<PendingObjetivoDto>> GetPendingObjetivosByUnidadAsync(int unidadId, int dirigenteId);
   Task<ObjetivoUsuarioResponseDto> ValidarObjetivoAsync(ValidarObjetivoDto dto, int dirigenteId);
   Task DenegarObjetivoAsync(ValidarObjetivoDto dto, int dirigenteId);
+  Task<IEnumerable<ObjetivoUsuarioResponseDto>> GetMisObjetivosAsync(int usuarioId);
 }

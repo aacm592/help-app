@@ -33,6 +33,7 @@ public class ObjetivoUsuarioRepository : IObjetivoUsuarioRepository
     return await _context.ObjetivosUsuario
       .Include(ou => ou.User) 
       .Include(ou => ou.ObjetivoEducativo)
+      .ThenInclude(o => o.AreaCrecimiento)
       .Where(ou => ou.Status == ObjetivoStatus.Pendiente)
       .Where(ou => scoutIds.Contains(ou.UsuarioId))
       .OrderBy(ou => ou.User.Nombre)
@@ -56,5 +57,26 @@ public class ObjetivoUsuarioRepository : IObjetivoUsuarioRepository
   {
     _context.ObjetivosUsuario.Remove(objetivoUsuario);
     await _context.SaveChangesAsync();
+  }
+  
+  public async Task<ISet<int>> GetUserObjetivoIdsAsync(int usuarioId)
+  {
+    var ids = await _context.ObjetivosUsuario
+      .Where(ou => ou.UsuarioId == usuarioId)
+      .Select(ou => ou.ObjetivoEducativoId)
+      .ToListAsync();
+
+    return ids.ToHashSet();
+  }
+  
+  public async Task<IEnumerable<ObjetivoUsuario>> GetByUsuarioIdAsync(int usuarioId)
+  {
+    return await _context.ObjetivosUsuario
+      .Include(ou => ou.ObjetivoEducativo)
+      .ThenInclude(o => o.AreaCrecimiento)
+      .Where(ou => ou.UsuarioId == usuarioId)
+      .OrderBy(ou => ou.Status)
+      .ThenBy(ou => ou.ObjetivoEducativo.Descripcion)
+      .ToListAsync();
   }
 }

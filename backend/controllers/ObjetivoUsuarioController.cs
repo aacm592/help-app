@@ -112,4 +112,28 @@ public class ObjetivoUsuarioController : ControllerBase
       return StatusCode(500, $"Error interno: {ex.Message}");
     }
   }
+  
+  [Authorize]
+  [HttpGet("mis-objetivos")]
+  public async Task<IActionResult> GetMisObjetivos()
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      var objetivos = await _objetivoUsuarioService.GetMisObjetivosAsync(userId);
+        
+      return Ok(objetivos);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
 }
