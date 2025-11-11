@@ -12,5 +12,5 @@ public class User
   public Tipo Tipo { get; set; }
 
   public ICollection<Unidad> Unidades { get; set; } = new List<Unidad>();
-  public ICollection<ObjetivoEducativo> ObjetivosEducativos { get; set; } = new List<ObjetivoEducativo>();
+  public ICollection<ObjetivoUsuario> ObjetivosUsuario { get; set; } = new List<ObjetivoUsuario>(); // <-- CON ESTO
 }

@@ -15,9 +15,9 @@ export default function SelectUnidadPage() {
 
   return (
     <div className="bg-purple-600 min-h-screen h-full w-screen py-10 flex flex-col">
-      <LogOutButton dark/>
+      <LogOutButton dark />
 
-      <div className="flex flex-col justify-center items-center h-full w-full gap-y-8 flex-grow">
+      <div className="flex flex-col justify-center items-center h-full w-full gap-y-8 grow">
         <h1 className="text-white">Bienvenido, {user?.nombre || "Usuario"}</h1>
         <img
           src={logo}

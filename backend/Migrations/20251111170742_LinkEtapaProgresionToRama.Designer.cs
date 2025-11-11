@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using backend.data;
@@ -11,9 +12,11 @@ using backend.data;
 namespace backend.Migrations
 {
     [DbContext(typeof(ScoutsAppContext))]
-    partial class ScoutsAppContextModelSnapshot : ModelSnapshot
+    [Migration("20251111170742_LinkEtapaProgresionToRama")]
+    partial class LinkEtapaProgresionToRama
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,38 +70,6 @@ namespace backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AreasCrecimiento");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Nombre = "Corporalidad"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Nombre = "Carácter"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Nombre = "Afectividad"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Nombre = "Sociabilidad"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Nombre = "Espiritualidad"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Nombre = "Creatividad"
-                        });
                 });
 
             modelBuilder.Entity("backend.data.models.Distrito", b =>
@@ -150,44 +121,6 @@ namespace backend.Migrations
                     b.HasIndex("RamaId");
 
                     b.ToTable("EtapasProgresion");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Nombre = "Pata tierna - Saltador",
-                            RamaId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Nombre = "Rastreador - Cazador",
-                            RamaId = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Nombre = "Pista - Senda",
-                            RamaId = 2
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Nombre = "Rumbo - Travesía",
-                            RamaId = 2
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Nombre = "Busqueda - Encuentro - Desafío",
-                            RamaId = 3
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Nombre = "Caminante - Aspirante - Rover",
-                            RamaId = 4
-                        });
                 });
 
             modelBuilder.Entity("backend.data.models.GrupoScout", b =>
@@ -237,9 +170,15 @@ namespace backend.Migrations
                     b.Property<int>("AreaCrecimientoId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("AreaId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Descripcion")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("EtapaId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("EtapaProgresionId")
                         .HasColumnType("integer");
