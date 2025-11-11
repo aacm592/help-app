@@ -88,4 +88,28 @@ public class ObjetivoUsuarioController : ControllerBase
       return StatusCode(500, $"Error interno: {ex.Message}");
     }
   }
+  
+  [Authorize(Roles = "2")] 
+  [HttpPost("denegar")]
+  public async Task<IActionResult> DenegarObjetivo([FromBody] ValidarObjetivoDto dto)
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var dirigenteId))
+        return Unauthorized("Token de usuario inválido.");
+
+      await _objetivoUsuarioService.DenegarObjetivoAsync(dto, dirigenteId);
+        
+      return Ok(new { Message = "Objetivo denegado y eliminado correctamente." });
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
 }

@@ -9,4 +9,5 @@ public interface IObjetivoUsuarioRepository
   Task<IEnumerable<ObjetivoUsuario>> GetPendingByScoutIdsAsync(IEnumerable<int> scoutIds);
   Task<ObjetivoUsuario?> GetByUsuarioYObjetivoAsync(int usuarioId, int objetivoId);
   Task UpdateAsync(ObjetivoUsuario objetivoUsuario);
+  Task DeleteAsync(ObjetivoUsuario objetivoUsuario);
 }

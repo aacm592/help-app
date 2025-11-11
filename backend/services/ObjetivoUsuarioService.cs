@@ -121,4 +121,32 @@ public class ObjetivoUsuarioService: IObjetivoUsuarioService
 
     return _mapper.Map<ObjetivoUsuarioResponseDto>(objetivoUsuario);
   }
+  
+  public async Task DenegarObjetivoAsync(ValidarObjetivoDto dto, int dirigenteId)
+  {
+    var objetivoUsuario = await _objetivoUsuarioRepository.GetByUsuarioYObjetivoAsync(dto.UsuarioId, dto.ObjetivoId);
+
+    if (objetivoUsuario == null)
+      throw new ApplicationException("La solicitud de este objetivo no existe.");
+
+    if (objetivoUsuario.Status != ObjetivoStatus.Pendiente)
+      throw new ApplicationException("Este objetivo no está pendiente de validación.");
+
+    var scout = await _userRepository.GetByIdWithTipoAndUnidadesAsync(dto.UsuarioId);
+    if (scout == null || !scout.Unidades.Any())
+      throw new ApplicationException("El Scout no se encuentra o no pertenece a ninguna unidad.");
+
+    var unidadDelScout = scout.Unidades.First(); 
+    
+    var dirigente = await _userRepository.GetByIdWithTipoAndUnidadesAsync(dirigenteId);
+    if (dirigente == null)
+      throw new ApplicationException("Dirigente no encontrado.");
+
+    var dirigenteEstaEnUnidad = dirigente.Unidades.Any(u => u.Id == unidadDelScout.Id);
+
+    if (!dirigenteEstaEnUnidad)
+      throw new ApplicationException("No tienes permiso para denegar objetivos de este Scout, ya que no pertenecen a tu misma unidad.");
+
+    await _objetivoUsuarioRepository.DeleteAsync(objetivoUsuario);
+  }
 }

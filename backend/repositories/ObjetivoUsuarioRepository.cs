@@ -51,4 +51,10 @@ public class ObjetivoUsuarioRepository : IObjetivoUsuarioRepository
     _context.ObjetivosUsuario.Update(objetivoUsuario);
     await _context.SaveChangesAsync();
   }
+  
+  public async Task DeleteAsync(ObjetivoUsuario objetivoUsuario)
+  {
+    _context.ObjetivosUsuario.Remove(objetivoUsuario);
+    await _context.SaveChangesAsync();
+  }
 }
