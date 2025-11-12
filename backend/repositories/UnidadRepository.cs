@@ -49,4 +49,10 @@ public class UnidadRepository: IUnidadRepository
       .ThenInclude(user => user.Tipo)
       .FirstOrDefaultAsync(u => u.Id == unidadId);
   }
+  
+  public async Task DeleteAsync(Unidad unidad)
+  {
+    _context.Unidades.Remove(unidad);
+    await _context.SaveChangesAsync();
+  }
 }

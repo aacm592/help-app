@@ -57,6 +57,18 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const removeUnitFromUser = (unidadId) => {
+    if (user) {
+      const updatedUser = {
+        ...user,
+        unidades: user.unidades.filter((u) => u.id !== unidadId),
+      };
+
+      setUser(updatedUser);
+      localStorage.setItem("ASBUser", JSON.stringify(updatedUser));
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -66,6 +78,7 @@ export const AuthProvider = ({ children }) => {
         handleLogin,
         handleLogout,
         addUnitToUser,
+        removeUnitFromUser,
       }}
     >
       {children}

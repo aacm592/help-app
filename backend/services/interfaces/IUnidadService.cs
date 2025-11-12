@@ -8,4 +8,7 @@ public interface IUnidadService
 {
   Task<UnidadResponseDto> Create(CreateUnidadDto dto, int creadorId);
   Task<UnidadResponseDto> JoinUnidad(string codigo, int userId);
+  Task SalirDeUnidadAsync(int unidadId, int usuarioId);
+  Task RemoverDeUnidadAsync(int unidadId, int usuarioARemoverId, int dirigenteId);
+  Task<IEnumerable<UserResponseDto>> GetMiembrosUnidadAsync(int unidadId, int dirigenteId);
 }

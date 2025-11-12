@@ -62,6 +62,61 @@ public class UnidadService : IUnidadService
 
     return _mapper.Map<UnidadResponseDto>(unidad);
   }
+  
+  public async Task SalirDeUnidadAsync(int unidadId, int usuarioId)
+  {
+    var unidad = await _unidadRepository.GetByIdWithMiembrosAsync(unidadId);
+    if (unidad == null)
+      throw new ApplicationException("Unidad no encontrada.");
+
+    var usuarioEnUnidad = unidad.Usuarios.FirstOrDefault(u => u.Id == usuarioId);
+    if (usuarioEnUnidad == null)
+      throw new ApplicationException("No eres miembro de esta unidad.");
+
+    unidad.Usuarios.Remove(usuarioEnUnidad);
+
+    bool unidadEliminada = await HandleLastDirigenteCheckAsync(unidad, usuarioEnUnidad);
+
+    if (!unidadEliminada)
+      await _unidadRepository.UpdateAsync(unidad);
+  }
+  
+  public async Task RemoverDeUnidadAsync(int unidadId, int usuarioARemoverId, int dirigenteId)
+  {
+    var unidad = await _unidadRepository.GetByIdWithMiembrosAsync(unidadId);
+    if (unidad == null)
+      throw new ApplicationException("Unidad no encontrada.");
+
+    var dirigente = unidad.Usuarios.FirstOrDefault(u => u.Id == dirigenteId);
+    if (dirigente == null || dirigente.Tipo?.Nombre != "Dirigente")
+      throw new ApplicationException("No tienes permisos para remover usuarios de esta unidad.");
+
+    var usuarioARemover = unidad.Usuarios.FirstOrDefault(u => u.Id == usuarioARemoverId);
+    if (usuarioARemover == null)
+      throw new ApplicationException("El usuario que intentas remover no está en esta unidad.");
+
+    unidad.Usuarios.Remove(usuarioARemover);
+
+    bool unidadEliminada = await HandleLastDirigenteCheckAsync(unidad, usuarioARemover);
+
+    if (!unidadEliminada)
+      await _unidadRepository.UpdateAsync(unidad);
+  }
+  
+  public async Task<IEnumerable<UserResponseDto>> GetMiembrosUnidadAsync(int unidadId, int dirigenteId)
+  {
+    var unidad = await _unidadRepository.GetByIdWithMiembrosAsync(unidadId);
+    if (unidad == null)
+      throw new ApplicationException("Unidad no encontrada.");
+
+    var esMiembroDirigente = unidad.Usuarios
+      .Any(u => u.Id == dirigenteId && u.Tipo.Nombre == "Dirigente");
+        
+    if (!esMiembroDirigente)
+      throw new ApplicationException("No tienes permiso para ver los miembros de esta unidad.");
+
+    return _mapper.Map<IEnumerable<UserResponseDto>>(unidad.Usuarios);
+  }
 
   private async Task<User> GetUserOrThrowAsync(int userId)
   {
@@ -144,5 +199,21 @@ public class UnidadService : IUnidadService
     var age = today.Year - birthDateUtc.Year;
     if (birthDateUtc.Date > today.AddYears(-age)) age--;
     return age;
+  }
+  
+  private async Task<bool> HandleLastDirigenteCheckAsync(Unidad unidad, User usuarioRemovido)
+  {
+    if (usuarioRemovido.Tipo?.Nombre != "Dirigente")
+      return false;
+
+    var dirigentesRestantes = unidad.Usuarios.Count(u => u.Tipo?.Nombre == "Dirigente");
+
+    if (dirigentesRestantes == 0)
+    {
+      await _unidadRepository.DeleteAsync(unidad);
+      return true;
+    }
+
+    return false;
   }
 }
