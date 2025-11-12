@@ -11,7 +11,6 @@ export default function HomeUnidadDirigente() {
   const nav = useNavigate();
   const [unidad, setUnidad] = useState(null);
 
-  // 1. Clases copiadas de HomeUnidadScout para consistencia
   const buttonClass = "w-full space-x-10 justify-center px-7 py-2";
   const textClass = "text-[18px] md:text-[22px] text-purple-800";
   const iconClass = "material-symbols-outlined !text-4xl text-purple-800";
@@ -43,12 +42,17 @@ export default function HomeUnidadDirigente() {
         <UnidadInfoBox user={user} unidad={unidad} />
       </div>
 
-      <div className="w-full md:w-1/3 flex flex-col gap-6">
+      <div className="w-full lg:w-1/3 flex flex-col gap-6">
         <Button className={buttonClass}>
           <span className={iconClass}>groups</span>
           <p className={textClass}>Ver Mi Unidad</p>
         </Button>
-        <Button className={buttonClass}>
+        <Button
+          className={buttonClass}
+          onClick={() =>
+            nav(`/dirigente/unidad/${unidadId}/gestionar-objetivos`)
+          }
+        >
           <span className={iconClass}>checklist</span>
           <p className={textClass}>Gestionar Objetivos</p>
         </Button>

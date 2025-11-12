@@ -33,8 +33,11 @@ export default function HomeUnidadScout() {
         <UnidadInfoBox user={user} unidad={unidad} />
       </div>
 
-      <div className="w-full md:w-1/3 flex flex-col gap-6">
-        <Button className="w-full space-x-10 justify-center px-7 py-2">
+      <div className="w-full lg:w-1/3 flex flex-col gap-6">
+        <Button
+          className="w-full space-x-10 justify-center px-7 py-2"
+          onClick={() => nav("/scout/objetivos")}
+        >
           <span className={iconClass}>checklist</span>
           <p className="text-[18px] md:text-[22px] text-purple-800">
             Objetivos
@@ -52,11 +55,10 @@ export default function HomeUnidadScout() {
         >
           <span className="material-symbols-outlined !text-4xl text-white">
             exit_to_app
-          </span>{" "}
+          </span>
           <p className="text-[18px] md:text-[22px] text-white">
             Salir de la unidad
-          </p>{" "}
-          {/* Texto blanco */}
+          </p>
         </Button>
       </div>
     </div>
