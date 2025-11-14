@@ -12,7 +12,7 @@ export default function HomeUnidadScout() {
 
   const buttonClass = "w-full space-x-10 justify-center px-7 py-2";
   const textClass = "text-[18px] md:text-[22px] text-purple-800";
-  const iconClass = "material-symbols-outlined !text-4xl text-purple-800";
+  const iconClass = "material-symbols-outlined text-4xl! text-purple-800";
 
   if (!unidad) {
     setTimeout(() => nav("/home"), 1000);

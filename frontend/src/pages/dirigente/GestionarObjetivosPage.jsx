@@ -43,7 +43,7 @@ export default function GestionarObjetivosPage() {
     if (loading) {
       return (
         <div className="flex justify-center items-center p-10">
-          <span className="material-symbols-outlined text-purple-700 !text-6xl animate-spin">
+          <span className="material-symbols-outlined text-purple-700 text-6xl! animate-spin">
             progress_activity
           </span>
         </div>

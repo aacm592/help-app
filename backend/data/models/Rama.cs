@@ -1,9 +1,13 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace backend.data.models;
 
 public class Rama
 {
   public int Id { get; set; }
-  public string Nombre { get; set; }
+
+  [MaxLength(20)]
+  public string Nombre { get; set; } = string.Empty;
   public int EdadMinima { get; set; }
   public int EdadMaxima { get; set; }
 
