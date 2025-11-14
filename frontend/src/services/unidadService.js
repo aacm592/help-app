@@ -56,11 +56,11 @@ export const salirDeUnidad = async (unidadId) => {
   }
 };
 
-export const removerDeUnidad = async (unidadId, usuarioARemoverId) => {
+export const removerDeUnidad = async (unidadId, usuarioToRemoveId) => {
   try {
     const response = await api.post("/Unidad/remover", {
       unidadId,
-      usuarioARemoverId,
+      usuarioToRemoveId,
     });
     return response.data;
   } catch (error) {

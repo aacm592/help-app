@@ -3,13 +3,17 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import Button from "../../components/Button";
 import UnidadInfoBox from "../../components/pageComponents/UnidadInfoBox";
-import LogOutButton from "../../components/pageComponents/LogoutButton";
+import SalirUnidadButton from "../../components/pageComponents/SalirUnidadButton";
+import { getMiembrosUnidad } from "../../services/unidadService";
 
 export default function HomeUnidadDirigente() {
   const { unidadId } = useParams();
   const { user } = useAuth();
   const nav = useNavigate();
   const [unidad, setUnidad] = useState(null);
+
+  const [esUltimoDirigente, setEsUltimoDirigente] = useState(false);
+  const [loadingCheck, setLoadingCheck] = useState(true);
 
   const buttonClass = "w-full space-x-10 justify-center px-7 py-2";
   const textClass = "text-[18px] md:text-[22px] text-purple-800";
@@ -23,10 +27,36 @@ export default function HomeUnidadDirigente() {
       if (unidadEncontrada) {
         setUnidad(unidadEncontrada);
       } else {
-        nav("/dirigente");
+        nav("/diri");
       }
     }
   }, [user, unidadId, nav]);
+
+  useEffect(() => {
+    if (unidadId && user?.id) {
+      setLoadingCheck(true);
+
+      const comprobarMiembros = async () => {
+        try {
+          const miembros = await getMiembrosUnidad(unidadId);
+          const dirigentes = miembros.filter((m) => m.tipoId === 2);
+
+          if (dirigentes.length === 1 && dirigentes[0].id === user.id) {
+            setEsUltimoDirigente(true);
+          } else {
+            setEsUltimoDirigente(false);
+          }
+        } catch (error) {
+          console.error("Error al comprobar miembros:", error.message);
+          setEsUltimoDirigente(false);
+        } finally {
+          setLoadingCheck(false);
+        }
+      };
+
+      comprobarMiembros();
+    }
+  }, [unidadId, user?.id]);
 
   if (!unidad) {
     return (
@@ -43,15 +73,16 @@ export default function HomeUnidadDirigente() {
       </div>
 
       <div className="w-full lg:w-1/3 flex flex-col gap-6">
-        <Button className={buttonClass}>
+        <Button
+          className={buttonClass}
+          onClick={() => nav(`/diri/unidad/${unidadId}/miembros`)}
+        >
           <span className={iconClass}>groups</span>
           <p className={textClass}>Ver Mi Unidad</p>
         </Button>
         <Button
           className={buttonClass}
-          onClick={() =>
-            nav(`/dirigente/unidad/${unidadId}/gestionar-objetivos`)
-          }
+          onClick={() => nav(`/diri/unidad/${unidadId}/gestionar-objetivos`)}
         >
           <span className={iconClass}>checklist</span>
           <p className={textClass}>Gestionar Objetivos</p>
@@ -62,18 +93,13 @@ export default function HomeUnidadDirigente() {
           <p className={textClass}>Ir a otra unidad</p>
         </Button>
 
-        <Button
-          dark
-          className="w-full space-x-4 justify-center bg-red-700 hover:bg-red-600 px-7 py-2 outline-3 mt-2"
-          onClick={() => console.log("Saliendo de la unidad...")}
-        >
-          <span className="material-symbols-outlined !text-4xl text-white">
-            exit_to_app
-          </span>
-          <p className="text-[18px] md:text-[22px] text-white">
-            Salir de la unidad
-          </p>
-        </Button>
+        <SalirUnidadButton
+          unidadId={unidad.id}
+          onSuccessRedirectPath="/diri"
+          className="mt-2"
+          esUltimoDirigente={esUltimoDirigente}
+          disabled={loadingCheck}
+        />
       </div>
     </div>
   );
