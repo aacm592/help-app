@@ -58,7 +58,7 @@ export default function SelectUnidadPage() {
               nav("/unirse-unidad");
             }}
           >
-            <span className="material-symbols-outlined text-white !text-4xl">
+            <span className="material-symbols-outlined text-white text-4xl!">
               camping
             </span>
             <p className="text-[16px] md:text-[20px] text-white">
@@ -74,7 +74,7 @@ export default function SelectUnidadPage() {
                 nav("/diri/crear-unidad");
               }}
             >
-              <span className="material-symbols-outlined text-white !text-4xl">
+              <span className="material-symbols-outlined text-white text-4xl!">
                 add
               </span>
               <p className="text-[16px] md:text-[20px] text-white">

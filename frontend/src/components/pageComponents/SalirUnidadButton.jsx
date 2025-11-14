@@ -49,7 +49,7 @@ export default function SalirUnidadButton({
         onClick={handleSalir}
         disabled={isLoading || disabled}
       >
-        <span className="material-symbols-outlined !text-4xl text-white">
+        <span className="material-symbols-outlined text-4xl! text-white">
           exit_to_app
         </span>
         <p className="text-[18px] md:text-[22px] text-white">

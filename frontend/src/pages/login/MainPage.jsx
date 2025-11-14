@@ -6,7 +6,7 @@ import LoginComponent from "../../components/pageComponents/LoginComponent";
 function MainPage() {
   const buttonClass = "space-x-5 px-6 py-1.5";
   const textClass = "text-[16px] md:text-[20px] text-white";
-  const iconClass = "material-symbols-outlined text-white !text-4xl";
+  const iconClass = "material-symbols-outlined text-white text-4xl!";
   const navigate = useNavigate();
 
   return (

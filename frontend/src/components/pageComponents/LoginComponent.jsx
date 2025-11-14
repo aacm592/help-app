@@ -19,9 +19,9 @@ const loginSchema = z.object({
 
 export default function LoginComponent() {
   const buttonClass =
-    "space-x-4 md:space-x-6 w-full bg-fuchsia-100 px-7 py-1.5 !outline-purple-400 outline-3";
+    "space-x-4 md:space-x-6 w-full bg-fuchsia-100 px-7 py-1.5 outline-purple-400! outline-3";
   const textClass = "text-[18px] md:text-[24px] text-black";
-  const iconClass = "material-symbols-outlined text-green-600 !text-4xl";
+  const iconClass = "material-symbols-outlined text-green-600 text-4xl!";
 
   const [loginError, setLoginError] = useState(null);
   const { handleLogin } = useAuth();

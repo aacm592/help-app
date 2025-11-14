@@ -39,7 +39,7 @@ export default function RegisterPage() {
   const buttonClass =
     "space-x-4 md:space-x-6 w-full bg-fuchsia-100 px-7 py-1.5 !outline-purple-400 outline-3";
   const textClass = "text-[18px] md:text-[24px] text-black";
-  const iconClass = "material-symbols-outlined !text-4xl";
+  const iconClass = "material-symbols-outlined text-4xl!";
 
   const [apiError, setApiError] = useState(null);
 
