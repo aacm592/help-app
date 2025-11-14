@@ -27,3 +27,48 @@ export const joinUnidad = async (codigo) => {
     }
   }
 };
+
+export const getMiembrosUnidad = async (unidadId) => {
+  try {
+    const response = await api.get(`/Unidad/miembros/${unidadId}`);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw new Error(error.response.data);
+    } else {
+      console.error("Error al obtener miembros:", error.message);
+      throw new Error("No se pudo conectar con el servidor.");
+    }
+  }
+};
+
+export const salirDeUnidad = async (unidadId) => {
+  try {
+    const response = await api.post("/Unidad/salir", { unidadId });
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw new Error(error.response.data);
+    } else {
+      console.error("Error al salir de la unidad:", error.message);
+      throw new Error("No se pudo conectar con el servidor.");
+    }
+  }
+};
+
+export const removerDeUnidad = async (unidadId, usuarioToRemoveId) => {
+  try {
+    const response = await api.post("/Unidad/remover", {
+      unidadId,
+      usuarioToRemoveId,
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw new Error(error.response.data);
+    } else {
+      console.error("Error al remover usuario:", error.message);
+      throw new Error("No se pudo conectar con el servidor.");
+    }
+  }
+};

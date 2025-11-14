@@ -9,4 +9,5 @@ public interface IUnidadRepository
   Task<Unidad?> GetByCodigoAsync(string codigo);
   Task UpdateAsync(Unidad unidad);
   Task<Unidad?> GetByIdWithMiembrosAsync(int unidadId);
+  Task DeleteAsync(Unidad unidad);
 }

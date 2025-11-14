@@ -11,6 +11,7 @@ import HomeUnidadScout from "./pages/scout/HomeUnidadScout";
 import HomeUnidadDirigente from "./pages/dirigente/HomeUnidadDirigente";
 import ObjetivosPage from "./pages/scout/ObjetivosPage";
 import GestionarObjetivosPage from "./pages/dirigente/GestionarObjetivosPage";
+import VerUnidadPage from "./pages/dirigente/VerUnidadPage";
 
 function App() {
   return (
@@ -29,12 +30,16 @@ function App() {
           <Route path="/diri" element={<SelectUnidadPage />} />
           <Route path="/diri/crear-unidad" element={<CreateUnidadPage />} />
           <Route
-            path="/dirigente/unidad/:unidadId"
+            path="/diri/unidad/:unidadId"
             element={<HomeUnidadDirigente />}
           />
           <Route
-            path="/dirigente/unidad/:unidadId/gestionar-objetivos"
+            path="/diri/unidad/:unidadId/gestionar-objetivos"
             element={<GestionarObjetivosPage />}
+          />
+          <Route
+            path="/diri/unidad/:unidadId/miembros"
+            element={<VerUnidadPage />}
           />
         </Route>
 
