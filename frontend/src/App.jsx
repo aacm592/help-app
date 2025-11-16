@@ -14,8 +14,8 @@ import GestionarObjetivosPage from "./pages/dirigente/GestionarObjetivosPage";
 import VerUnidadPage from "./pages/dirigente/VerUnidadPage";
 import DirigenteUnitLayout from "./components/nav/DirigenteUnitLayout";
 import ProfilePage from "./pages/common/ProfilePage";
-import MiProgresoPage from "./pages/common/MiProgresoPage";
 import ScoutLayout from "./components/nav/ScoutLayout";
+import MiProgresoPage from "./pages/scout/MiProgresoPage";
 
 function App() {
   return (
