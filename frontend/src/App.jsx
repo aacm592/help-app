@@ -12,6 +12,10 @@ import HomeUnidadDirigente from "./pages/dirigente/HomeUnidadDirigente";
 import ObjetivosPage from "./pages/scout/ObjetivosPage";
 import GestionarObjetivosPage from "./pages/dirigente/GestionarObjetivosPage";
 import VerUnidadPage from "./pages/dirigente/VerUnidadPage";
+import DirigenteUnitLayout from "./components/nav/DirigenteUnitLayout";
+import ProfilePage from "./pages/common/ProfilePage";
+import MiProgresoPage from "./pages/common/MiProgresoPage";
+import ScoutLayout from "./components/nav/ScoutLayout";
 
 function App() {
   return (
@@ -25,28 +29,36 @@ function App() {
           <Route path="/unirse-unidad" element={<JoinUnidadPage />} />
         </Route>
 
-        {/* Rutas para Dirigentes (Rol 2) */}
+        {/* --- Rutas para Dirigentes (Rol 2) --- */}
         <Route element={<RoleProtectedRoute allowedRoles={[2]} />}>
           <Route path="/diri" element={<SelectUnidadPage />} />
           <Route path="/diri/crear-unidad" element={<CreateUnidadPage />} />
-          <Route
-            path="/diri/unidad/:unidadId"
-            element={<HomeUnidadDirigente />}
-          />
-          <Route
-            path="/diri/unidad/:unidadId/gestionar-objetivos"
-            element={<GestionarObjetivosPage />}
-          />
-          <Route
-            path="/diri/unidad/:unidadId/miembros"
-            element={<VerUnidadPage />}
-          />
+          <Route path="/diri/profile" element={<ProfilePage />} />
+
+          <Route element={<DirigenteUnitLayout />}>
+            <Route
+              path="/diri/unidad/:unidadId"
+              element={<HomeUnidadDirigente />}
+            />
+            <Route
+              path="/diri/unidad/:unidadId/gestionar-objetivos"
+              element={<GestionarObjetivosPage />}
+            />
+            <Route
+              path="/diri/unidad/:unidadId/miembros"
+              element={<VerUnidadPage />}
+            />
+          </Route>
         </Route>
 
-        {/* Rutas para Scouts (Rol 1) */}
+        {/* --- Rutas para Scouts (Rol 1) --- */}
         <Route element={<RoleProtectedRoute allowedRoles={[1]} />}>
-          <Route path="/scout/home" element={<HomeUnidadScout />} />
-          <Route path="/scout/objetivos" element={<ObjetivosPage />} />
+          <Route element={<ScoutLayout />}>
+            <Route path="/scout/home" element={<HomeUnidadScout />} />
+            <Route path="/scout/objetivos" element={<ObjetivosPage />} />
+            <Route path="/scout/profile" element={<ProfilePage />} />
+            <Route path="/scout/progreso" element={<MiProgresoPage />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
