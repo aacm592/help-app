@@ -10,7 +10,7 @@ public class EtapaProgresion
   public string Nombre { get; set; } = string.Empty;
   
   public int RamaId { get; set; }
-  public Rama Rama { get; set; } =  new Rama();
+  public Rama Rama { get; set; }=  null!;
 
 
   public ICollection<ObjetivoEducativo> ObjetivosEducativos { get; set; } = new List<ObjetivoEducativo>();
