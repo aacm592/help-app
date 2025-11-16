@@ -4,6 +4,7 @@ using System.Text;
 using AutoMapper;
 using backend.data.models;
 using backend.dtos.auth;
+using backend.dtos.request;
 using backend.dtos.responses;
 using backend.repositories.interfaces;
 using backend.services.interfaces;
@@ -77,7 +78,24 @@ public class AuthService: IAuthService
     { 
       Token = token, 
       User = userResponse
-    };  }
+    };  
+  }
+  
+  public async Task ChangePasswordAsync(int userId, ChangePasswordDto dto)
+  {
+    var user = await _userRepository.GetByIdAsync(userId);
+    if (user == null)
+      throw new ApplicationException("Usuario no encontrado.");
+
+    bool isPasswordValid = BCrypt.Net.BCrypt.Verify(dto.ContrasenaActual, user.Contrasena);
+    if (!isPasswordValid)
+      throw new ApplicationException("La contraseña actual es incorrecta.");
+
+    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.NuevaContrasena);
+    user.Contrasena = hashedPassword;
+
+    await _userRepository.UpdateAsync(user);
+  }
 
   private int CalculateAge(DateTime dateOfBirth)
   {
