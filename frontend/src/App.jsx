@@ -16,10 +16,13 @@ import DirigenteUnitLayout from "./components/nav/DirigenteUnitLayout";
 import ProfilePage from "./pages/common/ProfilePage";
 import ScoutLayout from "./components/nav/ScoutLayout";
 import MiProgresoPage from "./pages/scout/MiProgresoPage";
+import VerProgresoScoutPage from "./pages/dirigente/VerProgresoScoutPage";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/register" element={<RegisterPage />} />
@@ -33,11 +36,10 @@ function App() {
         <Route element={<RoleProtectedRoute allowedRoles={[2]} />}>
           <Route path="/diri" element={<SelectUnidadPage />} />
           <Route path="/diri/crear-unidad" element={<CreateUnidadPage />} />
-          <Route path="/diri/profile" element={<ProfilePage />} />
 
           <Route element={<DirigenteUnitLayout />}>
             <Route
-              path="/diri/unidad/:unidadId"
+              path="/diri/unidad/:unidadId/home"
               element={<HomeUnidadDirigente />}
             />
             <Route
@@ -47,6 +49,14 @@ function App() {
             <Route
               path="/diri/unidad/:unidadId/miembros"
               element={<VerUnidadPage />}
+            />
+            <Route
+              path="/diri/unidad/:unidadId/scout/:scoutId/progreso"
+              element={<VerProgresoScoutPage />}
+            />
+            <Route
+              path="/diri/unidad/:unidadId/profile"
+              element={<ProfilePage />}
             />
           </Route>
         </Route>
