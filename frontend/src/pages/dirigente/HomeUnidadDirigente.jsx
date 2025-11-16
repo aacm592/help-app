@@ -68,11 +68,11 @@ export default function HomeUnidadDirigente() {
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-white text-black p-8">
-      <div className="flex flex-col items-center w-full py-10">
+      <div className="flex flex-col items-center w-full">
         <UnidadInfoBox user={user} unidad={unidad} />
       </div>
 
-      <div className="w-full lg:w-1/3 flex flex-col gap-6">
+      <div className="w-full lg:w-1/3 flex flex-col gap-6 py-10">
         <Button
           className={buttonClass}
           onClick={() => nav(`/diri/unidad/${unidadId}/miembros`)}

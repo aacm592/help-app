@@ -13,10 +13,10 @@ public class Unidad
   public string Codigo { get; set; } = string.Empty;
 
   public int GrupoScoutId { get; set; }
-  public GrupoScout GrupoScout { get; set; } =  new GrupoScout();
+  public GrupoScout GrupoScout { get; set; } =  null!;
 
   public int RamaId { get; set; }
-  public Rama Rama { get; set; } =   new Rama();
+  public Rama Rama { get; set; } =   null!;
 
   public ICollection<User> Usuarios { get; set; } = new List<User>();
 }

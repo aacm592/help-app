@@ -2,6 +2,7 @@ using AutoMapper;
 using backend.data.models;
 using backend.dtos.request;
 using backend.dtos.responses;
+using backend.dtos.responses.progresion;
 using backend.enums;
 using backend.repositories.interfaces;
 using backend.services.interfaces;
@@ -154,5 +155,71 @@ public class ObjetivoUsuarioService: IObjetivoUsuarioService
   {
     var objetivosDelUsuario = await _objetivoUsuarioRepository.GetByUsuarioIdAsync(usuarioId);
     return _mapper.Map<IEnumerable<ObjetivoUsuarioResponseDto>>(objetivosDelUsuario);
+  }
+
+  public async Task<IEnumerable<RamaObjetivosDto>> GetScoutObjetivosAgrupadosAsync(int scoutId, int solicitanteId)
+  {
+    var solicitante = await _userRepository.GetByIdWithTipoAndUnidadesAsync(solicitanteId);
+    if (solicitante == null)
+      throw new ApplicationException("Usuario solicitante no encontrado.");
+
+    bool tienePermiso = false;
+
+    if (solicitanteId == scoutId)
+      tienePermiso = true;
+    else if (solicitante.Tipo?.Nombre == "Dirigente")
+    {
+      var scout = await _userRepository.GetByIdWithTipoAndUnidadesAsync(scoutId);
+      if (scout == null || !scout.Unidades.Any())
+        throw new ApplicationException("El Scout no se encuentra o no pertenece a ninguna unidad.");
+
+      var scoutUnidadIds = scout.Unidades.Select(u => u.Id).ToHashSet();
+      var dirigenteEstaEnUnidad = solicitante.Unidades.Any(u => scoutUnidadIds.Contains(u.Id));
+
+      if (dirigenteEstaEnUnidad)
+        tienePermiso = true;
+    }
+    
+    if (!tienePermiso)
+      throw new ApplicationException("No tienes permiso para ver los objetivos de este Scout.");
+
+    return await GetAndGroupObjetivos(scoutId);
+  }
+  
+  private async Task<IEnumerable<RamaObjetivosDto>> GetAndGroupObjetivos(int scoutId)
+  {
+    var objetivos = await _objetivoUsuarioRepository.GetByUsuarioIdWithFullTreeAsync(scoutId);
+
+    var objetivosAgrupados = objetivos
+      .GroupBy(ou => ou.ObjetivoEducativo.EtapaProgresion.Rama)
+      .Select(grupoRama => new RamaObjetivosDto
+      {
+        Id = grupoRama.Key.Id,
+        Nombre = grupoRama.Key.Nombre,
+        Etapas = grupoRama
+          .GroupBy(ou => ou.ObjetivoEducativo.EtapaProgresion)
+          .Select(grupoEtapa => new EtapaObjetivosDto
+          {
+            Id = grupoEtapa.Key.Id,
+            Nombre = grupoEtapa.Key.Nombre,
+            
+            Areas = grupoEtapa 
+              .GroupBy(ou => ou.ObjetivoEducativo.AreaCrecimiento)
+              .Select(grupoArea => new AreaObjetivosDto
+              {
+                Id = grupoArea.Key.Id,
+                Nombre = grupoArea.Key.Nombre,
+                Objetivos = _mapper.Map<List<ObjetivoUsuarioResponseDto>>(grupoArea.ToList())
+              })
+              .OrderBy(a => a.Nombre)
+              .ToList()
+          })
+          .OrderBy(e => e.Id)
+          .ToList()
+      })
+      .OrderBy(r => r.Id)
+      .ToList();
+
+    return objetivosAgrupados;
   }
 }

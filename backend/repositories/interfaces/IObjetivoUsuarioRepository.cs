@@ -12,4 +12,5 @@ public interface IObjetivoUsuarioRepository
   Task DeleteAsync(ObjetivoUsuario objetivoUsuario);
   Task<ISet<int>> GetUserObjetivoIdsAsync(int usuarioId);
   Task<IEnumerable<ObjetivoUsuario>> GetByUsuarioIdAsync(int usuarioId);
+  Task<IEnumerable<ObjetivoUsuario>> GetByUsuarioIdWithFullTreeAsync(int usuarioId);
 }

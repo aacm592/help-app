@@ -79,4 +79,19 @@ public class ObjetivoUsuarioRepository : IObjetivoUsuarioRepository
       .ThenBy(ou => ou.ObjetivoEducativo.Descripcion)
       .ToListAsync();
   }
+  
+  public async Task<IEnumerable<ObjetivoUsuario>> GetByUsuarioIdWithFullTreeAsync(int usuarioId)
+  {
+    return await _context.ObjetivosUsuario
+      .Include(ou => ou.ObjetivoEducativo)
+      .ThenInclude(o => o.AreaCrecimiento)
+      .Include(ou => ou.ObjetivoEducativo)
+      .ThenInclude(o => o.EtapaProgresion)
+      .ThenInclude(e => e.Rama)
+      .Where(ou => ou.UsuarioId == usuarioId)
+      .OrderBy(ou => ou.ObjetivoEducativo.EtapaProgresion.Rama.Id)
+      .ThenBy(ou => ou.ObjetivoEducativo.EtapaProgresion.Id)
+      .ThenBy(ou => ou.Status)
+      .ToListAsync();
+  }
 }

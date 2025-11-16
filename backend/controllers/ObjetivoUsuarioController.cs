@@ -136,4 +136,28 @@ public class ObjetivoUsuarioController : ControllerBase
       return StatusCode(500, $"Error interno: {ex.Message}");
     }
   }
+  
+  [Authorize]
+  [HttpGet("scout/{scoutId:int}/agrupados")]
+  public async Task<IActionResult> GetScoutObjetivosAgrupados(int scoutId)
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var solicitanteId))
+        return Unauthorized("Token de usuario inválido.");
+
+      var resultado = await _objetivoUsuarioService.GetScoutObjetivosAgrupadosAsync(scoutId, solicitanteId);
+        
+      return Ok(resultado);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
 }

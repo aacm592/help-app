@@ -10,7 +10,7 @@ export default function SelectUnidadPage() {
   const tieneUnidades = user?.unidades && user.unidades.length > 0;
 
   const handleUnidadClick = (unidadId) => {
-    nav(`/diri/unidad/${unidadId}`);
+    nav(`/diri/unidad/${unidadId}/home`);
   };
 
   return (

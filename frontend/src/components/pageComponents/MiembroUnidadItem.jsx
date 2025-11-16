@@ -1,4 +1,5 @@
 import Button from "../Button";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function MiembroUnidadItem({
   miembro,
@@ -7,8 +8,16 @@ export default function MiembroUnidadItem({
   isLoading,
 }) {
   const { id: miembroId, nombre, tipoId } = miembro;
-
   const rolNombre = tipoId === 1 ? "Scout" : "Dirigente";
+
+  const nav = useNavigate();
+  const { unidadId } = useParams();
+
+  const handleVerProgreso = () => {
+    nav(`/diri/unidad/${unidadId}/scout/${miembroId}/progreso`, {
+      state: { scoutNombre: nombre },
+    });
+  };
 
   return (
     <div className="w-full flex items-center justify-between gap-4 p-4 bg-white rounded-lg shadow-md border border-gray-200">
@@ -17,21 +26,32 @@ export default function MiembroUnidadItem({
         <p className="text-sm text-purple-700 font-semibold">{rolNombre}</p>
       </div>
 
-      {miembroId !== currentUserId && (
-        <Button
-          className="px-4 py-2 text-sm bg-red-100 text-red-800 hover:bg-red-200"
-          onClick={() => onRemove(miembroId)}
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <span className="material-symbols-outlined animate-spin">
-              progress_activity
-            </span>
-          ) : (
-            "Sacar"
-          )}
-        </Button>
-      )}
+      <div className="flex gap-2">
+        {tipoId === 1 && (
+          <Button
+            className="px-4 py-2 text-sm bg-blue-100 text-blue-800 hover:bg-blue-200"
+            onClick={handleVerProgreso}
+          >
+            Progreso
+          </Button>
+        )}
+
+        {miembroId !== currentUserId && (
+          <Button
+            className="px-4 py-2 text-sm bg-red-100 text-red-800 hover:bg-red-200"
+            onClick={() => onRemove(miembroId)}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <span className="material-symbols-outlined animate-spin">
+                progress_activity
+              </span>
+            ) : (
+              "Sacar"
+            )}
+          </Button>
+        )}
+      </div>
     </div>
   );
 }

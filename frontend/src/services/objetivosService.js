@@ -69,3 +69,21 @@ export const getPendientesPorUnidad = async (unidadId) => {
     throw new Error(errorMessage);
   }
 };
+
+export const getProgresoAgrupado = async (scoutId) => {
+  if (!scoutId) {
+    throw new Error("El ID del Scout es requerido.");
+  }
+
+  try {
+    const response = await api.get(
+      `/ObjetivoUsuario/scout/${scoutId}/agrupados`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener el progreso agrupado", error);
+    const errorMessage =
+      error.response?.data || "No se pudo cargar el progreso del Scout.";
+    throw new Error(errorMessage);
+  }
+};

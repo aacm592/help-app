@@ -98,7 +98,7 @@ export default function VerUnidadPage() {
           </div>
           <Button
             className="px-4 py-2"
-            onClick={() => nav(`/diri/unidad/${unidadId}`)}
+            onClick={() => nav(`/diri/unidad/${unidadId}/home`)}
           >
             <span className="material-symbols-outlined mr-2">arrow_back</span>
             Volver
