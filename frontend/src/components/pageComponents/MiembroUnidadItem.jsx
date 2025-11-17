@@ -6,6 +6,8 @@ export default function MiembroUnidadItem({
   currentUserId,
   onRemove,
   isLoading,
+  onGenerateCode,
+  isGeneratingCode,
 }) {
   const { id: miembroId, nombre, tipoId } = miembro;
   const rolNombre = tipoId === 1 ? "Scout" : "Dirigente";
@@ -26,7 +28,7 @@ export default function MiembroUnidadItem({
         <p className="text-sm text-purple-700 font-semibold">{rolNombre}</p>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2 justify-end">
         {tipoId === 1 && (
           <Button
             className="px-4 py-2 text-sm bg-blue-100 text-blue-800 hover:bg-blue-200"
@@ -36,11 +38,27 @@ export default function MiembroUnidadItem({
           </Button>
         )}
 
+        {tipoId === 1 && (
+          <Button
+            className="px-4 py-2 text-sm bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
+            onClick={() => onGenerateCode(miembro)}
+            disabled={isLoading || isGeneratingCode}
+          >
+            {isGeneratingCode ? (
+              <span className="material-symbols-outlined animate-spin">
+                progress_activity
+              </span>
+            ) : (
+              "Reset Pass"
+            )}
+          </Button>
+        )}
+
         {miembroId !== currentUserId && (
           <Button
             className="px-4 py-2 text-sm bg-red-100 text-red-800 hover:bg-red-200"
             onClick={() => onRemove(miembroId)}
-            disabled={isLoading}
+            disabled={isLoading || isGeneratingCode}
           >
             {isLoading ? (
               <span className="material-symbols-outlined animate-spin">

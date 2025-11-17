@@ -7,6 +7,8 @@ import {
   removerDeUnidad,
 } from "../../services/unidadService";
 import MiembroUnidadItem from "../../components/pageComponents/MiembroUnidadItem";
+import { generateResetCode } from "../../services/authService";
+import Modal from "../../components/Modal";
 
 export default function VerUnidadPage() {
   const { unidadId } = useParams();
@@ -18,6 +20,12 @@ export default function VerUnidadPage() {
   const [apiError, setApiError] = useState(null);
 
   const [removingId, setRemovingId] = useState(null);
+  const [generatingCodeId, setGeneratingCodeId] = useState(null);
+
+  const [isCodeModalOpen, setIsCodeModalOpen] = useState(false);
+  const [generatedCode, setGeneratedCode] = useState(null);
+  const [scoutForCode, setScoutForCode] = useState(null);
+  const [isCopied, setIsCopied] = useState(false);
 
   const unidadActual = user?.unidades.find((u) => u.id.toString() === unidadId);
 
@@ -52,6 +60,40 @@ export default function VerUnidadPage() {
     }
   };
 
+  const handleGenerateCode = async (miembro) => {
+    if (generatingCodeId || removingId) return;
+
+    setGeneratingCodeId(miembro.id);
+    setApiError(null);
+    setIsCopied(false);
+    try {
+      const response = await generateResetCode(miembro.id);
+
+      setGeneratedCode(response.resetCode);
+      setScoutForCode(miembro.nombre);
+
+      setIsCodeModalOpen(true);
+    } catch (error) {
+      setApiError(error.message);
+    } finally {
+      setGeneratingCodeId(null);
+    }
+  };
+  const handleCopyCode = () => {
+    if (generatedCode) {
+      navigator.clipboard.writeText(generatedCode);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsCodeModalOpen(false);
+    setGeneratedCode(null);
+    setScoutForCode(null);
+    setIsCopied(false);
+  };
+
   const renderContent = () => {
     if (loading) {
       return (
@@ -80,6 +122,8 @@ export default function VerUnidadPage() {
             currentUserId={user.id}
             onRemove={handleRemover}
             isLoading={removingId === miembro.id}
+            onGenerateCode={handleGenerateCode} // Esta prop ahora pasa 'miembro'
+            isGeneratingCode={generatingCodeId === miembro.id}
           />
         ))}
       </div>
@@ -115,6 +159,36 @@ export default function VerUnidadPage() {
         )}
 
         {renderContent()}
+
+        <Modal
+          isOpen={isCodeModalOpen}
+          onClose={handleCloseModal}
+          title={`Código para ${scoutForCode || ""}`}
+        >
+          <div className="flex flex-col items-center gap-4">
+            <p className="text-center text-gray-700">
+              Comparte este código con el scout. Expira en 1 hora.
+            </p>
+            <code className="text-4xl font-bold text-purple-800 bg-purple-100 p-4 rounded-lg tracking-widest">
+              {generatedCode}
+            </code>
+            <Button
+              className="w-full justify-center px-5 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700"
+              onClick={handleCopyCode}
+            >
+              <span className="material-symbols-outlined mr-2">
+                {isCopied ? "check" : "content_copy"}
+              </span>
+              {isCopied ? "¡Copiado!" : "Copiar Código"}
+            </Button>
+            <Button
+              className="w-full justify-center px-5 py-2 bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300"
+              onClick={handleCloseModal}
+            >
+              Cerrar
+            </Button>
+          </div>
+        </Modal>
       </div>
     </div>
   );

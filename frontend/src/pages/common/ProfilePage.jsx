@@ -1,6 +1,10 @@
 import { useAuth } from "../../contexts/AuthContext";
 import logo from "../../assets/florDeLiz.png";
 import ProfileInfoItem from "../../components/pageComponents/ProfileInfoItem";
+import { useState } from "react";
+import Button from "../../components/Button";
+import Modal from "../../components/Modal";
+import ChangePasswordForm from "../../components/pageComponents/ChangePasswordForm";
 
 const formatFecha = (fechaString) => {
   if (!fechaString) return "No especificada";
@@ -23,6 +27,7 @@ const formatFecha = (fechaString) => {
 
 export default function ProfilePage() {
   const { user } = useAuth();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (!user) {
     return (
@@ -70,13 +75,24 @@ export default function ProfilePage() {
 
       <div className="flex flex-col items-center">
         <h3 className="text-lg font-semibold text-gray-700 mb-2">Opciones</h3>
-        <button
-          className="mt-2 px-5 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 disabled:opacity-50"
-          disabled
+        <Button
+          className="mt-2 px-5 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
+          onClick={() => setIsModalOpen(true)}
         >
-          Cambiar Contraseña (Próximamente)
-        </button>
+          Cambiar Contraseña
+        </Button>
       </div>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Cambiar Contraseña"
+      >
+        <ChangePasswordForm
+          onCancel={() => setIsModalOpen(false)}
+          onSuccess={() => setIsModalOpen(false)}
+        />
+      </Modal>
     </div>
   );
 }
