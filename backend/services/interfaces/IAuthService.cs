@@ -10,4 +10,6 @@ public interface IAuthService
 
   Task<LoginResponseDto> LoginAsync(LoginDto loginDto);
   Task ChangePasswordAsync(int userId, ChangePasswordDto dto);
+  Task<ResetCodeResponseDto> GeneratePasswordResetCodeAsync(int scoutId, int dirigenteId);
+  Task ResetPasswordAsync(ResetPasswordDto dto);
 }

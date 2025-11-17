@@ -76,4 +76,46 @@ public class AuthController : ControllerBase
       return StatusCode(500, $"Ocurrió un error interno: {ex.Message}");
     }
   }
+  
+  [Authorize(Roles = "2")]
+  [HttpPost("generate-reset-code")]
+  public async Task<IActionResult> GenerateResetCode([FromBody] GenerateResetCodeDto dto)
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var dirigenteId))
+        return Unauthorized("Token de usuario inválido.");
+
+      var response = await _authService.GeneratePasswordResetCodeAsync(dto.ScoutId, dirigenteId);
+      return Ok(response);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Ocurrió un error interno: {ex.Message}");
+    }
+  }
+
+  [AllowAnonymous]
+  [HttpPost("reset-password")]
+  public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
+  {
+    try
+    {
+      await _authService.ResetPasswordAsync(dto);
+      return Ok(new { Message = "Contraseña actualizada exitosamente." });
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Ocurrió un error interno: {ex.Message}");
+    }
+  }
 }
