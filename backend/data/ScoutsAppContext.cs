@@ -1,4 +1,5 @@
 using backend.data.models;
+using backend.data.seeders;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.data;
@@ -72,6 +73,12 @@ public class ScoutsAppContext: DbContext
       new AreaCrecimiento { Id = 5, Nombre = "Espiritualidad" },
       new AreaCrecimiento { Id = 6, Nombre = "Creatividad" }
     );
+    
+    var objetivosDesdeCsv = ObjetivoEducativoCsvSeeder.GetData();
+    if (objetivosDesdeCsv.Any())
+    {
+      modelBuilder.Entity<ObjetivoEducativo>().HasData(objetivosDesdeCsv);
+    }
     
     modelBuilder.Entity<Tipo>()
       .HasMany(t => t.Permisos)

@@ -20,4 +20,11 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="data\Seeds\Objetivos.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>Objetivos.csv</Link>
+    </None>
+  </ItemGroup>
+
 </Project>
