@@ -8,4 +8,5 @@ public class PendingObjetivoDto
   public string ObjetivoDescripcion { get; set; } = string.Empty;
   public string Status { get; set; } = string.Empty;
   public string AreaNombre { get; set; } = string.Empty;
+  public DateTime FechaSeleccion { get; set; }
 }

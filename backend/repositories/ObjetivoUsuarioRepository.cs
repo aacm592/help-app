@@ -31,12 +31,13 @@ public class ObjetivoUsuarioRepository : IObjetivoUsuarioRepository
   public async Task<IEnumerable<ObjetivoUsuario>> GetPendingByScoutIdsAsync(IEnumerable<int> scoutIds)
   {
     return await _context.ObjetivosUsuario
-      .Include(ou => ou.User) 
+      .Include(ou => ou.User)
+      .ThenInclude(u => u.Profile)
       .Include(ou => ou.ObjetivoEducativo)
       .ThenInclude(o => o.AreaCrecimiento)
       .Where(ou => ou.Status == ObjetivoStatus.Pendiente)
       .Where(ou => scoutIds.Contains(ou.UsuarioId))
-      .OrderBy(ou => ou.User.Nombre)
+      .OrderBy(ou => ou.User.Profile == null ? "" : ou.User.Profile.Nombre)
       .ToListAsync();
   }
   
@@ -74,6 +75,8 @@ public class ObjetivoUsuarioRepository : IObjetivoUsuarioRepository
     return await _context.ObjetivosUsuario
       .Include(ou => ou.ObjetivoEducativo)
       .ThenInclude(o => o.AreaCrecimiento)
+      .Include(ou => ou.DirigenteAprobo)
+      .ThenInclude(d => d!.Profile)
       .Where(ou => ou.UsuarioId == usuarioId)
       .OrderBy(ou => ou.Status)
       .ThenBy(ou => ou.ObjetivoEducativo.Descripcion)
@@ -88,6 +91,8 @@ public class ObjetivoUsuarioRepository : IObjetivoUsuarioRepository
       .Include(ou => ou.ObjetivoEducativo)
       .ThenInclude(o => o.EtapaProgresion)
       .ThenInclude(e => e.Rama)
+      .Include(ou => ou.DirigenteAprobo)
+      .ThenInclude(d => d!.Profile)
       .Where(ou => ou.UsuarioId == usuarioId)
       .OrderBy(ou => ou.ObjetivoEducativo.EtapaProgresion.Rama.Id)
       .ThenBy(ou => ou.ObjetivoEducativo.EtapaProgresion.Id)

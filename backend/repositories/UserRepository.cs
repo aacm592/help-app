@@ -16,6 +16,7 @@ public class UserRepository : IUserRepository
   public async Task<User?> GetByUsernameAsync(string username)
   {
     return await _context.Users
+      .Include(u => u.Profile)
       .Include(u => u.Tipo)
       .Include(u => u.Unidades)
       .ThenInclude(un => un.Rama)
@@ -34,6 +35,7 @@ public class UserRepository : IUserRepository
   public async Task<User?> GetByIdAsync(int id)
   {
     return await _context.Users
+      .Include(u => u.Profile)
       .Include(u => u.Unidades)
       .FirstOrDefaultAsync(u => u.Id == id);
   }
@@ -41,6 +43,7 @@ public class UserRepository : IUserRepository
   public async Task<User?> GetByIdWithTipoAndUnidadesAsync(int userId)
   {
     return await _context.Users
+      .Include(u => u.Profile)
       .Include(u => u.Tipo)
       .Include(u => u.Unidades)
         .ThenInclude(un => un.Rama)
