@@ -5,25 +5,7 @@ import { useState } from "react";
 import Button from "../../components/Button";
 import Modal from "../../components/Modal";
 import ChangePasswordForm from "../../components/pageComponents/ChangePasswordForm";
-
-const formatFecha = (fechaString) => {
-  if (!fechaString) return "No especificada";
-  try {
-    const date = new Date(fechaString);
-    if (isNaN(date.getTime())) {
-      throw new Error("Fecha inválida");
-    }
-    return date.toLocaleDateString("es-ES", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      timeZone: "UTC",
-    });
-  } catch (error) {
-    console.error("Error formateando fecha:", error);
-    return fechaString;
-  }
-};
+import { formatFecha } from "../../utils/dateFormatter";
 
 export default function ProfilePage() {
   const { user } = useAuth();
