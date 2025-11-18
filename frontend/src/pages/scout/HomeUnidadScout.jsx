@@ -1,5 +1,4 @@
 import Button from "../../components/Button";
-import SalirUnidadButton from "../../components/pageComponents/SalirUnidadButton";
 import UnidadInfoBox from "../../components/pageComponents/UnidadInfoBox";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -38,12 +37,6 @@ export default function HomeUnidadScout() {
           <span className={iconClass}>workspace_premium</span>
           <p className={textClass}>Especialidades</p>
         </Button>
-
-        <SalirUnidadButton
-          unidadId={unidad.id}
-          onSuccessRedirectPath="/home"
-          className="mt-4"
-        />
       </div>
     </div>
   );

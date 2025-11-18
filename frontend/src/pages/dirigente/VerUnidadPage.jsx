@@ -45,14 +45,21 @@ export default function VerUnidadPage() {
     cargarMiembros();
   }, [unidadId]);
 
-  const handleRemover = async (usuarioARemoverId) => {
+  const handleRemover = async (miembroARemover) => {
     if (removingId) return;
 
-    setRemovingId(usuarioARemoverId);
+    const confirmado = window.confirm(
+      `¿Estás seguro de que quieres sacar a ${miembroARemover.nombre} de la unidad?`
+    );
+    if (!confirmado) {
+      return;
+    }
+
+    setRemovingId(miembroARemover.id);
     setApiError(null);
     try {
-      await removerDeUnidad(unidadId, usuarioARemoverId);
-      setMiembros((prev) => prev.filter((m) => m.id !== usuarioARemoverId));
+      await removerDeUnidad(unidadId, miembroARemover.id);
+      setMiembros((prev) => prev.filter((m) => m.id !== miembroARemover.id));
     } catch (error) {
       setApiError(error.message);
     } finally {
@@ -122,7 +129,7 @@ export default function VerUnidadPage() {
             currentUserId={user.id}
             onRemove={handleRemover}
             isLoading={removingId === miembro.id}
-            onGenerateCode={handleGenerateCode} // Esta prop ahora pasa 'miembro'
+            onGenerateCode={handleGenerateCode}
             isGeneratingCode={generatingCodeId === miembro.id}
           />
         ))}
