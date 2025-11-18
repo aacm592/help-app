@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Button from "../Button";
 import { validarObjetivo } from "../../services/objetivosService";
+import { formatFecha } from "../../utils/dateFormatter";
 
 export default function ObjetivoPendienteItem({
   pendiente,
@@ -15,6 +16,7 @@ export default function ObjetivoPendienteItem({
     objetivoId,
     objetivoDescripcion,
     areaNombre,
+    fechaSeleccion, // <-- NUEVO DATO
   } = pendiente;
 
   const handleAccion = async (accionFn) => {
@@ -41,6 +43,10 @@ export default function ObjetivoPendienteItem({
           <p className="text-lg text-gray-800">{objetivoDescripcion}</p>
           <p className="text-sm text-gray-600 mt-1">
             Solicitado por: <span className="font-medium">{nombreScout}</span>
+          </p>
+
+          <p className="text-xs text-gray-500 mt-2">
+            Seleccionado: {formatFecha(fechaSeleccion, "short") || "N/A"}
           </p>
         </div>
 

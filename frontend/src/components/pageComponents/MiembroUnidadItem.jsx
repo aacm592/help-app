@@ -57,7 +57,7 @@ export default function MiembroUnidadItem({
         {miembroId !== currentUserId && (
           <Button
             className="px-4 py-2 text-sm bg-red-100 text-red-800 hover:bg-red-200"
-            onClick={() => onRemove(miembroId)}
+            onClick={() => onRemove(miembro)}
             disabled={isLoading || isGeneratingCode}
           >
             {isLoading ? (

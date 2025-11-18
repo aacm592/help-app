@@ -71,7 +71,7 @@ export default function LoginComponent() {
             label="Nombre de usuario"
             name="nombreUsuario"
             type="text"
-            placeholder="Usuario123"
+            placeholder="Ej: Usuario123"
           />
 
           <Input

@@ -138,7 +138,7 @@ export default function CreateUnidadPage() {
             label="Nombre de la Unidad"
             name="nombre"
             type="text"
-            placeholder="Manada de Lobatos 'Aullido'"
+            placeholder="Ej: Baloo, Felinos, etc..."
           />
 
           <SelectInput

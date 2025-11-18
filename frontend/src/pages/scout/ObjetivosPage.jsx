@@ -9,6 +9,8 @@ import {
 } from "../../services/objetivosService";
 import ObjetivoItem from "../../components/pageComponents/ObjetivoItem";
 
+const TODOS = "TODOS";
+
 export default function ObjetivosPage() {
   const { user } = useAuth();
   const nav = useNavigate();
@@ -16,12 +18,14 @@ export default function ObjetivosPage() {
 
   const [etapas, setEtapas] = useState([]);
   const [selectedEtapaId, setSelectedEtapaId] = useState("");
+  const [areasDisponibles, setAreasDisponibles] = useState([]);
+  const [selectedAreaNombre, setSelectedAreaNombre] = useState("");
+
   const [objetivos, setObjetivos] = useState([]);
 
   const [loadingEtapas, setLoadingEtapas] = useState(true);
   const [loadingObjetivos, setLoadingObjetivos] = useState(false);
   const [selectingObjetivoId, setSelectingObjetivoId] = useState(null);
-
   const [apiError, setApiError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
@@ -50,16 +54,28 @@ export default function ObjetivosPage() {
   useEffect(() => {
     if (!selectedEtapaId) {
       setObjetivos([]);
+      setAreasDisponibles([]);
+      setSelectedAreaNombre("");
       return;
     }
 
-    const cargarObjetivos = async () => {
+    const cargarObjetivosYAreas = async () => {
       setLoadingObjetivos(true);
       setApiError(null);
       setSuccessMessage(null);
+      setAreasDisponibles([]);
+      setSelectedAreaNombre("");
+
       try {
         const objetivosData = await getObjetivosPorEtapa(selectedEtapaId);
         setObjetivos(objetivosData);
+
+        const areasUnicas = [
+          ...new Set(objetivosData.map((o) => o.areaCrecimientoNombre)),
+        ];
+
+        setAreasDisponibles([TODOS, ...areasUnicas.sort()]);
+        setSelectedAreaNombre(TODOS);
       } catch (error) {
         setApiError(error.message);
       } finally {
@@ -67,10 +83,13 @@ export default function ObjetivosPage() {
       }
     };
 
-    cargarObjetivos();
+    cargarObjetivosYAreas();
   }, [selectedEtapaId]);
 
   const objetivosAgrupados = useMemo(() => {
+    if (selectedAreaNombre !== TODOS || objetivos.length === 0) {
+      return {};
+    }
     return objetivos.reduce((grupos, objetivo) => {
       const area = objetivo.areaCrecimientoNombre;
       if (!grupos[area]) {
@@ -79,7 +98,16 @@ export default function ObjetivosPage() {
       grupos[area].push(objetivo);
       return grupos;
     }, {});
-  }, [objetivos]);
+  }, [objetivos, selectedAreaNombre]);
+
+  const objetivosFiltrados = useMemo(() => {
+    if (selectedAreaNombre === TODOS || selectedAreaNombre === "") {
+      return [];
+    }
+    return objetivos.filter(
+      (o) => o.areaCrecimientoNombre === selectedAreaNombre
+    );
+  }, [objetivos, selectedAreaNombre]);
 
   const handleElegirObjetivo = async (objetivoId) => {
     setSelectingObjetivoId(objetivoId);
@@ -136,29 +164,55 @@ export default function ObjetivosPage() {
           </div>
         )}
 
-        <div className="mb-6">
-          <label
-            htmlFor="etapa-select"
-            className="block mb-2 text-lg font-medium text-gray-900"
-          >
-            Selecciona tu Etapa de Progresión
-          </label>
-          <select
-            id="etapa-select"
-            value={selectedEtapaId}
-            onChange={(e) => setSelectedEtapaId(e.target.value)}
-            disabled={loadingEtapas}
-            className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
-          >
-            <option value="" disabled>
-              {loadingEtapas ? "Cargando etapas..." : "Elige una etapa"}
-            </option>
-            {etapas.map((etapa) => (
-              <option key={etapa.id} value={etapa.id}>
-                {etapa.nombre}
+        <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label
+              htmlFor="etapa-select"
+              className="block mb-2 text-lg font-medium text-gray-900"
+            >
+              1. Selecciona tu Etapa
+            </label>
+            <select
+              id="etapa-select"
+              value={selectedEtapaId}
+              onChange={(e) => setSelectedEtapaId(e.target.value)}
+              disabled={loadingEtapas}
+              className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
+            >
+              <option value="" disabled>
+                {loadingEtapas ? "Cargando etapas..." : "Elige una etapa"}
               </option>
-            ))}
-          </select>
+              {etapas.map((etapa) => (
+                <option key={etapa.id} value={etapa.id}>
+                  {etapa.nombre}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label
+              htmlFor="area-select"
+              className="block mb-2 text-lg font-medium text-gray-900"
+            >
+              2. Elige un Área
+            </label>
+            <select
+              id="area-select"
+              value={selectedAreaNombre}
+              onChange={(e) => setSelectedAreaNombre(e.target.value)}
+              disabled={!selectedEtapaId || loadingObjetivos}
+              className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
+            >
+              {loadingObjetivos && <option value="">Cargando...</option>}
+              {!loadingObjetivos &&
+                areasDisponibles.map((areaNombre) => (
+                  <option key={areaNombre} value={areaNombre}>
+                    {areaNombre}
+                  </option>
+                ))}
+            </select>
+          </div>
         </div>
 
         <div className="space-y-8">
@@ -168,32 +222,56 @@ export default function ObjetivosPage() {
                 progress_activity
               </span>
             </div>
-          ) : (
-            Object.keys(objetivosAgrupados).map((areaNombre) => (
-              <section key={areaNombre}>
-                <h2 className="text-2xl font-bold text-purple-800 mb-4 border-b-2 border-purple-200 pb-2">
-                  {areaNombre}
-                </h2>
-                <div className="space-y-4">
-                  {objetivosAgrupados[areaNombre].map((objetivo) => (
-                    <ObjetivoItem
-                      key={objetivo.id}
-                      objetivo={objetivo}
-                      onSelect={handleElegirObjetivo}
-                      isLoading={selectingObjetivoId === objetivo.id}
-                    />
-                  ))}
-                </div>
-              </section>
-            ))
-          )}
-
-          {!loadingObjetivos && selectedEtapaId && objetivos.length === 0 && (
-            <p className="text-center text-gray-600 text-lg p-6 bg-gray-100 rounded-lg">
-              ¡Felicidades! Parece que ya has seleccionado todos los objetivos
-              de esta etapa.
-            </p>
-          )}
+          ) : selectedAreaNombre === TODOS ? (
+            <>
+              {objetivos.length === 0 && selectedEtapaId ? (
+                <p className="text-center text-gray-600 text-lg p-6 bg-gray-100 rounded-lg">
+                  ¡Felicidades! Parece que ya has seleccionado todos los
+                  objetivos de esta etapa.
+                </p>
+              ) : (
+                Object.keys(objetivosAgrupados).map((areaNombre) => (
+                  <section key={areaNombre}>
+                    <h2 className="text-2xl font-bold text-purple-800 mb-4 border-b-2 border-purple-200 pb-2">
+                      {areaNombre}
+                    </h2>
+                    <div className="space-y-4">
+                      {objetivosAgrupados[areaNombre].map((objetivo) => (
+                        <ObjetivoItem
+                          key={objetivo.id}
+                          objetivo={objetivo}
+                          onSelect={handleElegirObjetivo}
+                          isLoading={selectingObjetivoId === objetivo.id}
+                        />
+                      ))}
+                    </div>
+                  </section>
+                ))
+              )}
+            </>
+          ) : selectedAreaNombre ? (
+            <section>
+              <h2 className="text-2xl font-bold text-purple-800 mb-4 border-b-2 border-purple-200 pb-2">
+                Objetivos de {selectedAreaNombre}
+              </h2>
+              <div className="space-y-4">
+                {objetivosFiltrados.map((objetivo) => (
+                  <ObjetivoItem
+                    key={objetivo.id}
+                    objetivo={objetivo}
+                    onSelect={handleElegirObjetivo}
+                    isLoading={selectingObjetivoId === objetivo.id}
+                  />
+                ))}
+                {objetivosFiltrados.length === 0 && (
+                  <p className="text-center text-gray-600 text-lg p-6 bg-gray-100 rounded-lg">
+                    ¡Felicidades! Parece que ya has seleccionado todos los
+                    objetivos de esta área.
+                  </p>
+                )}
+              </div>
+            </section>
+          ) : null}
         </div>
       </div>
     </div>

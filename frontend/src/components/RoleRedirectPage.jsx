@@ -15,7 +15,7 @@ export default function RoleRedirectPage() {
           if (tieneUnidades) {
             navigate("/scout/home", { replace: true });
           } else {
-            navigate("/unirse-unidad", { replace: true });
+            navigate("/scout", { replace: true });
           }
           break;
 

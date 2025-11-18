@@ -65,6 +65,8 @@ function App() {
 
         {/* --- Rutas para Scouts (Rol 1) --- */}
         <Route element={<RoleProtectedRoute allowedRoles={[1]} />}>
+          <Route path="/scout" element={<SelectUnidadPage />} />
+
           <Route element={<ScoutLayout />}>
             <Route path="/scout/home" element={<HomeUnidadScout />} />
             <Route path="/scout/objetivos" element={<ObjetivosPage />} />

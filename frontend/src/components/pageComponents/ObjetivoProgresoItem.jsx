@@ -1,5 +1,15 @@
+import { formatFecha } from "../../utils/dateFormatter";
+
 export default function ObjetivoProgresoItem({ objetivo }) {
-  const esCumplido = objetivo.status === "Cumplido";
+  const {
+    status,
+    objetivoDescripcion,
+    fechaSeleccion,
+    fechaAprobacion,
+    dirigenteAproboNombre,
+  } = objetivo;
+
+  const esCumplido = status === "Cumplido";
 
   const statusClass = esCumplido
     ? "text-green-600 bg-green-100"
@@ -16,12 +26,33 @@ export default function ObjetivoProgresoItem({ objetivo }) {
         {icon}
       </span>
       <div className="flex-1">
-        <p className="text-gray-800">{objetivo.objetivoDescripcion}</p>
+        <p className="text-gray-800">{objetivoDescripcion}</p>
         <p
           className={`text-sm font-semibold ${statusClass} inline-block px-2 py-0.5 rounded-md mt-1`}
         >
-          {objetivo.status}
+          {status}
         </p>
+        <div className="text-xs text-gray-500 mt-2 space-y-1">
+          <p>
+            <span className="font-semibold">Seleccionado:</span>{" "}
+            {formatFecha(fechaSeleccion, "short") || "N/A"}
+          </p>
+
+          {esCumplido && fechaAprobacion && (
+            <>
+              <p>
+                <span className="font-semibold">Aprobado:</span>{" "}
+                {formatFecha(fechaAprobacion, "short")}
+              </p>
+              {dirigenteAproboNombre && (
+                <p>
+                  <span className="font-semibold">Por:</span>{" "}
+                  {dirigenteAproboNombre}
+                </p>
+              )}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
