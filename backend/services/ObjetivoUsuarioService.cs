@@ -57,7 +57,8 @@ public class ObjetivoUsuarioService: IObjetivoUsuarioService
     {
       UsuarioId = usuarioId,
       ObjetivoEducativoId = objetivoId,
-      Status = ObjetivoStatus.Pendiente 
+      Status = ObjetivoStatus.Pendiente,
+      FechaSeleccion = DateTime.UtcNow
     };
 
     var relacionGuardada = await _objetivoUsuarioRepository.AddAsync(nuevaRelacion);
@@ -117,6 +118,8 @@ public class ObjetivoUsuarioService: IObjetivoUsuarioService
       throw new ApplicationException("No tienes permiso para validar objetivos de este Scout, ya que no pertenecen a tu misma unidad.");
 
     objetivoUsuario.Status = ObjetivoStatus.Cumplido;
+    objetivoUsuario.FechaAprobacion = DateTime.UtcNow;
+    objetivoUsuario.DirigenteAproboId = dirigenteId;
 
     await _objetivoUsuarioRepository.UpdateAsync(objetivoUsuario);
 
@@ -209,7 +212,7 @@ public class ObjetivoUsuarioService: IObjetivoUsuarioService
               {
                 Id = grupoArea.Key.Id,
                 Nombre = grupoArea.Key.Nombre,
-                Objetivos = _mapper.Map<List<ObjetivoUsuarioResponseDto>>(grupoArea.ToList())
+                Objetivos = _mapper.Map<List<ObjetivoUsuarioResponseDto>>(grupoArea.ToList()),
               })
               .OrderBy(a => a.Nombre)
               .ToList()

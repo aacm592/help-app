@@ -6,9 +6,6 @@ public class User
 {
   public int Id { get; set; }
 
-  [MaxLength(60)] public string Nombre { get; set; } = string.Empty;
-  public DateTime FechaNacimiento { get; set; }
-
   [MaxLength(50)] public string NombreUsuario { get; set; } = string.Empty;
 
   [MaxLength(80)] public string Contrasena { get; set; } = string.Empty;
@@ -23,4 +20,6 @@ public class User
   public string? PasswordResetToken { get; set; }
 
   public DateTime? PasswordResetTokenExpiry { get; set; }
+  
+  public UserProfile? Profile { get; set; }
 }

@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using backend.enums;
 
 namespace backend.data.models;
@@ -11,4 +12,13 @@ public class ObjetivoUsuario
   public ObjetivoEducativo ObjetivoEducativo { get; set; } = null!;
 
   public ObjetivoStatus Status { get; set; }
+  
+  public DateTime FechaSeleccion { get; set; } 
+  
+  public DateTime? FechaAprobacion { get; set; }
+
+  public int? DirigenteAproboId { get; set; }
+
+  [ForeignKey("DirigenteAproboId")]
+  public User? DirigenteAprobo { get; set; }
 }

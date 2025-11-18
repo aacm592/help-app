@@ -7,4 +7,8 @@ public class ObjetivoUsuarioResponseDto
   public string Status { get; set; } = string.Empty;
   public string ObjetivoDescripcion { get; set; } = string.Empty;
   public string AreaNombre { get; set; } = string.Empty;
+  public DateTime FechaSeleccion { get; set; }
+  public DateTime? FechaAprobacion { get; set; }
+  public int? DirigenteAproboId { get; set; }
+  public string? DirigenteAproboNombre { get; set; }
 }

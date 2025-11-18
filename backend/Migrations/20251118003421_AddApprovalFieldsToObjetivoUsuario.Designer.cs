@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using backend.data;
@@ -11,9 +12,11 @@ using backend.data;
 namespace backend.Migrations
 {
     [DbContext(typeof(ScoutsAppContext))]
-    partial class ScoutsAppContextModelSnapshot : ModelSnapshot
+    [Migration("20251118003421_AddApprovalFieldsToObjetivoUsuario")]
+    partial class AddApprovalFieldsToObjetivoUsuario
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -436,6 +439,14 @@ namespace backend.Migrations
                         .HasMaxLength(80)
                         .HasColumnType("character varying(80)");
 
+                    b.Property<DateTime>("FechaNacimiento")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)");
+
                     b.Property<string>("NombreUsuario")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -456,24 +467,6 @@ namespace backend.Migrations
                     b.HasIndex("TipoId");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("backend.data.models.UserProfile", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("FechaNacimiento")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("character varying(60)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserProfiles");
                 });
 
             modelBuilder.Entity("PermisoTipo", b =>
@@ -551,8 +544,7 @@ namespace backend.Migrations
                 {
                     b.HasOne("backend.data.models.User", "DirigenteAprobo")
                         .WithMany()
-                        .HasForeignKey("DirigenteAproboId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("DirigenteAproboId");
 
                     b.HasOne("backend.data.models.ObjetivoEducativo", "ObjetivoEducativo")
                         .WithMany("UsuariosObjetivo")
@@ -603,17 +595,6 @@ namespace backend.Migrations
                     b.Navigation("Tipo");
                 });
 
-            modelBuilder.Entity("backend.data.models.UserProfile", b =>
-                {
-                    b.HasOne("backend.data.models.User", "User")
-                        .WithOne("Profile")
-                        .HasForeignKey("backend.data.models.UserProfile", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("backend.data.models.AreaCrecimiento", b =>
                 {
                     b.Navigation("ObjetivosEducativos");
@@ -654,8 +635,6 @@ namespace backend.Migrations
             modelBuilder.Entity("backend.data.models.User", b =>
                 {
                     b.Navigation("ObjetivosUsuario");
-
-                    b.Navigation("Profile");
                 });
 #pragma warning restore 612, 618
         }

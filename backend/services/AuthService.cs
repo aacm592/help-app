@@ -50,14 +50,21 @@ public class AuthService: IAuthService
       throw new ApplicationException($"Error: El tipo de usuario '{tipoNombre}' no está configurado.");
 
     string hashedPassword = BCrypt.Net.BCrypt.HashPassword(registerDto.Contrasena);
+    
     var newUser = new User
     {
-      Nombre = registerDto.Nombre,
-      FechaNacimiento = fechaNacimientoUtc,
       NombreUsuario = registerDto.NombreUsuario,
       Contrasena = hashedPassword,
       TipoId = tipo.Id
     };
+
+    var userProfile = new UserProfile
+    {
+      Nombre = registerDto.Nombre,
+      FechaNacimiento = fechaNacimientoUtc
+    };
+
+    newUser.Profile = userProfile;
 
     var userGuardado = await _userRepository.AddAsync(newUser);
 

@@ -20,6 +20,7 @@ public class ScoutsAppContext: DbContext
   public DbSet<AreaCrecimiento> AreasCrecimiento { get; set; }
   public DbSet<EtapaProgresion> EtapasProgresion { get; set; }
   public DbSet<ObjetivoUsuario> ObjetivosUsuario { get; set; }
+  public DbSet<UserProfile> UserProfiles { get; set; }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
@@ -99,6 +100,16 @@ public class ScoutsAppContext: DbContext
         .HasForeignKey(ou => ou.ObjetivoEducativoId); 
       entity.Property(ou => ou.Status)
         .HasConversion<string>();
+      
+      entity.HasOne(ou => ou.DirigenteAprobo)
+        .WithMany()
+        .HasForeignKey(ou => ou.DirigenteAproboId)
+        .OnDelete(DeleteBehavior.Restrict);
     });
+    
+    modelBuilder.Entity<User>()
+      .HasOne(u => u.Profile)
+      .WithOne(p => p.User)
+      .HasForeignKey<UserProfile>(p => p.Id);
   }
 }

@@ -167,7 +167,11 @@ public class UnidadService : IUnidadService
       if (unidad.Rama == null)
         throw new ApplicationException("Error: Esta unidad no tiene una rama asignada. No se puede verificar la edad.");
 
-      var age = CalculateAge(user.FechaNacimiento);
+      if (user.Profile == null)
+        throw new ApplicationException("Error de datos: El perfil del usuario no se ha cargado o no existe.");
+      
+      var age = CalculateAge(user.Profile!.FechaNacimiento);
+      
       if (age < unidad.Rama.EdadMinima || age > unidad.Rama.EdadMaxima)
         throw new ApplicationException(
           $"Tu edad ({age} años) no está dentro del rango de edad permitido " +
