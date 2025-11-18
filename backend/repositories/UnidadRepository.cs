@@ -31,6 +31,7 @@ public class UnidadRepository: IUnidadRepository
   {
     return await _context.Unidades
       .Include(u => u.Usuarios)
+      .ThenInclude(user => user.Profile)
       .Include(u => u.Rama)
       .Include(u => u.GrupoScout)
       .FirstOrDefaultAsync(u => u.Codigo == codigo);
@@ -47,6 +48,8 @@ public class UnidadRepository: IUnidadRepository
     return await _context.Unidades
       .Include(u => u.Usuarios)
       .ThenInclude(user => user.Tipo)
+      .Include(u => u.Usuarios)
+      .ThenInclude(user => user.Profile)
       .FirstOrDefaultAsync(u => u.Id == unidadId);
   }
   
