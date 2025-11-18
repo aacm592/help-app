@@ -95,14 +95,14 @@ export default function RegisterPage() {
             label="Nombre Completo"
             name="nombre"
             type="text"
-            placeholder="Juan Pérez"
+            placeholder="Ej: Juan Pérez"
           />
 
           <Input
             label="Nombre de usuario"
             name="nombreUsuario"
             type="text"
-            placeholder="juanperez123"
+            placeholder="Ej: Juanito123"
           />
 
           <Input

@@ -91,14 +91,14 @@ export default function ResetPasswordPage() {
             label="Nombre de usuario"
             name="nombreUsuario"
             type="text"
-            placeholder="juanperez123"
+            placeholder="Ej: juanperez123"
           />
 
           <Input
             label="Código de Reseteo"
             name="resetCode"
             type="text"
-            placeholder="ABC123"
+            placeholder="Ej: ABC123"
           />
 
           <Input

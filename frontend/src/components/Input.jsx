@@ -20,8 +20,8 @@ const Input = ({ label, name, variant = "dark", className, ...rest }) => {
     : "text-sm mt-1 text-red-600";
 
   const inputVariantStyle = isDark
-    ? "bg-white text-black placeholder-gray-500 ring-purple-900 focus:ring-blue-800"
-    : "bg-gray-100 text-gray-900 placeholder-gray-500 ring-purple-500 focus:ring-blue-800";
+    ? "bg-white text-black placeholder-gray-400 ring-purple-900 focus:ring-blue-800"
+    : "bg-gray-100 text-gray-900 placeholder-gray-400 ring-purple-500 focus:ring-blue-800";
 
   return (
     <div className="w-full">
