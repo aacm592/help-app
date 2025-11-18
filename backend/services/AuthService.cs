@@ -1,9 +1,11 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using AutoMapper;
 using backend.data.models;
 using backend.dtos.auth;
+using backend.dtos.request;
 using backend.dtos.responses;
 using backend.repositories.interfaces;
 using backend.services.interfaces;
@@ -28,6 +30,9 @@ public class AuthService: IAuthService
     _configuration = configuration;
     _mapper = mapper;
   }
+  
+  private static readonly char[] CodigoChars =
+    "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789".ToCharArray();
   
   public async Task<UserResponseDto> RegisterAsync(RegisterDto registerDto)
   {
@@ -77,7 +82,74 @@ public class AuthService: IAuthService
     { 
       Token = token, 
       User = userResponse
-    };  }
+    };  
+  }
+  
+  public async Task ChangePasswordAsync(int userId, ChangePasswordDto dto)
+  {
+    var user = await _userRepository.GetByIdAsync(userId);
+    if (user == null)
+      throw new ApplicationException("Usuario no encontrado.");
+
+    bool isPasswordValid = BCrypt.Net.BCrypt.Verify(dto.ContrasenaActual, user.Contrasena);
+    if (!isPasswordValid)
+      throw new ApplicationException("La contraseña actual es incorrecta.");
+
+    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.NuevaContrasena);
+    user.Contrasena = hashedPassword;
+
+    await _userRepository.UpdateAsync(user);
+  }
+  
+  public async Task<ResetCodeResponseDto> GeneratePasswordResetCodeAsync(int scoutId, int dirigenteId)
+  {
+    var dirigente = await _userRepository.GetByIdWithTipoAndUnidadesAsync(dirigenteId);
+    if (dirigente == null || dirigente.Tipo.Nombre != "Dirigente")
+      throw new ApplicationException("Acción no autorizada. No eres un Dirigente.");
+
+    var scout = await _userRepository.GetByIdWithTipoAndUnidadesAsync(scoutId);
+    if (scout == null)
+      throw new ApplicationException("Scout no encontrado.");
+
+    if (scout.Tipo.Nombre != "Scout")
+      throw new ApplicationException("Solo se pueden generar códigos para usuarios de tipo 'Scout'.");
+
+    var dirigenteUnidadIds = dirigente.Unidades.Select(u => u.Id).ToHashSet();
+    var scoutEstaEnUnidadDelDirigente = scout.Unidades.Any(u => dirigenteUnidadIds.Contains(u.Id));
+
+    if (!scoutEstaEnUnidadDelDirigente)
+      throw new ApplicationException("No tienes permiso para generar un código para este Scout, ya que no pertenece a tus unidades.");
+
+    string resetCode = GenerateRandomCode();
+    
+    scout.PasswordResetToken = resetCode;
+    scout.PasswordResetTokenExpiry = DateTime.UtcNow.AddHours(1);
+
+    await _userRepository.UpdateAsync(scout);
+
+    return new ResetCodeResponseDto { ResetCode = resetCode };
+  }
+
+  public async Task ResetPasswordAsync(ResetPasswordDto dto)
+  {
+    var user = await _userRepository.GetByUsernameAsync(dto.NombreUsuario);
+    
+    if (user == null)
+      throw new ApplicationException("Usuario no encontrado.");
+
+    if (user.PasswordResetToken != dto.ResetCode)
+      throw new ApplicationException("El código de reseteo es incorrecto.");
+
+    if (user.PasswordResetTokenExpiry == null || user.PasswordResetTokenExpiry.Value < DateTime.UtcNow)
+      throw new ApplicationException("El código de reseteo ha expirado.");
+
+    user.Contrasena = BCrypt.Net.BCrypt.HashPassword(dto.NuevaContrasena);
+    
+    user.PasswordResetToken = null;
+    user.PasswordResetTokenExpiry = null;
+
+    await _userRepository.UpdateAsync(user);
+  }
 
   private int CalculateAge(DateTime dateOfBirth)
   {
@@ -112,5 +184,10 @@ public class AuthService: IAuthService
     };
     var token = tokenHandler.CreateToken(tokenDescriptor);
     return tokenHandler.WriteToken(token);
+  }
+  
+  private string GenerateRandomCode(int length = 6)
+  {
+    return RandomNumberGenerator.GetString(CodigoChars, length);
   }
 }

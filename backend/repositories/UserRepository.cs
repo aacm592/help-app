@@ -48,4 +48,10 @@ public class UserRepository : IUserRepository
         .ThenInclude(un => un.GrupoScout)
       .FirstOrDefaultAsync(u => u.Id == userId);
   }
+  
+  public async Task UpdateAsync(User user)
+  {
+    _context.Users.Update(user);
+    await _context.SaveChangesAsync();
+  }
 }

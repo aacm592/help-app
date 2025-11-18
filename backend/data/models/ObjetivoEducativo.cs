@@ -6,7 +6,7 @@ public class ObjetivoEducativo
 {
   public int Id { get; set; }
 
-  [MaxLength(100)]
+  [MaxLength(500)]
   public string Descripcion { get; set; } = string.Empty;
 
   public int AreaCrecimientoId { get; set; }

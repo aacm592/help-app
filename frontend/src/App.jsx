@@ -18,6 +18,7 @@ import ScoutLayout from "./components/nav/ScoutLayout";
 import MiProgresoPage from "./pages/scout/MiProgresoPage";
 import VerProgresoScoutPage from "./pages/dirigente/VerProgresoScoutPage";
 import ScrollToTop from "./components/ScrollToTop";
+import ResetPasswordPage from "./pages/login/ResetPasswordPage";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
 
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={<RoleRedirectPage />} />

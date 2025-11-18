@@ -26,6 +26,12 @@ function MainPage() {
           <span className={iconClass}>person_add</span>
           <p className={textClass}>Registrarse</p>
         </Button>
+        <button
+          onClick={() => navigate("/reset-password")}
+          className="text-white text-sm mt-6 hover:text-amber-300"
+        >
+          ¿Olvidaste tu contraseña?
+        </button>
       </div>
     </div>
   );

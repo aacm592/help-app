@@ -1,5 +1,8 @@
+using System.Security.Claims;
 using backend.dtos.auth;
+using backend.dtos.request;
 using backend.services.interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.controllers;
@@ -40,6 +43,71 @@ public class AuthController : ControllerBase
     {
       var loginResponse = await _authService.LoginAsync(loginDto);
       return Ok(loginResponse);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Ocurrió un error interno: {ex.Message}");
+    }
+  }
+  
+  [Authorize]
+  [HttpPost("change-password")]
+  public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto loginDto)
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      await _authService.ChangePasswordAsync(userId, loginDto);
+      return Ok(new { Message = "Contraseña actualizada exitosamente." });
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Ocurrió un error interno: {ex.Message}");
+    }
+  }
+  
+  [Authorize(Roles = "2")]
+  [HttpPost("generate-reset-code")]
+  public async Task<IActionResult> GenerateResetCode([FromBody] GenerateResetCodeDto dto)
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var dirigenteId))
+        return Unauthorized("Token de usuario inválido.");
+
+      var response = await _authService.GeneratePasswordResetCodeAsync(dto.ScoutId, dirigenteId);
+      return Ok(response);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Ocurrió un error interno: {ex.Message}");
+    }
+  }
+
+  [AllowAnonymous]
+  [HttpPost("reset-password")]
+  public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
+  {
+    try
+    {
+      await _authService.ResetPasswordAsync(dto);
+      return Ok(new { Message = "Contraseña actualizada exitosamente." });
     }
     catch (ApplicationException ex)
     {
