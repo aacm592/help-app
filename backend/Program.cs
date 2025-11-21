@@ -13,9 +13,24 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
-var connectionString = config.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ScoutsAppContext>(options =>
-  options.UseNpgsql(connectionString));
+var host = config["ConnectionStrings__DefaultConnection__Host"];
+var db = config["ConnectionStrings__DefaultConnection__Database"];
+var user = config["ConnectionStrings__DefaultConnection__Username"];
+var pass = config["ConnectionStrings__DefaultConnection__Password"];
+var port = config["ConnectionStrings__DefaultConnection__Port"];
+
+if (host != null && db != null && user != null && pass != null && port != null)
+{
+  var finalConnectionString = $"Host={host};Port={port};Database={db};Username={user};Password={pass}";
+  builder.Services.AddDbContext<ScoutsAppContext>(options =>
+    options.UseNpgsql(finalConnectionString));
+}
+else
+{
+  var connectionString = config.GetConnectionString("DefaultConnection");
+  builder.Services.AddDbContext<ScoutsAppContext>(options =>
+    options.UseNpgsql(connectionString));
+}
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITipoRepository, TipoRepository>();
