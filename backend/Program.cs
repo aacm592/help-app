@@ -40,8 +40,8 @@ builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddCors(options =>
 {
-  options.AddPolicy("AllowLocalhost", 
-    builder => builder.WithOrigins("http://localhost:5173", "http://localhost:5174", 
+  options.AddPolicy("AllowLocalhost",
+    builder => builder.WithOrigins("http://localhost:5173", "http://localhost:5174",
         "https://localhost:5173", "https://localhost:5174")
       .AllowAnyMethod()
       .AllowAnyHeader());
@@ -57,9 +57,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
       ValidateAudience = true,
       ValidateLifetime = true,
       ValidateIssuerSigningKey = true,
-      ValidIssuer = config["Jwt:Issuer"],
-      ValidAudience = config["Jwt:Audience"],
-      IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]!))
+      ValidIssuer = config["Jwt:Issuer"] ?? config["Jwt__Issuer"],
+      ValidAudience = config["Jwt:Audience"] ?? config["Jwt__Audience"],
+      IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+        config["Jwt:Key"]! ?? config["Jwt__Key"]!
+      ))
     }; 
   });
 
@@ -101,7 +103,7 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-  app.UseSwagger(); 
+  app.UseSwagger();
   app.UseSwaggerUI();
 }
 
