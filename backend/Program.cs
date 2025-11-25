@@ -49,31 +49,17 @@ builder.Services.AddScoped<IObjetivoUsuarioService, ObjetivoUsuarioService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
-var extraFrontendOrigin = config["FrontendOrigin"];
-
 builder.Services.AddCors(options =>
 {
   options.AddPolicy("DefaultCors", policy =>
   {
-    var origins = new List<string>
-      {
-            "http://localhost:5173",
-            "http://localhost:5174",
-            "https://localhost:5173",
-            "https://localhost:5174"
-      };
-
-    if (!string.IsNullOrWhiteSpace(extraFrontendOrigin))
-    {
-      origins.Add(extraFrontendOrigin);
-    }
-
     policy
-          .WithOrigins(origins.ToArray())
-          .AllowAnyMethod()
-          .AllowAnyHeader();
+      .AllowAnyOrigin()
+      .AllowAnyMethod()
+      .AllowAnyHeader();
   });
 });
+
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
   .AddJwtBearer(options =>
