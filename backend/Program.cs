@@ -13,24 +13,20 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
-var host = config["ConnectionStrings__DefaultConnection__Host"];
-var db = config["ConnectionStrings__DefaultConnection__Database"];
-var user = config["ConnectionStrings__DefaultConnection__Username"];
-var pass = config["ConnectionStrings__DefaultConnection__Password"];
-var port = config["ConnectionStrings__DefaultConnection__Port"];
+var connectionString =
+    config.GetConnectionString("DefaultConnection")
+    ?? config["ConnectionStrings__DefaultConnection"];
 
-if (host != null && db != null && user != null && pass != null && port != null)
+if (string.IsNullOrWhiteSpace(connectionString))
 {
-  var finalConnectionString = $"Host={host};Port={port};Database={db};Username={user};Password={pass}";
-  builder.Services.AddDbContext<ScoutsAppContext>(options =>
-    options.UseNpgsql(finalConnectionString));
+  throw new InvalidOperationException(
+      "No se encontró la cadena de conexión 'DefaultConnection'. " +
+      "Configúrala en appsettings.json o en la variable de entorno ConnectionStrings__DefaultConnection."
+  );
 }
-else
-{
-  var connectionString = config.GetConnectionString("DefaultConnection");
-  builder.Services.AddDbContext<ScoutsAppContext>(options =>
+
+builder.Services.AddDbContext<ScoutsAppContext>(options =>
     options.UseNpgsql(connectionString));
-}
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITipoRepository, TipoRepository>();
@@ -53,18 +49,34 @@ builder.Services.AddScoped<IObjetivoUsuarioService, ObjetivoUsuarioService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
+var extraFrontendOrigin = config["FrontendOrigin"];
+
 builder.Services.AddCors(options =>
 {
-  options.AddPolicy("AllowLocalhost",
-    builder => builder.WithOrigins("http://localhost:5173", "http://localhost:5174",
-        "https://localhost:5173", "https://localhost:5174")
-      .AllowAnyMethod()
-      .AllowAnyHeader());
+  options.AddPolicy("DefaultCors", policy =>
+  {
+    var origins = new List<string>
+      {
+            "http://localhost:5173",
+            "http://localhost:5174",
+            "https://localhost:5173",
+            "https://localhost:5174"
+      };
+
+    if (!string.IsNullOrWhiteSpace(extraFrontendOrigin))
+    {
+      origins.Add(extraFrontendOrigin);
+    }
+
+    policy
+          .WithOrigins(origins.ToArray())
+          .AllowAnyMethod()
+          .AllowAnyHeader();
+  });
 });
 
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-  .AddJwtBearer(options => 
+  .AddJwtBearer(options =>
   {
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -75,16 +87,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
       ValidIssuer = config["Jwt:Issuer"] ?? config["Jwt__Issuer"],
       ValidAudience = config["Jwt:Audience"] ?? config["Jwt__Audience"],
       IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-        config["Jwt:Key"]! ?? config["Jwt__Key"]!
-      ))
-    }; 
+            config["Jwt:Key"] ?? config["Jwt__Key"]
+                ?? throw new InvalidOperationException("Jwt:Key o Jwt__Key no configurado")
+        ))
+    };
   });
 
 builder.Services.AddAuthorization();
+
 builder.Services.AddControllers()
   .AddJsonOptions(options =>
-    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
-    );
+      options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
+  );
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -100,21 +114,28 @@ builder.Services.AddSwaggerGen(options =>
   });
 
   options.AddSecurityRequirement(new OpenApiSecurityRequirement
-  {
     {
-      new OpenApiSecurityScheme
-      {
-        Reference = new OpenApiReference
         {
-          Type = ReferenceType.SecurityScheme,
-          Id = "Bearer"
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
         }
-      },
-      Array.Empty<string>()
-    }
-  });
+    });
 });
+
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+  var db = scope.ServiceProvider.GetRequiredService<ScoutsAppContext>();
+  db.Database.Migrate();
+}
 
 if (app.Environment.IsDevelopment())
 {
@@ -124,9 +145,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowLocalhost");
+app.UseCors("DefaultCors");
 
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
+
 app.Run();
