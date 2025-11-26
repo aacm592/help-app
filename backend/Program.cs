@@ -25,6 +25,8 @@ if (string.IsNullOrWhiteSpace(connectionString))
   );
 }
 
+var frontendOrigin = config["FrontendOrigin"];
+
 builder.Services.AddDbContext<ScoutsAppContext>(options =>
     options.UseNpgsql(connectionString));
 
@@ -53,8 +55,7 @@ builder.Services.AddCors(options =>
 {
   options.AddPolicy("DefaultCors", policy =>
   {
-    policy
-      .AllowAnyOrigin()
+    policy.SetIsOriginAllowed(origin => new Uri(origin).Host == frontendOrigin)
       .AllowAnyMethod()
       .AllowAnyHeader();
   });
@@ -129,7 +130,7 @@ if (app.Environment.IsDevelopment())
   app.UseSwaggerUI();
 }
 
-app.UseRouting();
+app.UseHttpsRedirection();
 
 app.UseCors("DefaultCors");
 
