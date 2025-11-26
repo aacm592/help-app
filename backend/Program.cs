@@ -55,7 +55,7 @@ builder.Services.AddCors(options =>
 {
   options.AddPolicy("DefaultCors", policy =>
   {
-    policy.SetIsOriginAllowed(origin => new Uri(origin).Host == frontendOrigin)
+    policy.SetIsOriginAllowed(origin => new Uri(origin).Host == "app-asb.vercel.app")
       .AllowAnyMethod()
       .AllowAnyHeader();
   });
