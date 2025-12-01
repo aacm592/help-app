@@ -51,16 +51,6 @@ builder.Services.AddScoped<IObjetivoUsuarioService, ObjetivoUsuarioService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
-builder.Services.AddCors(options =>
-{
-  options.AddPolicy("DefaultCors", policy =>
-  {
-    policy.SetIsOriginAllowed(origin => new Uri(origin).Host == frontendOrigin)
-      .AllowAnyMethod()
-      .AllowAnyHeader();
-  });
-});
-
 var myAllowSpecificOrigins = "DefaultCors";
 builder.Services.AddCors(options =>
 {
@@ -144,13 +134,9 @@ using (var scope = app.Services.CreateScope())
   db.Database.Migrate();
 }
 
-if (app.Environment.IsDevelopment())
-{
-  app.UseSwagger();
-  app.UseSwaggerUI();
-}
 
-app.UseHttpsRedirection();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseCors(myAllowSpecificOrigins);
 
