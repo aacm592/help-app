@@ -55,7 +55,7 @@ builder.Services.AddCors(options =>
 {
   options.AddPolicy("DefaultCors", policy =>
   {
-    policy.SetIsOriginAllowed(origin => new Uri(origin).Host == "app-asb.vercel.app")
+    policy.SetIsOriginAllowed(origin => new Uri(origin).Host == frontendOrigin)
       .AllowAnyMethod()
       .AllowAnyHeader();
   });
@@ -84,8 +84,10 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddControllers()
   .AddJsonOptions(options =>
-      options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
-  );
+  {
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+  });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
