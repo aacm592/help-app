@@ -55,10 +55,28 @@ builder.Services.AddCors(options =>
 {
   options.AddPolicy("DefaultCors", policy =>
   {
-    policy.SetIsOriginAllowed(origin => new Uri(origin).Host == "app-asb.vercel.app")
+    policy.SetIsOriginAllowed(origin => new Uri(origin).Host == frontendOrigin)
       .AllowAnyMethod()
       .AllowAnyHeader();
   });
+});
+
+var myAllowSpecificOrigins = "DefaultCors";
+builder.Services.AddCors(options =>
+{
+  options.AddPolicy(name: myAllowSpecificOrigins,
+    policy =>
+    {
+      policy.SetIsOriginAllowed(origin =>
+        {
+          if (origin is null) return false;
+          return origin.Equals("https://app-asb.vercel.app") ||
+                 origin.Equals("https://localhost:5173");
+        })
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials();
+    });
 });
 
 
@@ -84,8 +102,10 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddControllers()
   .AddJsonOptions(options =>
-      options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
-  );
+  {
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+  });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -132,7 +152,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors("DefaultCors");
+app.UseCors(myAllowSpecificOrigins);
 
 app.UseAuthentication();
 app.UseAuthorization();
