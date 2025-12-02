@@ -30,6 +30,10 @@ export default function LoginComponent() {
     resolver: zodResolver(loginSchema),
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+  const icon = showPassword ? "visibility" : "visibility_off";
+  const type = showPassword ? "text" : "password";
+
   const submit = async (data) => {
     setLoginError(null);
 
@@ -77,8 +81,22 @@ export default function LoginComponent() {
           <Input
             label="Contraseña"
             name="contrasena"
-            type="password"
+            type={type}
             placeholder="••••••••"
+            rightContent={
+              <Button
+                type="button"
+                onClick={() => {
+                  setShowPassword(!showPassword);
+                }}
+                outline={false}
+                className="p-1 rounded-full text-gray-500 hover:bg-gray-200 active:text-purple-600"
+              >
+                <span className="material-symbols-outlined text-xl!">
+                  {icon}
+                </span>
+              </Button>
+            }
           />
 
           <Button dark type="submit" className={buttonClass}>

@@ -47,7 +47,7 @@ export default function SelectUnidadPage() {
             <hr className="w-3/4 md:w-1/2 lg:w-1/4 my-4 border-t-2 border-white" />
           </>
         ) : (
-          <p className="text-white">Aún no estás dentro de una manada</p>
+          <p className="text-white">Aún no estás dentro de una unidad</p>
         )}
 
         <div className="lg:w-1/4 md:w-1/2 w-3/4 flex flex-col gap-8">
