@@ -43,6 +43,10 @@ export default function RegisterPage() {
 
   const [apiError, setApiError] = useState(null);
 
+  const [showPassword, setShowPassword] = useState(false);
+  const icon = showPassword ? "visibility" : "visibility_off";
+  const type = showPassword ? "text" : "password";
+
   const nav = useNavigate();
 
   const methods = useForm({
@@ -72,6 +76,19 @@ export default function RegisterPage() {
       }
     }
   };
+
+  const passwordButton = (
+    <Button
+      type="button"
+      onClick={() => {
+        setShowPassword(!showPassword);
+      }}
+      outline={false}
+      className="p-1 rounded-full text-gray-500 hover:bg-gray-200 active:text-purple-600"
+    >
+      <span className="material-symbols-outlined text-xl!">{icon}</span>
+    </Button>
+  );
 
   return (
     <div className="flex flex-col justify-center items-center w-full py-8 bg-purple-600 min-h-screen h-full">
@@ -114,15 +131,17 @@ export default function RegisterPage() {
           <Input
             label="Contraseña"
             name="contrasena"
-            type="password"
+            type={type}
             placeholder="••••••••"
+            rightContent={passwordButton}
           />
 
           <Input
             label="Repetir Contraseña"
             name="contrasenaRepeat"
-            type="password"
+            type={type}
             placeholder="••••••••"
+            rightContent={passwordButton}
           />
 
           <div className="flex justify-between gap-10">

@@ -36,11 +36,28 @@ export default function ResetPasswordPage() {
   const [success, setSuccess] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const [showPassword, setShowPassword] = useState(false);
+  const icon = showPassword ? "visibility" : "visibility_off";
+  const type = showPassword ? "text" : "password";
+
   const nav = useNavigate();
 
   const methods = useForm({
     resolver: zodResolver(resetSchema),
   });
+
+  const passwordButton = (
+    <Button
+      type="button"
+      onClick={() => {
+        setShowPassword(!showPassword);
+      }}
+      outline={false}
+      className="p-1 rounded-full text-gray-500 hover:bg-gray-200 active:text-purple-600"
+    >
+      <span className="material-symbols-outlined text-xl!">{icon}</span>
+    </Button>
+  );
 
   const submit = async (data) => {
     setApiError(null);
@@ -104,15 +121,17 @@ export default function ResetPasswordPage() {
           <Input
             label="Nueva Contraseña"
             name="nuevaContrasena"
-            type="password"
+            type={type}
             placeholder="••••••••"
+            rightContent={passwordButton}
           />
 
           <Input
             label="Confirmar Nueva Contraseña"
             name="confirmarContrasena"
-            type="password"
+            type={type}
             placeholder="••••••••"
+            rightContent={passwordButton}
           />
 
           <div className="flex justify-between gap-10 mt-4">

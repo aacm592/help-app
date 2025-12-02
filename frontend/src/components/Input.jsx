@@ -1,6 +1,13 @@
 import { useFormContext } from "react-hook-form";
 
-const Input = ({ label, name, variant = "dark", className, ...rest }) => {
+const Input = ({
+  label,
+  name,
+  variant = "dark",
+  className,
+  rightContent,
+  ...rest
+}) => {
   const {
     register,
     formState: { errors },
@@ -9,7 +16,8 @@ const Input = ({ label, name, variant = "dark", className, ...rest }) => {
   const error = errors[name];
   const isDark = variant === "dark";
 
-  const baseInputStyle = `w-full rounded-full p-3 focus:outline-none ring-2`;
+  const inputSpacingClass = rightContent ? "pr-12" : "";
+  const baseInputStyle = `w-full rounded-full p-3 focus:outline-none ring-2 ${inputSpacingClass}`;
 
   const labelStyle = isDark
     ? "text-white font-medium"
@@ -29,12 +37,22 @@ const Input = ({ label, name, variant = "dark", className, ...rest }) => {
         {label}
       </label>
 
-      <input
-        id={name}
-        {...register(name)}
-        {...rest}
-        className={`${baseInputStyle} ${inputVariantStyle} ${className || ""}`}
-      />
+      <div className="relative w-full">
+        <input
+          id={name}
+          {...register(name)}
+          {...rest}
+          className={`${baseInputStyle} ${inputVariantStyle} ${
+            className || ""
+          }`}
+        />
+
+        {rightContent && (
+          <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+            {rightContent}
+          </div>
+        )}
+      </div>
 
       {error && <p className={errorStyle}>{error.message}</p>}
     </div>
