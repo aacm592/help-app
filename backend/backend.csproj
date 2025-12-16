@@ -25,6 +25,11 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <Link>Objetivos.csv</Link>
     </None>
+
+    <None Update="data\Seeds\Grupos2025.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>Grupos2025.csv</Link>
+    </None>
   </ItemGroup>
 
 </Project>

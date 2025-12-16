@@ -84,7 +84,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
       IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
             config["Jwt:Key"] ?? config["Jwt__Key"]
                 ?? throw new InvalidOperationException("Jwt:Key o Jwt__Key no configurado")
-        ))
+            ))
     };
   });
 
@@ -112,18 +112,18 @@ builder.Services.AddSwaggerGen(options =>
 
   options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
+      {
+        new OpenApiSecurityScheme
         {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
+          Reference = new OpenApiReference 
+          {
+            Type = ReferenceType.SecurityScheme,
+            Id = "Bearer"
+          }
+        },
+        Array.Empty<string>()
+      }
+  });
 });
 
 var app = builder.Build();
