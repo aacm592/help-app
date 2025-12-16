@@ -35,8 +35,14 @@ public class ScoutsAppContext: DbContext
     
     // Siembra de Distritos
     modelBuilder.Entity<Distrito>().HasData(
-      new Distrito { Id = 1, Nombre = "Cochabamba" },
-      new Distrito { Id = 2, Nombre = "Pando" }
+      new Distrito { Id = 1, Nombre = "Beni" },
+      new Distrito { Id = 2, Nombre = "Chuquisaca" },
+      new Distrito { Id = 3, Nombre = "Cochabamba" },
+      new Distrito { Id = 4, Nombre = "La Paz" },
+      new Distrito { Id = 5, Nombre = "Oruro" },
+      new Distrito { Id = 6, Nombre = "Potosi" },
+      new Distrito { Id = 7, Nombre = "Santa Cruz" },
+      new Distrito { Id = 8, Nombre = "Tarija" }
     );
 
     // Siembra de Ramas
@@ -46,13 +52,6 @@ public class ScoutsAppContext: DbContext
       new Rama { Id = 3, Nombre = "Pioneros", EdadMinima = 15, EdadMaxima = 18 },
       new Rama { Id = 4, Nombre = "Rovers", EdadMinima = 18, EdadMaxima = 21 }
     );
-
-    // Siembra de Grupos Scout
-    modelBuilder.Entity<GrupoScout>().HasData(
-      new GrupoScout { Id = 1, Nombre = "Tunari", DistritoId = 1 },
-      new GrupoScout { Id = 2, Nombre = "Cobija", DistritoId = 2 }
-    );
-    
     
     // Siembra de Etapas de progresión
     modelBuilder.Entity<EtapaProgresion>().HasData(
@@ -78,6 +77,12 @@ public class ScoutsAppContext: DbContext
     if (objetivosDesdeCsv.Any())
     {
       modelBuilder.Entity<ObjetivoEducativo>().HasData(objetivosDesdeCsv);
+    }
+    
+    var gruposDesdeCsv = GrupoScoutCsvSeeder.GetData();
+    if (gruposDesdeCsv.Any())
+    {
+      modelBuilder.Entity<GrupoScout>().HasData(gruposDesdeCsv);
     }
     
     modelBuilder.Entity<Tipo>()

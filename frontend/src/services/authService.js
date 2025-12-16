@@ -65,7 +65,7 @@ export async function generateResetCode(scoutId) {
 
 export async function resetPassword(resetData) {
   try {
-    const response = await url.post("/reset-password", resetData);
+    const response = await url.post("/Auth/reset-password", resetData);
     return response.data;
   } catch (error) {
     if (error.response && error.response.data) {
