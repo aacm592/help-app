@@ -1,4 +1,5 @@
 using backend.data.models;
+using backend.data.models.especialidades;
 using backend.data.seeders;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,6 +23,9 @@ public class ScoutsAppContext: DbContext
   public DbSet<EtapaProgresion> EtapasProgresion { get; set; }
   public DbSet<ObjetivoUsuario> ObjetivosUsuario { get; set; }
   public DbSet<UserProfile> UserProfiles { get; set; }
+  public DbSet<Especialidad> Especialidades { get; set; }
+  public DbSet<RequisitoEsp> RequisitosEsp { get; set; }
+  public DbSet<RequisitoEspUser> RequisitoEspUsers { get; set; }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
@@ -75,15 +79,20 @@ public class ScoutsAppContext: DbContext
     
     var objetivosDesdeCsv = ObjetivoEducativoCsvSeeder.GetData();
     if (objetivosDesdeCsv.Any())
-    {
       modelBuilder.Entity<ObjetivoEducativo>().HasData(objetivosDesdeCsv);
-    }
     
     var gruposDesdeCsv = GrupoScoutCsvSeeder.GetData();
     if (gruposDesdeCsv.Any())
-    {
       modelBuilder.Entity<GrupoScout>().HasData(gruposDesdeCsv);
-    }
+    
+    var especialidadesDesdeCsv = EspecialidadesCsvSeeder.GetData();
+    if (especialidadesDesdeCsv.Any())
+      modelBuilder.Entity<Especialidad>().HasData(especialidadesDesdeCsv);
+    
+    var requisitosEspecialidadesDesdeCsv = RequisitosEspecialidadesCsvSeeder.GetData();
+    if (requisitosEspecialidadesDesdeCsv.Any())
+      modelBuilder.Entity<RequisitoEsp>().HasData(requisitosEspecialidadesDesdeCsv);
+
     
     modelBuilder.Entity<Tipo>()
       .HasMany(t => t.Permisos)
@@ -116,6 +125,27 @@ public class ScoutsAppContext: DbContext
       entity.HasOne(ou => ou.DirigenteAprobo)
         .WithMany()
         .HasForeignKey(ou => ou.DirigenteAproboId)
+        .OnDelete(DeleteBehavior.Restrict);
+    });
+
+    modelBuilder.Entity<RequisitoEspUser>(entity =>
+    {
+      entity.HasKey(e => new {e.RequisitoId, e.UsuarioId});
+      
+      entity.HasOne(e => e.Usuario)
+        .WithMany(r => r.RequisitoEspUser)
+        .HasForeignKey(e => e.UsuarioId);
+      
+      entity.HasOne(e => e.Requisito)
+        .WithMany(r => r.RequisitosEspUser)
+        .HasForeignKey(r => r.RequisitoId);
+
+      entity.Property(e => e.Status)
+        .HasConversion<string>();
+      
+      entity.HasOne(e => e.DirigenteAprobo)
+        .WithMany()
+        .HasForeignKey(e => e.DirigenteAproboId)
         .OnDelete(DeleteBehavior.Restrict);
     });
     

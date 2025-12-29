@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using backend.data.models.especialidades;
 
 namespace backend.data.models;
 
@@ -15,6 +16,8 @@ public class User
 
   public ICollection<Unidad> Unidades { get; set; } = new List<Unidad>();
   public ICollection<ObjetivoUsuario> ObjetivosUsuario { get; set; } = new List<ObjetivoUsuario>();
+  
+  public ICollection<RequisitoEspUser> RequisitoEspUser { get; set; } = new List<RequisitoEspUser>();
 
   [MaxLength(10)]
   public string? PasswordResetToken { get; set; }

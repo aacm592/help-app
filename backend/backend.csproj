@@ -30,6 +30,18 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <Link>Grupos2025.csv</Link>
     </None>
+    
+    <None Update="data\Seeds\Especialidades.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>Especialidades.csv</Link>
+    </None>
+
+    <None Update="data\Seeds\Requisitos - Especialidades.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>Requisitos - Especialidades.csv</Link>
+    </None>
+    
+    
   </ItemGroup>
 
 </Project>
