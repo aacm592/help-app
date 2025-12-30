@@ -14,4 +14,6 @@ public class Especialidad
 
   [MaxLength(40)]
   public string Nombre { get; set; } = string.Empty;
+  
+  public ICollection<RequisitoEsp> Requisitos { get; set; } = new List<RequisitoEsp>();
 }
