@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using backend.dtos.request;
 using backend.services.interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -39,7 +40,8 @@ public class EspecialidadController: ControllerBase
     }
   }
 
-  [HttpPost("req/{reqId}")]
+  [Authorize(Roles = "1")]
+  [HttpPost("req/select/{reqId}")]
   public async Task<IActionResult> Select(int reqId)
   {
     try
@@ -50,6 +52,29 @@ public class EspecialidadController: ControllerBase
 
       await _especialidadServer.SelectRequerimiento(reqId, userId);
       return Ok(new { Message = "Requerimiento seleccionado correctamente." });
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
+  
+  [Authorize(Roles = "2")]
+  [HttpPost("req/val")]
+  public async Task<IActionResult> Validar(ValidarObjetivoDto dto)
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      await _especialidadServer.ValidarRequerimiento(dto, userId);
+      return Ok(new { Message = "Requerimiento validado correctamente." });
     }
     catch (ApplicationException ex)
     {

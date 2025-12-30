@@ -18,6 +18,7 @@ public class ObjetivoUsuarioController : ControllerBase
     _objetivoUsuarioService = objetivoUsuarioService;
   }
 
+  [Authorize(Roles = "1")]
   [HttpPost("elegir")]
   public async Task<IActionResult> ElegirObjetivo([FromBody] ElegirObjetivoDto dto)
   {

@@ -36,10 +36,24 @@ public class RequisitoEspRepository: IRequisitoEspRepository
     return requisitoEspUser;
   }
 
+  public async Task<RequisitoEspUser> UpdateReqEspUser(RequisitoEspUser requisitoEspUser)
+  {
+    _context.RequisitoEspUsers.Update(requisitoEspUser);
+    await _context.SaveChangesAsync();
+    return requisitoEspUser;
+  }
+
+
   public async Task<RequisitoEsp?> GetRequisito(int id)
   {
     return await _context.RequisitosEsp
       .Include(x => x.Especialidad)
       .FirstOrDefaultAsync(x => x.Id == id);
+  }
+
+  public async Task<RequisitoEspUser?> GetRequisitoByUserIdAndRequisitoId(int userId, int requisitoId)
+  {
+    return await _context.RequisitoEspUsers
+      .FirstAsync(x => x.UsuarioId == userId && x.RequisitoId == requisitoId);
   }
 }

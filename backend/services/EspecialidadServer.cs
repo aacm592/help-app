@@ -1,5 +1,6 @@
 using AutoMapper;
 using backend.data.models.especialidades;
+using backend.dtos.request;
 using backend.dtos.responses.especialidades;
 using backend.enums;
 using backend.repositories.interfaces;
@@ -81,5 +82,35 @@ public class EspecialidadServer: IEspecialidadServer
     };
 
     await _requisitoEspRepository.Add(nuevaRelacion);
+  }
+
+  public async Task ValidarRequerimiento(ValidarObjetivoDto dto, int dirigenteId)
+  {
+    var requerimiento = await _requisitoEspRepository.GetRequisitoByUserIdAndRequisitoId(dto.UsuarioId, dto.ObjetivoId);
+    if (requerimiento == null)
+      throw new ApplicationException("Solicitud no encontrada.");
+    
+    if (requerimiento.Status != ObjetivoStatus.Pendiente)
+      throw new ApplicationException("Este requerimiento no está pendiente de validación.");
+    
+    var scout = await _userRepository.GetByIdWithTipoAndUnidadesAsync(dto.UsuarioId);
+    if (scout == null || !scout.Unidades.Any())
+      throw new ApplicationException("El Scout no se encuentra o no pertenece a ninguna unidad.");
+
+    var dirigente = await _userRepository.GetByIdWithTipoAndUnidadesAsync(dirigenteId);
+    if (dirigente == null)
+      throw new ApplicationException("Dirigente no encontrado.");
+
+    var unidadDelScout = scout.Unidades.First(); 
+    var dirigenteEstaEnUnidad = dirigente.Unidades.Any(u => u.Id == unidadDelScout.Id);
+
+    if (!dirigenteEstaEnUnidad)
+      throw new ApplicationException("No tienes permiso para validar objetivos de este Scout, ya que no pertenecen a tu misma unidad.");
+
+    requerimiento.Status = ObjetivoStatus.Cumplido;
+    requerimiento.DirigenteAproboId = dirigente.Id;
+    requerimiento.FechaAprobacion = DateTime.UtcNow;
+    
+    await _requisitoEspRepository.UpdateReqEspUser(requerimiento);
   }
 }
