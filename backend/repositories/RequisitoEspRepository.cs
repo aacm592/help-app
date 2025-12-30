@@ -28,4 +28,18 @@ public class RequisitoEspRepository: IRequisitoEspRepository
       .Where(x => x.EspecialidadId == especialidadId)
       .ToListAsync();
   }
+
+  public async Task<RequisitoEspUser> Add(RequisitoEspUser requisitoEspUser)
+  {
+    await _context.RequisitoEspUsers.AddAsync(requisitoEspUser);
+    await _context.SaveChangesAsync();
+    return requisitoEspUser;
+  }
+
+  public async Task<RequisitoEsp?> GetRequisito(int id)
+  {
+    return await _context.RequisitosEsp
+      .Include(x => x.Especialidad)
+      .FirstOrDefaultAsync(x => x.Id == id);
+  }
 }

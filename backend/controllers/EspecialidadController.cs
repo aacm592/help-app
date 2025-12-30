@@ -17,7 +17,7 @@ public class EspecialidadController: ControllerBase
     _especialidadServer = especialidadServer;
   }
 
-  [HttpGet("rama")]
+  [HttpGet("rama/{ramaId}")]
   public async Task<IActionResult> GetByRama(int ramaId)
   {
     try
@@ -38,4 +38,27 @@ public class EspecialidadController: ControllerBase
       return StatusCode(500, $"Error interno: {ex.Message}");
     }
   }
+
+  [HttpPost("req/{reqId}")]
+  public async Task<IActionResult> Select(int reqId)
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      await _especialidadServer.SelectRequerimiento(reqId, userId);
+      return Ok(new { Message = "Requerimiento seleccionado correctamente." });
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
+  
 }
