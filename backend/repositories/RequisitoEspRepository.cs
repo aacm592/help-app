@@ -1,5 +1,6 @@
 using backend.data;
 using backend.data.models.especialidades;
+using backend.enums;
 using backend.repositories.interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -55,5 +56,16 @@ public class RequisitoEspRepository: IRequisitoEspRepository
   {
     return await _context.RequisitoEspUsers
       .FirstAsync(x => x.UsuarioId == userId && x.RequisitoId == requisitoId);
+  }
+
+  public async Task<IEnumerable<RequisitoEspUser>> GetPendientesByUnidad(int unidadId)
+  {
+    return await _context.RequisitoEspUsers
+      .Where(x => x.Usuario.Unidades.First().Id == unidadId && x.Status == ObjetivoStatus.Pendiente)
+      .Include(x => x.Requisito)
+      .ThenInclude(r => r.Especialidad)
+      .Include(x => x.Usuario)
+      .ThenInclude(u => u.Profile)
+      .ToListAsync();
   }
 }

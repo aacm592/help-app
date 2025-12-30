@@ -86,4 +86,27 @@ public class EspecialidadController: ControllerBase
     }
   }
   
+  [Authorize(Roles = "2")]
+  [HttpPost("unidad/{unidadId}")]
+  public async Task<IActionResult> Validar(int unidadId)
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      var requests = await _especialidadServer.GetReqByUnidad(unidadId, userId);
+      return Ok(requests);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
+  
 }

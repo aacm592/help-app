@@ -63,7 +63,7 @@ public class EspecialidadServer: IEspecialidadServer
 
     var unidadDelUsuario = user.Unidades.FirstOrDefault();
     if (unidadDelUsuario == null)
-      throw new ApplicationException("Debes pertenecer a una unidad para seleccionar objetivos.");
+      throw new ApplicationException("Debes pertenecer a una unidad para seleccionar requisitos.");
     
     if (unidadDelUsuario.RamaId != requerimiento.Especialidad.RamaId)
       throw new ApplicationException("Esta especialidad no pertenece a tu rama.");
@@ -112,5 +112,20 @@ public class EspecialidadServer: IEspecialidadServer
     requerimiento.FechaAprobacion = DateTime.UtcNow;
     
     await _requisitoEspRepository.UpdateReqEspUser(requerimiento);
+  }
+
+  public async Task<IEnumerable<UserRequisitoEspDto>> GetReqByUnidad(int unidadId, int userId)
+  {
+    var user = await _userRepository.GetByIdWithTipoAndUnidadesAsync(userId);
+    if (user == null)
+      throw new ApplicationException("Usuario no encontrado.");
+    
+    var unidad = user.Unidades.FirstOrDefault(u => u.Id == unidadId);
+    if (unidad == null)
+      throw new ApplicationException("No eres parte de esta unidad.");
+    
+    var requerimientos = await _requisitoEspRepository.GetPendientesByUnidad(unidadId);
+    
+    return _mapper.Map<List<UserRequisitoEspDto>>(requerimientos);
   }
 }

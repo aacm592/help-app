@@ -10,4 +10,5 @@ public interface IRequisitoEspRepository
   Task<RequisitoEspUser> UpdateReqEspUser(RequisitoEspUser requisitoEspUser);
   Task<RequisitoEsp?> GetRequisito(int id);
   Task<RequisitoEspUser?> GetRequisitoByUserIdAndRequisitoId(int userId, int requisitoId);
+  Task<IEnumerable<RequisitoEspUser>> GetPendientesByUnidad(int unidadId);
 }
