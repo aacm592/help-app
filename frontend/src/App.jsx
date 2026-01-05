@@ -19,6 +19,7 @@ import MiProgresoPage from "./pages/scout/MiProgresoPage";
 import VerProgresoScoutPage from "./pages/dirigente/VerProgresoScoutPage";
 import ScrollToTop from "./components/ScrollToTop";
 import ResetPasswordPage from "./pages/login/ResetPasswordPage";
+import EspecialidadesPage from "./pages/scout/EspecialidadesPage";
 
 function App() {
   return (
@@ -70,6 +71,10 @@ function App() {
           <Route element={<ScoutLayout />}>
             <Route path="/scout/home" element={<HomeUnidadScout />} />
             <Route path="/scout/objetivos" element={<ObjetivosPage />} />
+            <Route
+              path="/scout/especialidades"
+              element={<EspecialidadesPage />}
+            />
             <Route path="/scout/profile" element={<ProfilePage />} />
             <Route path="/scout/progreso" element={<MiProgresoPage />} />
           </Route>
