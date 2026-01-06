@@ -87,7 +87,7 @@ public class EspecialidadController: ControllerBase
   }
   
   [Authorize(Roles = "2")]
-  [HttpPost("unidad/{unidadId}")]
+  [HttpGet("unidad/{unidadId}")]
   public async Task<IActionResult> Validar(int unidadId)
   {
     try

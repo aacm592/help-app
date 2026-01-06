@@ -20,6 +20,7 @@ import VerProgresoScoutPage from "./pages/dirigente/VerProgresoScoutPage";
 import ScrollToTop from "./components/ScrollToTop";
 import ResetPasswordPage from "./pages/login/ResetPasswordPage";
 import EspecialidadesPage from "./pages/scout/EspecialidadesPage";
+import GestionarEspecialidadesPage from "./pages/dirigente/GestionarEspecialidadesPage";
 
 function App() {
   return (
@@ -49,6 +50,12 @@ function App() {
               path="/diri/unidad/:unidadId/gestionar-objetivos"
               element={<GestionarObjetivosPage />}
             />
+
+            <Route
+              path="/diri/unidad/:unidadId/gestionar-especialidades"
+              element={<GestionarEspecialidadesPage />}
+            />
+
             <Route
               path="/diri/unidad/:unidadId/miembros"
               element={<VerUnidadPage />}

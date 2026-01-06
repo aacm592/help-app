@@ -66,7 +66,7 @@ export default function EspecialidadesPage() {
         {especialidadesFiltradas.length > 0 ? (
           especialidadesFiltradas.map((e, i) => (
             <SpecialitItem
-              key={e.id}
+              key={i}
               name={e.nombre}
               status={e.status}
               description={e.descripcion}
