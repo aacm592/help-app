@@ -52,7 +52,7 @@ export default function ObjetivoPendienteItem({
 
         <div className="flex flex-col sm:flex-row gap-2 ml-4">
           <Button
-            className="px-4 py-2 text-sm bg-green-100 text-green-800 hover:bg-green-200"
+            className="px-4 py-2 text-sm hover:bg-slate-200"
             onClick={handleValidar}
             disabled={isLoading}
           >
@@ -61,7 +61,7 @@ export default function ObjetivoPendienteItem({
                 progress_activity
               </span>
             ) : (
-              "Cumple"
+              "Confirmar"
             )}
           </Button>
         </div>

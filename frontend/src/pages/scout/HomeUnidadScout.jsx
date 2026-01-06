@@ -33,7 +33,10 @@ export default function HomeUnidadScout() {
           <p className={textClass}>Objetivos</p>
         </Button>
 
-        <Button className={buttonClass}>
+        <Button
+          className={buttonClass}
+          onClick={() => nav("/scout/especialidades")}
+        >
           <span className={iconClass}>workspace_premium</span>
           <p className={textClass}>Especialidades</p>
         </Button>

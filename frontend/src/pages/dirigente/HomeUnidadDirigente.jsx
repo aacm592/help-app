@@ -49,12 +49,23 @@ export default function HomeUnidadDirigente() {
           <span className={iconClass}>groups</span>
           <p className={textClass}>Ver Mi Unidad</p>
         </Button>
+
         <Button
           className={buttonClass}
           onClick={() => nav(`/diri/unidad/${unidadId}/gestionar-objetivos`)}
         >
           <span className={iconClass}>checklist</span>
           <p className={textClass}>Gestionar Objetivos</p>
+        </Button>
+
+        <Button
+          className={buttonClass}
+          onClick={() =>
+            nav(`/diri/unidad/${unidadId}/gestionar-especialidades`)
+          }
+        >
+          <span className={iconClass}>checklist</span>
+          <p className={textClass}>Gestionar Especialidades</p>
         </Button>
 
         <Button className={buttonClass} onClick={() => nav("/diri")}>
