@@ -9,4 +9,6 @@ public interface IEspecialidadServer
   Task SelectRequerimiento(int requerimientoId,  int userId);
   Task ValidarRequerimiento(ValidarObjetivoDto dto, int dirigenteId);
   Task<IEnumerable<UserRequisitoEspDto>> GetReqByUnidad(int unidadId,  int userId);
+  Task<IEnumerable<EspecialidadResume>> GetUserResume(int userId);
+  Task<IEnumerable<EspecialidadResume>> GetUserResume(int userId, int dirigenteId);
 }

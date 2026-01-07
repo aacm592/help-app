@@ -108,5 +108,51 @@ public class EspecialidadController: ControllerBase
       return StatusCode(500, $"Error interno: {ex.Message}");
     }
   }
+
+  [Authorize(Roles = "1")]
+  [HttpGet("resume")]
+  public async Task<IActionResult> GetResume()
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      var requests = await _especialidadServer.GetUserResume(userId);
+      return Ok(requests);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
   
+  
+  [Authorize(Roles = "2")]
+  [HttpGet("resume/{scoutId}")]
+  public async Task<IActionResult> GetResume(int scoutId)
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      var requests = await _especialidadServer.GetUserResume(scoutId, userId);
+      return Ok(requests);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
 }

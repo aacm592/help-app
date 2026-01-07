@@ -128,4 +128,71 @@ public class EspecialidadServer: IEspecialidadServer
     
     return _mapper.Map<List<UserRequisitoEspDto>>(requerimientos);
   }
+
+  public async Task<IEnumerable<EspecialidadResume>> GetUserResume(int userId)
+  {
+    var user = await _userRepository.GetByIdWithTipoAndUnidadesAsync(userId);
+    var unidadDelScout = user.Unidades.First();
+    
+    if (user == null || !user.Unidades.Any())
+      throw new ApplicationException("El usuario no se encuentró o no pertenece a ninguna unidad.");
+    
+    var requisitos = await _requisitoEspRepository.GetRequisitosByUser(userId);
+    requisitos = requisitos.Where(x => x.Requisito.Especialidad.RamaId == unidadDelScout.RamaId);
+    
+    var result =  new Dictionary<string, EspecialidadResume>();
+
+    foreach (var requisito in requisitos)
+    {
+      string name = requisito.Requisito.Especialidad.Nombre;
+      var status =  requisito.Status;
+      if (result.ContainsKey(name))
+      {
+        switch (status)
+        {
+          case ObjetivoStatus.Pendiente:
+            result[name].InProgressQuantity++;
+            break;
+          case ObjetivoStatus.Cumplido:
+            result[name].DoneQuantity++;
+            break;
+        }
+      }
+      else
+      {
+        var newRequisito = new EspecialidadResume()
+        {
+          Name = name,
+          Status = status.ToString(),
+          RequirementQuantity = requisito.Requisito.Especialidad.Requisitos.Count(),
+          InProgressQuantity = status == ObjetivoStatus.Pendiente ? 1 : 0,
+          DoneQuantity = status == ObjetivoStatus.Cumplido ? 1 : 0,
+        };
+        
+        result.Add(name, newRequisito);
+      }
+    }
+
+    return result.Values.ToList();
+  }
+
+  public async Task<IEnumerable<EspecialidadResume>> GetUserResume(int userId, int dirigenteId)
+  {
+    
+    var scout = await _userRepository.GetByIdWithTipoAndUnidadesAsync(userId);
+    if (scout == null || !scout.Unidades.Any())
+      throw new ApplicationException("El Scout no se encuentra o no pertenece a ninguna unidad.");
+
+    var dirigente = await _userRepository.GetByIdWithTipoAndUnidadesAsync(dirigenteId);
+    if (dirigente == null)
+      throw new ApplicationException("Dirigente no encontrado.");
+
+    var unidadDelScout = scout.Unidades.First(); 
+    var dirigenteEstaEnUnidad = dirigente.Unidades.Any(u => u.Id == unidadDelScout.Id);
+
+    if (!dirigenteEstaEnUnidad)
+      throw new ApplicationException("No tienes permiso para validar objetivos de este Scout, ya que no pertenecen a tu misma unidad.");
+
+    return await GetUserResume(userId);
+  }
 }
