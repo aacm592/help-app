@@ -129,7 +129,7 @@ public class EspecialidadServer: IEspecialidadServer
     return _mapper.Map<List<UserRequisitoEspDto>>(requerimientos);
   }
 
-  public async Task<IEnumerable<EspecialidadResume>> GetUserResume(int userId)
+  public async Task<IEnumerable<EspecialidadResumeDto>> GetUserResume(int userId)
   {
     var user = await _userRepository.GetByIdWithTipoAndUnidadesAsync(userId);
     var unidadDelScout = user.Unidades.First();
@@ -140,7 +140,7 @@ public class EspecialidadServer: IEspecialidadServer
     var requisitos = await _requisitoEspRepository.GetRequisitosByUser(userId);
     requisitos = requisitos.Where(x => x.Requisito.Especialidad.RamaId == unidadDelScout.RamaId);
     
-    var result =  new Dictionary<string, EspecialidadResume>();
+    var result =  new Dictionary<string, EspecialidadResumeDto>();
 
     foreach (var requisito in requisitos)
     {
@@ -160,7 +160,7 @@ public class EspecialidadServer: IEspecialidadServer
       }
       else
       {
-        var newRequisito = new EspecialidadResume()
+        var newRequisito = new EspecialidadResumeDto()
         {
           Name = name,
           Status = status.ToString(),
@@ -176,7 +176,7 @@ public class EspecialidadServer: IEspecialidadServer
     return result.Values.ToList();
   }
 
-  public async Task<IEnumerable<EspecialidadResume>> GetUserResume(int userId, int dirigenteId)
+  public async Task<IEnumerable<EspecialidadResumeDto>> GetUserResume(int userId, int dirigenteId)
   {
     
     var scout = await _userRepository.GetByIdWithTipoAndUnidadesAsync(userId);
