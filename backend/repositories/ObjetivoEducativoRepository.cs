@@ -31,4 +31,13 @@ public class ObjetivoEducativoRepository: IObjetivoEducativoRepository
       .Include(o => o.AreaCrecimiento)
       .FirstOrDefaultAsync(o => o.Id == id);
   }
+  
+  public async Task<IEnumerable<ObjetivoEducativo>> GetByRamaIdAsync(int ramaId)
+  {
+    return await _context.ObjetivosEducativos
+      .Include(oe => oe.EtapaProgresion)
+      .Include(oe => oe.AreaCrecimiento)
+      .Where(oe => oe.EtapaProgresion.RamaId == ramaId)
+      .ToListAsync();
+  }
 }

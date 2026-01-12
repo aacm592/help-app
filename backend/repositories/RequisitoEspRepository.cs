@@ -19,6 +19,8 @@ public class RequisitoEspRepository: IRequisitoEspRepository
   {
     return await _context.RequisitoEspUsers
       .Include(x => x.Requisito)
+      .ThenInclude(r => r.Especialidad)
+      .ThenInclude(e => e.Requisitos)
       .Where(x => x.UsuarioId == userId)
       .ToListAsync();
   }

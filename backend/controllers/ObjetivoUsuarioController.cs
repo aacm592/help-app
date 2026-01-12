@@ -161,4 +161,52 @@ public class ObjetivoUsuarioController : ControllerBase
       return StatusCode(500, $"Error interno: {ex.Message}");
     }
   }
+  
+  [Authorize]
+  [HttpGet("resume")]
+  public async Task<IActionResult> GetResume()
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var solicitanteId))
+        return Unauthorized("Token de usuario inválido.");
+
+      var resultado = await _objetivoUsuarioService.GetResume(solicitanteId);
+        
+      return Ok(resultado);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
+  
+  [Authorize(Roles = "2")]
+  [HttpGet("resume/{scoutId}")]
+  public async Task<IActionResult> GetResume(int scoutId)
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var solicitanteId))
+        return Unauthorized("Token de usuario inválido.");
+
+      var resultado = await _objetivoUsuarioService.GetResume(scoutId, solicitanteId);
+        
+      return Ok(resultado);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
 }

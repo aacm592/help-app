@@ -12,4 +12,6 @@ public interface IObjetivoUsuarioService
   Task DenegarObjetivoAsync(ValidarObjetivoDto dto, int dirigenteId);
   Task<IEnumerable<ObjetivoUsuarioResponseDto>> GetMisObjetivosAsync(int usuarioId);
   Task<IEnumerable<RamaObjetivosDto>> GetScoutObjetivosAgrupadosAsync(int scoutId, int solicitanteId);
+  Task<IEnumerable<ObjetivoEtapaResumeDto>> GetResume(int scoutId);
+  Task<IEnumerable<ObjetivoEtapaResumeDto>> GetResume(int scoutId, int dirigenteId);
 }

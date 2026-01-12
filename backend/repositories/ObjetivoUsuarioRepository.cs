@@ -75,6 +75,8 @@ public class ObjetivoUsuarioRepository : IObjetivoUsuarioRepository
     return await _context.ObjetivosUsuario
       .Include(ou => ou.ObjetivoEducativo)
       .ThenInclude(o => o.AreaCrecimiento)
+      .ThenInclude(x => x.ObjetivosEducativos)
+      .ThenInclude(o => o.EtapaProgresion)
       .Include(ou => ou.DirigenteAprobo)
       .ThenInclude(d => d!.Profile)
       .Where(ou => ou.UsuarioId == usuarioId)
