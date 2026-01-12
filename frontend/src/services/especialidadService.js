@@ -49,3 +49,17 @@ export async function getResumenEspecialidades() {
     throw new Error("No se pudo cargar el resumen de especialidades.");
   }
 }
+
+export async function getResumenEspecialidadesByScoutId(scoutId) {
+  if (!scoutId) {
+    throw new Error("El ID del Scout es requerido.");
+  }
+
+  try {
+    const response = await api.get(`/Especialidad/resume/${scoutId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener resumen de especialidades", error);
+    throw new Error("No se pudo cargar el resumen de especialidades.");
+  }
+}

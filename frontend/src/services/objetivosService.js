@@ -99,3 +99,19 @@ export const getResumenObjetivos = async () => {
     throw new Error(errorMessage);
   }
 };
+
+export const getResumenObjetivosByScoutId = async (scoutId) => {
+  if (!scoutId) {
+    throw new Error("El ID del Scout es requerido.");
+  }
+
+  try {
+    const response = await api.get(`/ObjetivoUsuario/resume/${scoutId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener el resumen de objetivos", error);
+    const errorMessage =
+      error.response?.data || "No se pudo cargar el resumen de objetivos.";
+    throw new Error(errorMessage);
+  }
+};
