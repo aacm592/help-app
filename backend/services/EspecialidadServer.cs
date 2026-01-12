@@ -33,6 +33,7 @@ public class EspecialidadServer: IEspecialidadServer
     foreach (var espDto in especialidadesDto)
     {
       int aprobadosCount = 0;
+      int iniciadosCount = 0; 
 
       foreach (var reqDto in espDto.Requerimientos)
       {
@@ -41,11 +42,13 @@ public class EspecialidadServer: IEspecialidadServer
 
         if (rel?.Status == ObjetivoStatus.Cumplido) 
           aprobadosCount++;
+        else if (rel?.Status == ObjetivoStatus.Pendiente)
+          iniciadosCount++;
       }
 
-      espDto.Status = aprobadosCount == 0 ? "Sin iniciar" : 
-        aprobadosCount == espDto.Requerimientos.Count ? "Completada" : 
-        "En Progreso";
+      espDto.Status = aprobadosCount == espDto.Requerimientos.Count ? "Completada" : 
+        iniciadosCount + aprobadosCount > 0 ? "En Progreso" : 
+        "Sin iniciar";
     }
 
     return especialidadesDto;
@@ -163,13 +166,20 @@ public class EspecialidadServer: IEspecialidadServer
         var newRequisito = new EspecialidadResumeDto()
         {
           Name = name,
-          Status = status.ToString(),
           RequirementQuantity = requisito.Requisito.Especialidad.Requisitos.Count(),
           InProgressQuantity = status == ObjetivoStatus.Pendiente ? 1 : 0,
           DoneQuantity = status == ObjetivoStatus.Cumplido ? 1 : 0,
         };
         
         result.Add(name, newRequisito);
+      }
+
+      foreach (var req in (result.Values))
+      {
+        if (req.DoneQuantity == req.RequirementQuantity)
+          result[req.Name].Status = "Terminado";
+        else
+          result[req.Name].Status = "En Progreso";
       }
     }
 

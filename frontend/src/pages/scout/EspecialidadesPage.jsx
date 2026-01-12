@@ -41,9 +41,9 @@ export default function EspecialidadesPage() {
     cargarEspecialidades();
   }, [unidad, nav]);
 
-  const selectReq = (indx) => {
-    const newEsp = especialidades.map((r, i) =>
-      i === indx ? { ...r, status: "En Progreso" } : r
+  const selectReq = (id) => {
+    const newEsp = especialidades.map((r) =>
+      r.id === id ? { ...r, status: "En Progreso" } : r
     );
     setEspecialidades(newEsp);
   };
@@ -64,14 +64,14 @@ export default function EspecialidadesPage() {
 
       <div className="md:w-3/4 lg:w-2/3 w-full space-y-4">
         {especialidadesFiltradas.length > 0 ? (
-          especialidadesFiltradas.map((e, i) => (
+          especialidadesFiltradas.map((e) => (
             <SpecialitItem
-              key={i}
+              key={e.id || e.nombre}
               name={e.nombre}
               status={e.status}
               description={e.descripcion}
               req={e.requerimientos}
-              onSelect={() => selectReq(i)}
+              onSelect={() => selectReq(e.id)}
             />
           ))
         ) : (

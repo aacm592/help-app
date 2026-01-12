@@ -28,7 +28,7 @@ export default function SpecialityItem({ name, status, description, req, onSelec
           <p className="font-bold text-2xl">{name}</p>
           <span
             className={`font-black ${
-              status === "Cumplido"
+              status === "Completada"
                 ? "text-green-800"
                 : status === "En Progreso"
                 ? "text-yellow-600"

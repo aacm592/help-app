@@ -87,3 +87,15 @@ export const getProgresoAgrupado = async (scoutId) => {
     throw new Error(errorMessage);
   }
 };
+
+export const getResumenObjetivos = async () => {
+  try {
+    const response = await api.get(`/ObjetivoUsuario/resume`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener el resumen de objetivos", error);
+    const errorMessage =
+      error.response?.data || "No se pudo cargar el resumen de objetivos.";
+    throw new Error(errorMessage);
+  }
+};
