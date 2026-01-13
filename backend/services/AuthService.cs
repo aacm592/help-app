@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using AutoMapper;
 using backend.data.models;
+using backend.data.models.profile;
 using backend.dtos.auth;
 using backend.dtos.request;
 using backend.dtos.responses;

@@ -135,13 +135,14 @@ public class EspecialidadServer: IEspecialidadServer
   public async Task<IEnumerable<EspecialidadResumeDto>> GetUserResume(int userId)
   {
     var user = await _userRepository.GetByIdWithTipoAndUnidadesAsync(userId);
-    var unidadDelScout = user.Unidades.First();
     
     if (user == null || !user.Unidades.Any())
       throw new ApplicationException("El usuario no se encuentró o no pertenece a ninguna unidad.");
     
+    var unidadDelScout = user.Unidades.First();
+    
     var requisitos = await _requisitoEspRepository.GetRequisitosByUser(userId);
-    requisitos = requisitos.Where(x => x.Requisito.Especialidad.RamaId == unidadDelScout.RamaId);
+    requisitos = requisitos.Where(x => x.Requisito.Especialidad.RamaId == unidadDelScout?.RamaId);
     
     var result =  new Dictionary<string, EspecialidadResumeDto>();
 
