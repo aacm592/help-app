@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using backend.data.models.especialidades;
+using backend.data.models.profile;
 
 namespace backend.data.models;
 

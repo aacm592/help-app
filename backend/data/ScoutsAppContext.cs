@@ -1,5 +1,6 @@
 using backend.data.models;
 using backend.data.models.especialidades;
+using backend.data.models.profile;
 using backend.data.seeders;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +24,8 @@ public class ScoutsAppContext: DbContext
   public DbSet<EtapaProgresion> EtapasProgresion { get; set; }
   public DbSet<ObjetivoUsuario> ObjetivosUsuario { get; set; }
   public DbSet<UserProfile> UserProfiles { get; set; }
+  public DbSet<ScoutProfile> ScoutProfiles { get; set; }
+  public DbSet<DiriProfile> DiriProfiles { get; set; }
   public DbSet<Especialidad> Especialidades { get; set; }
   public DbSet<RequisitoEsp> RequisitosEsp { get; set; }
   public DbSet<RequisitoEspUser> RequisitoEspUsers { get; set; }
@@ -153,5 +156,16 @@ public class ScoutsAppContext: DbContext
       .HasOne(u => u.Profile)
       .WithOne(p => p.User)
       .HasForeignKey<UserProfile>(p => p.Id);
+    
+    modelBuilder.Entity<UserProfile>()
+      .HasOne(u => u.DiriProfile)
+      .WithOne(p => p.UserProfile)
+      .HasForeignKey<DiriProfile>(p => p.Id);
+    
+    
+    modelBuilder.Entity<UserProfile>()
+      .HasOne(u => u.ScoutProfile)
+      .WithOne(p => p.UserProfile)
+      .HasForeignKey<ScoutProfile>(p => p.Id);
   }
 }
