@@ -52,21 +52,25 @@ public class AuthService: IAuthService
 
     string hashedPassword = BCrypt.Net.BCrypt.HashPassword(registerDto.Contrasena);
     
+    var userProfile = new UserProfile
+    {
+      Nombre = registerDto.Nombre,
+      FechaNacimiento = fechaNacimientoUtc,
+    };
+
+    if (tipo.Id == 1)
+      userProfile.ScoutProfile = new ScoutProfile();
+    if (tipo.Id == 2)
+      userProfile.DiriProfile = new DiriProfile();
+
     var newUser = new User
     {
       NombreUsuario = registerDto.NombreUsuario,
       Contrasena = hashedPassword,
-      TipoId = tipo.Id
+      TipoId = tipo.Id,
+      Profile = userProfile,
     };
-
-    var userProfile = new UserProfile
-    {
-      Nombre = registerDto.Nombre,
-      FechaNacimiento = fechaNacimientoUtc
-    };
-
-    newUser.Profile = userProfile;
-
+    
     var userGuardado = await _userRepository.AddAsync(newUser);
 
     return _mapper.Map<UserResponseDto>(userGuardado);
