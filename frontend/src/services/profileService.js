@@ -48,6 +48,18 @@ export async function updateScoutProfile(data) {
   }
 }
 
+export async function updateScoutProfileById(data, scoutId) {
+  try {
+    const response = await api.put(`/Profile/scout/${scoutId}`, data);
+    return response.data;
+  } catch (error) {
+    console.error("Error al actualizar el perfil del scout", error);
+    const errorMessage =
+      error.response?.data || "No se pudo actualizar el perfil del scout.";
+    throw new Error(errorMessage);
+  }
+}
+
 export async function updateDiriProfile(data) {
   try {
     const response = await api.put(`/Profile/diri`, data);

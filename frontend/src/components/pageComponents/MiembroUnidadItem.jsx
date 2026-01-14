@@ -21,6 +21,12 @@ export default function MiembroUnidadItem({
     });
   };
 
+  const handleVerPerfil = () => {
+    nav(`/diri/unidad/${unidadId}/scout/${miembroId}/perfil`, {
+      state: { scoutNombre: nombre, rolNombre },
+    });
+  };
+
   return (
     <div className="w-full flex items-center justify-between gap-4 p-4 bg-white rounded-lg shadow-md border border-gray-200">
       <div>
@@ -30,28 +36,42 @@ export default function MiembroUnidadItem({
 
       <div className="flex flex-wrap gap-2 justify-end">
         {tipoId === 1 && (
-          <Button
-            className="px-4 py-2 text-sm bg-blue-100 text-blue-800 hover:bg-blue-200"
-            onClick={handleVerProgreso}
-          >
-            Progreso
-          </Button>
-        )}
+          <>
+            <Button
+              className="px-4 py-2 text-sm bg-blue-100 text-blue-800 hover:bg-blue-200"
+              onClick={handleVerProgreso}
+            >
+              Progreso
+            </Button>
 
-        {tipoId === 1 && (
-          <Button
-            className="px-4 py-2 text-sm bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
-            onClick={() => onGenerateCode(miembro)}
-            disabled={isLoading || isGeneratingCode}
-          >
-            {isGeneratingCode ? (
-              <span className="material-symbols-outlined animate-spin">
-                progress_activity
-              </span>
-            ) : (
-              "Reset Pass"
-            )}
-          </Button>
+            <Button
+              className="px-4 py-2 text-sm bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
+              onClick={() => onGenerateCode(miembro)}
+              disabled={isLoading || isGeneratingCode}
+            >
+              {isGeneratingCode ? (
+                <span className="material-symbols-outlined animate-spin">
+                  progress_activity
+                </span>
+              ) : (
+                "Reset Pass"
+              )}
+            </Button>
+
+            <Button
+              className="px-4 py-2 text-sm bg-violet-200 text-purple-900-800 hover:bg-violet-300"
+              onClick={() => handleVerPerfil(miembro)}
+              disabled={isLoading || isGeneratingCode}
+            >
+              {isGeneratingCode ? (
+                <span className="material-symbols-outlined animate-spin">
+                  progress_activity
+                </span>
+              ) : (
+                "Perfil"
+              )}
+            </Button>
+          </>
         )}
 
         {miembroId !== currentUserId && (

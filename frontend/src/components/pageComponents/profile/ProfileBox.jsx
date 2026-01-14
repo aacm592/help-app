@@ -43,7 +43,7 @@ export default function ProfileBox({ user }) {
           />
           <ProfileInfoItem
             icon="work"
-            label="Ocupasión"
+            label="Ocupación"
             data={user.ocupacion}
           />
         </>

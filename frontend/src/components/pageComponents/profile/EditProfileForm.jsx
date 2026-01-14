@@ -52,12 +52,15 @@ export default function EditProfileForm({ user, onCancel, onSuccess }) {
         {user.profesion && (
           <>
             <Input label="Ocupación" name="ocupacion" variant="light" />
-            <Input label="Profesion" name="profesion" variant="light" />
+            <Input label="Profesión" name="profesion" variant="light" />
           </>
         )}
 
         <div className="flex gap-2 pt-4">
-          <Button type="submit" className="bg-emerald-500 text-white w-full p-4">
+          <Button
+            type="submit"
+            className="bg-emerald-500 text-white w-full p-4"
+          >
             Guardar Cambios
           </Button>
           <Button
