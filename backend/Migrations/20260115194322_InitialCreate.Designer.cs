@@ -12,8 +12,8 @@ using backend.data;
 namespace backend.Migrations
 {
     [DbContext(typeof(ScoutsAppContext))]
-    [Migration("20251118015721_SepararUserProfileYAuditoriaObjetivos")]
-    partial class SepararUserProfileYAuditoriaObjetivos
+    [Migration("20260115194322_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,19 +25,19 @@ namespace backend.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("PermisoTipo", b =>
+            modelBuilder.Entity("PermisoUser", b =>
                 {
                     b.Property<int>("PermisosId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("TiposId")
+                    b.Property<int>("UsersId")
                         .HasColumnType("integer");
 
-                    b.HasKey("PermisosId", "TiposId");
+                    b.HasKey("PermisosId", "UsersId");
 
-                    b.HasIndex("TiposId");
+                    b.HasIndex("UsersId");
 
-                    b.ToTable("PermisosTipo", (string)null);
+                    b.ToTable("PermisosUsers", (string)null);
                 });
 
             modelBuilder.Entity("UnidadUser", b =>
@@ -126,12 +126,42 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            Nombre = "Cochabamba"
+                            Nombre = "Beni"
                         },
                         new
                         {
                             Id = 2,
-                            Nombre = "Pando"
+                            Nombre = "Chuquisaca"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Nombre = "Cochabamba"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Nombre = "La Paz"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Nombre = "Oruro"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Nombre = "Potosi"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Nombre = "Santa Cruz"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Nombre = "Tarija"
                         });
                 });
 
@@ -217,20 +247,6 @@ namespace backend.Migrations
                     b.HasIndex("DistritoId");
 
                     b.ToTable("GruposScout");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            DistritoId = 1,
-                            Nombre = "Tunari"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            DistritoId = 2,
-                            Nombre = "Cobija"
-                        });
                 });
 
             modelBuilder.Entity("backend.data.models.ObjetivoEducativo", b =>
@@ -461,25 +477,187 @@ namespace backend.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("backend.data.models.UserProfile", b =>
+            modelBuilder.Entity("backend.data.models.especialidades.Especialidad", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.Property<int>("RamaId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RamaId");
+
+                    b.ToTable("Especialidades");
+                });
+
+            modelBuilder.Entity("backend.data.models.especialidades.RequisitoEsp", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<int>("EspecialidadId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EspecialidadId");
+
+                    b.ToTable("RequisitosEsp");
+                });
+
+            modelBuilder.Entity("backend.data.models.especialidades.RequisitoEspUser", b =>
+                {
+                    b.Property<int>("RequisitoId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("DirigenteAproboId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("FechaAprobacion")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("FechaSeleccion")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("RequisitoId", "UsuarioId");
+
+                    b.HasIndex("DirigenteAproboId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("RequisitoEspUsers");
+                });
+
+            modelBuilder.Entity("backend.data.models.profile.DiriProfile", b =>
                 {
                     b.Property<int>("Id")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Cargo1")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Cargo2")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Ocupacion")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<string>("Profesion")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DiriProfiles");
+                });
+
+            modelBuilder.Entity("backend.data.models.profile.ScoutProfile", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Curso")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<string>("Etapa")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)");
+
+                    b.Property<string>("UnidadEducativa")
+                        .IsRequired()
+                        .HasMaxLength(70)
+                        .HasColumnType("character varying(70)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ScoutProfiles");
+                });
+
+            modelBuilder.Entity("backend.data.models.profile.UserProfile", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Apellido")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<int>("Ci")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ComplementoCi")
+                        .IsRequired()
+                        .HasMaxLength(5)
+                        .HasColumnType("character varying(5)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
                     b.Property<DateTime>("FechaNacimiento")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Genero")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("character varying(60)");
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<int>("Telf")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.ToTable("UserProfiles");
                 });
 
-            modelBuilder.Entity("PermisoTipo", b =>
+            modelBuilder.Entity("PermisoUser", b =>
                 {
                     b.HasOne("backend.data.models.Permiso", null)
                         .WithMany()
@@ -487,9 +665,9 @@ namespace backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("backend.data.models.Tipo", null)
+                    b.HasOne("backend.data.models.User", null)
                         .WithMany()
-                        .HasForeignKey("TiposId")
+                        .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -606,11 +784,81 @@ namespace backend.Migrations
                     b.Navigation("Tipo");
                 });
 
-            modelBuilder.Entity("backend.data.models.UserProfile", b =>
+            modelBuilder.Entity("backend.data.models.especialidades.Especialidad", b =>
+                {
+                    b.HasOne("backend.data.models.Rama", "Rama")
+                        .WithMany()
+                        .HasForeignKey("RamaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Rama");
+                });
+
+            modelBuilder.Entity("backend.data.models.especialidades.RequisitoEsp", b =>
+                {
+                    b.HasOne("backend.data.models.especialidades.Especialidad", "Especialidad")
+                        .WithMany("Requisitos")
+                        .HasForeignKey("EspecialidadId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Especialidad");
+                });
+
+            modelBuilder.Entity("backend.data.models.especialidades.RequisitoEspUser", b =>
+                {
+                    b.HasOne("backend.data.models.User", "DirigenteAprobo")
+                        .WithMany()
+                        .HasForeignKey("DirigenteAproboId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("backend.data.models.especialidades.RequisitoEsp", "Requisito")
+                        .WithMany("RequisitosEspUser")
+                        .HasForeignKey("RequisitoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.data.models.User", "Usuario")
+                        .WithMany("RequisitoEspUser")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DirigenteAprobo");
+
+                    b.Navigation("Requisito");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("backend.data.models.profile.DiriProfile", b =>
+                {
+                    b.HasOne("backend.data.models.profile.UserProfile", "UserProfile")
+                        .WithOne("DiriProfile")
+                        .HasForeignKey("backend.data.models.profile.DiriProfile", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserProfile");
+                });
+
+            modelBuilder.Entity("backend.data.models.profile.ScoutProfile", b =>
+                {
+                    b.HasOne("backend.data.models.profile.UserProfile", "UserProfile")
+                        .WithOne("ScoutProfile")
+                        .HasForeignKey("backend.data.models.profile.ScoutProfile", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserProfile");
+                });
+
+            modelBuilder.Entity("backend.data.models.profile.UserProfile", b =>
                 {
                     b.HasOne("backend.data.models.User", "User")
                         .WithOne("Profile")
-                        .HasForeignKey("backend.data.models.UserProfile", "Id")
+                        .HasForeignKey("backend.data.models.profile.UserProfile", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -659,6 +907,25 @@ namespace backend.Migrations
                     b.Navigation("ObjetivosUsuario");
 
                     b.Navigation("Profile");
+
+                    b.Navigation("RequisitoEspUser");
+                });
+
+            modelBuilder.Entity("backend.data.models.especialidades.Especialidad", b =>
+                {
+                    b.Navigation("Requisitos");
+                });
+
+            modelBuilder.Entity("backend.data.models.especialidades.RequisitoEsp", b =>
+                {
+                    b.Navigation("RequisitosEspUser");
+                });
+
+            modelBuilder.Entity("backend.data.models.profile.UserProfile", b =>
+                {
+                    b.Navigation("DiriProfile");
+
+                    b.Navigation("ScoutProfile");
                 });
 #pragma warning restore 612, 618
         }

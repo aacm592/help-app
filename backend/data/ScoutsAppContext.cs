@@ -80,23 +80,6 @@ public class ScoutsAppContext: DbContext
       new AreaCrecimiento { Id = 6, Nombre = "Creatividad" }
     );
     
-    var objetivosDesdeCsv = ObjetivoEducativoCsvSeeder.GetData();
-    if (objetivosDesdeCsv.Any())
-      modelBuilder.Entity<ObjetivoEducativo>().HasData(objetivosDesdeCsv);
-    
-    var gruposDesdeCsv = GrupoScoutCsvSeeder.GetData();
-    if (gruposDesdeCsv.Any())
-      modelBuilder.Entity<GrupoScout>().HasData(gruposDesdeCsv);
-    
-    var especialidadesDesdeCsv = EspecialidadesCsvSeeder.GetData();
-    if (especialidadesDesdeCsv.Any())
-      modelBuilder.Entity<Especialidad>().HasData(especialidadesDesdeCsv);
-    
-    var requisitosEspecialidadesDesdeCsv = RequisitosEspecialidadesCsvSeeder.GetData();
-    if (requisitosEspecialidadesDesdeCsv.Any())
-      modelBuilder.Entity<RequisitoEsp>().HasData(requisitosEspecialidadesDesdeCsv);
-
-    
     modelBuilder.Entity<User>()
       .HasMany(t => t.Permisos)
       .WithMany(p => p.Users)
