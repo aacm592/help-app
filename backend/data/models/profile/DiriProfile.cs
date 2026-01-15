@@ -14,5 +14,10 @@ public class DiriProfile
   [MaxLength(30)]
   public string Ocupacion { get; set; } = string.Empty;
   
+  [MaxLength(100)]
+  public string Cargo1 { get; set; } = string.Empty;
+  
+  [MaxLength(100)]
+  public string Cargo2 { get; set; } = string.Empty;
   public UserProfile UserProfile { get; set; } = null!;
 }
