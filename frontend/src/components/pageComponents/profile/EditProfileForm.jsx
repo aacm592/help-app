@@ -16,6 +16,9 @@ export default function EditProfileForm({ user, onCancel, onSuccess }) {
       curso: user.curso || "",
       ocupacion: user.ocupacion || "",
       profesion: user.profesion || "",
+      etapa: user.etapa || "",
+      cargo1: user.cargo1 || "",
+      cargo2: user.cargo2 || "",
     },
   });
 
@@ -46,6 +49,7 @@ export default function EditProfileForm({ user, onCancel, onSuccess }) {
               variant="light"
             />
             <Input label="Nivel" name="curso" variant="light" />
+            <Input label="Etapa" name="etapa" variant="light" />
           </>
         )}
 
@@ -53,6 +57,8 @@ export default function EditProfileForm({ user, onCancel, onSuccess }) {
           <>
             <Input label="Ocupación" name="ocupacion" variant="light" />
             <Input label="Profesión" name="profesion" variant="light" />
+            <Input label="Cargo 1" name="cargo1" variant="light" />
+            <Input label="Cargo 2" name="cargo2" variant="light" />
           </>
         )}
 
