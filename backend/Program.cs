@@ -135,8 +135,38 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-  var db = scope.ServiceProvider.GetRequiredService<ScoutsAppContext>();
+  var services = scope.ServiceProvider;
+  var db = services.GetRequiredService<ScoutsAppContext>();
+  
   db.Database.Migrate();
+
+  if (!db.Especialidades.Any())
+  {
+    var especialidades = backend.data.seeders.EspecialidadesCsvSeeder.GetData();
+    db.Especialidades.AddRange(especialidades);
+    db.SaveChanges();
+  }
+
+  if (!db.RequisitosEsp.Any())
+  {
+    var requisitos = backend.data.seeders.RequisitosEspecialidadesCsvSeeder.GetData();
+    db.RequisitosEsp.AddRange(requisitos);
+    db.SaveChanges();
+  }
+  
+  if (!db.ObjetivosEducativos.Any())
+  {
+    var requisitos = backend.data.seeders.ObjetivoEducativoCsvSeeder.GetData();
+    db.ObjetivosEducativos.AddRange(requisitos);
+    db.SaveChanges();
+  }
+  
+  if (!db.GruposScout.Any())
+  {
+    var requisitos = backend.data.seeders.GrupoScoutCsvSeeder.GetData();
+    db.GruposScout.AddRange(requisitos);
+    db.SaveChanges();
+  }
 }
 
 
