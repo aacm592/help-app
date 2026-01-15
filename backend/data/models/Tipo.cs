@@ -11,5 +11,4 @@ public class Tipo
 
   public ICollection<User> Usuarios { get; set; } = new List<User>();
 
-  public ICollection<Permiso> Permisos { get; set; } = new List<Permiso>();
 }

@@ -97,10 +97,10 @@ public class ScoutsAppContext: DbContext
       modelBuilder.Entity<RequisitoEsp>().HasData(requisitosEspecialidadesDesdeCsv);
 
     
-    modelBuilder.Entity<Tipo>()
+    modelBuilder.Entity<User>()
       .HasMany(t => t.Permisos)
-      .WithMany(p => p.Tipos)
-      .UsingEntity(j => j.ToTable("PermisosTipo"));
+      .WithMany(p => p.Users)
+      .UsingEntity(j => j.ToTable("PermisosUsers"));
 
     modelBuilder.Entity<User>()
       .HasMany(u => u.Unidades)
