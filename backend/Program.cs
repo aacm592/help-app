@@ -66,6 +66,7 @@ builder.Services.AddCors(options =>
         {
           if (origin is null) return false;
           return origin.Equals("https://app-asb.vercel.app") ||
+                 origin.Equals("https://www.scoutsis.scoutsdebolivia.org") ||
                  origin.Equals("http://localhost:5173");
         })
         .AllowAnyHeader()
