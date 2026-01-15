@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using backend.data;
@@ -11,9 +12,11 @@ using backend.data;
 namespace backend.Migrations
 {
     [DbContext(typeof(ScoutsAppContext))]
-    partial class ScoutsAppContextModelSnapshot : ModelSnapshot
+    [Migration("20260113204847_UserProfile")]
+    partial class UserProfile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,19 +25,19 @@ namespace backend.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("PermisoUser", b =>
+            modelBuilder.Entity("PermisoTipo", b =>
                 {
                     b.Property<int>("PermisosId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UsersId")
+                    b.Property<int>("TiposId")
                         .HasColumnType("integer");
 
-                    b.HasKey("PermisosId", "UsersId");
+                    b.HasKey("PermisosId", "TiposId");
 
-                    b.HasIndex("UsersId");
+                    b.HasIndex("TiposId");
 
-                    b.ToTable("PermisosUsers", (string)null);
+                    b.ToTable("PermisosTipo", (string)null);
                 });
 
             modelBuilder.Entity("UnidadUser", b =>
@@ -22138,16 +22141,6 @@ namespace backend.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Cargo1")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("Cargo2")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
                     b.Property<string>("Ocupacion")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -22173,15 +22166,10 @@ namespace backend.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
 
-                    b.Property<string>("Etapa")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("character varying(15)");
-
                     b.Property<string>("UnidadEducativa")
                         .IsRequired()
-                        .HasMaxLength(70)
-                        .HasColumnType("character varying(70)");
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
 
                     b.HasKey("Id");
 
@@ -22232,7 +22220,7 @@ namespace backend.Migrations
                     b.ToTable("UserProfiles");
                 });
 
-            modelBuilder.Entity("PermisoUser", b =>
+            modelBuilder.Entity("PermisoTipo", b =>
                 {
                     b.HasOne("backend.data.models.Permiso", null)
                         .WithMany()
@@ -22240,9 +22228,9 @@ namespace backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("backend.data.models.User", null)
+                    b.HasOne("backend.data.models.Tipo", null)
                         .WithMany()
-                        .HasForeignKey("UsersId")
+                        .HasForeignKey("TiposId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

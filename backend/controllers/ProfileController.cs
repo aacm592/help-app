@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using backend.dtos.request;
+using backend.dtos.request.profile;
 using backend.services.interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,26 +9,29 @@ namespace backend.controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class EspecialidadController: ControllerBase
+public class ProfileController: ControllerBase
 {
-  private readonly IEspecialidadServer _especialidadServer;
+  private readonly IProfileService _profileService;
 
-  public EspecialidadController(IEspecialidadServer especialidadServer)
+  public ProfileController(IProfileService profileService)
   {
-    _especialidadServer = especialidadServer;
+    _profileService = profileService;
   }
-
-  [HttpGet("rama/{ramaId}")]
-  public async Task<IActionResult> GetByRama(int ramaId)
+  
+  [Authorize(Roles = "1")]
+  [HttpGet("scout")]
+  public async Task<IActionResult> GetScoutProfile()
   {
     try
     {
       var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
       if (!int.TryParse(userIdString, out var userId))
         return Unauthorized("Token de usuario inválido.");
+
+      var resultado = await _profileService.GetScoutProfile(userId);
+
+      return Ok(resultado);
       
-      var especialidades = await _especialidadServer.GetEspecialidadesByRama(ramaId,  userId);
-      return Ok(especialidades);
     }
     catch (ApplicationException ex)
     {
@@ -39,10 +42,35 @@ public class EspecialidadController: ControllerBase
       return StatusCode(500, $"Error interno: {ex.Message}");
     }
   }
+  
+  [Authorize(Roles = "2")]
+  [HttpGet("scout/{scoutId}")]
+  public async Task<IActionResult> GetScoutProfile(int scoutId)
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
 
+      var resultado = await _profileService.GetScoutProfile(scoutId, userId);
+
+      return Ok(resultado);
+      
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
+  
   [Authorize(Roles = "1")]
-  [HttpPost("req/select/{reqId}")]
-  public async Task<IActionResult> Select(int reqId)
+  [HttpPut("scout")]
+  public async Task<IActionResult> UpdateScoutProfile(ScoutProfileRequestDto dto)
   {
     try
     {
@@ -50,8 +78,9 @@ public class EspecialidadController: ControllerBase
       if (!int.TryParse(userIdString, out var userId))
         return Unauthorized("Token de usuario inválido.");
 
-      await _especialidadServer.SelectRequerimiento(reqId, userId);
-      return Ok(new { Message = "Requerimiento seleccionado correctamente." });
+      await _profileService.UpdateScoutProfile(dto, userId);
+
+      return Ok(new { Message = "Perfil actualizado exitósamente." });
     }
     catch (ApplicationException ex)
     {
@@ -64,8 +93,8 @@ public class EspecialidadController: ControllerBase
   }
   
   [Authorize(Roles = "2")]
-  [HttpPost("req/val")]
-  public async Task<IActionResult> Validar(ValidarObjetivoDto dto)
+  [HttpPut("scout/{scoutId}")]
+  public async Task<IActionResult> UpdateScoutProfile(int scoutId, ScoutProfileRequestDto dto)
   {
     try
     {
@@ -73,8 +102,9 @@ public class EspecialidadController: ControllerBase
       if (!int.TryParse(userIdString, out var userId))
         return Unauthorized("Token de usuario inválido.");
 
-      await _especialidadServer.ValidarRequerimiento(dto, userId);
-      return Ok(new { Message = "Requerimiento validado correctamente." });
+      await _profileService.UpdateScoutProfile(dto, scoutId, userId);
+
+      return Ok(new { Message = "Perfil actualizado exitósamente." });
     }
     catch (ApplicationException ex)
     {
@@ -87,8 +117,8 @@ public class EspecialidadController: ControllerBase
   }
   
   [Authorize(Roles = "2")]
-  [HttpGet("unidad/{unidadId}")]
-  public async Task<IActionResult> Validar(int unidadId)
+  [HttpGet("diri")]
+  public async Task<IActionResult> GetDiriProfile()
   {
     try
     {
@@ -96,8 +126,10 @@ public class EspecialidadController: ControllerBase
       if (!int.TryParse(userIdString, out var userId))
         return Unauthorized("Token de usuario inválido.");
 
-      var requests = await _especialidadServer.GetReqByUnidad(unidadId, userId);
-      return Ok(requests);
+      var resultado = await _profileService.GetDiriProfile(userId);
+
+      return Ok(resultado);
+      
     }
     catch (ApplicationException ex)
     {
@@ -108,34 +140,10 @@ public class EspecialidadController: ControllerBase
       return StatusCode(500, $"Error interno: {ex.Message}");
     }
   }
-
-  [Authorize(Roles = "1")]
-  [HttpGet("resume")]
-  public async Task<IActionResult> GetResume()
-  {
-    try
-    {
-      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-      if (!int.TryParse(userIdString, out var userId))
-        return Unauthorized("Token de usuario inválido.");
-
-      var requests = await _especialidadServer.GetUserResume(userId);
-      return Ok(requests);
-    }
-    catch (ApplicationException ex)
-    {
-      return BadRequest(ex.Message);
-    }
-    catch (Exception ex)
-    {
-      return StatusCode(500, $"Error interno: {ex.Message}");
-    }
-  }
-  
   
   [Authorize(Roles = "2")]
-  [HttpGet("resume/{scoutId}")]
-  public async Task<IActionResult> GetResume(int scoutId)
+  [HttpPut("diri")]
+  public async Task<IActionResult> UpdateDiriProfile(DiriProfileRequestDto dto)
   {
     try
     {
@@ -143,8 +151,9 @@ public class EspecialidadController: ControllerBase
       if (!int.TryParse(userIdString, out var userId))
         return Unauthorized("Token de usuario inválido.");
 
-      var requests = await _especialidadServer.GetUserResume(scoutId, userId);
-      return Ok(requests);
+      await _profileService.UpdateDiriProfile(dto, userId);
+
+      return Ok(new { Message = "Perfil actualizado exitósamente." });
     }
     catch (ApplicationException ex)
     {

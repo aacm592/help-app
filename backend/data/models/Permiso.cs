@@ -9,5 +9,5 @@ public class Permiso
   [MaxLength(50)]
   public string Nombre { get; set; }  = string.Empty;
 
-  public ICollection<Tipo> Tipos { get; set; } = new List<Tipo>();
+  public ICollection<User> Users { get; set; } = new List<User>();
 }

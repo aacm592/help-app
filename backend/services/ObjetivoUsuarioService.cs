@@ -188,7 +188,64 @@ public class ObjetivoUsuarioService: IObjetivoUsuarioService
 
     return await GetAndGroupObjetivos(scoutId);
   }
-  
+
+  public async Task<IEnumerable<ObjetivoEtapaResumeDto>> GetResume(int scoutId)
+  {
+    var scout = await _userRepository.GetByIdWithTipoAndUnidadesAsync(scoutId);
+    if (scout == null || !scout.Unidades.Any())
+      throw new ApplicationException("El Scout no pertenece a ninguna unidad.");
+
+    var ramaId = scout.Unidades.First().RamaId;
+
+    var objetivosCatalogo = await _objetivoEducativoRepository.GetByRamaIdAsync(ramaId);
+
+    var progresoUsuario = await _objetivoUsuarioRepository.GetByUsuarioIdAsync(scoutId);
+    var dictProgreso = progresoUsuario.ToDictionary(ou => ou.ObjetivoEducativoId);
+
+    var resumen = objetivosCatalogo
+      .GroupBy(oe => new { oe.EtapaProgresionId, oe.EtapaProgresion.Nombre })
+      .OrderBy(g => g.Key.EtapaProgresionId) 
+      .Select(etapaGroup => new ObjetivoEtapaResumeDto
+      {
+        Etapa = etapaGroup.Key.Nombre,
+        ObjetivosAreaResume = etapaGroup
+          .GroupBy(oe => oe.AreaCrecimiento.Nombre)
+          .Select(areaGroup => new ObjetivoAreaResumeDto
+          {
+            Area = areaGroup.Key,
+            TotalQuantity = areaGroup.Count(),
+            InProgressQuantity = areaGroup.Count(oe => 
+              dictProgreso.TryGetValue(oe.Id, out var p) && p.Status == ObjetivoStatus.Pendiente),
+            DoneQuantity = areaGroup.Count(oe => 
+              dictProgreso.TryGetValue(oe.Id, out var p) && p.Status == ObjetivoStatus.Cumplido)
+          })
+          .OrderBy(a => a.Area)
+          .ToList()
+      })
+      .ToList();
+
+    return resumen;
+  }
+
+  public async Task<IEnumerable<ObjetivoEtapaResumeDto>> GetResume(int scoutId, int dirigenteId)
+  {
+    var scout = await _userRepository.GetByIdWithTipoAndUnidadesAsync(scoutId);
+    if (scout == null || !scout.Unidades.Any())
+      throw new ApplicationException("El Scout no se encuentra o no pertenece a ninguna unidad.");
+
+    var dirigente = await _userRepository.GetByIdWithTipoAndUnidadesAsync(dirigenteId);
+    if (dirigente == null)
+      throw new ApplicationException("Dirigente no encontrado.");
+
+    var unidadDelScout = scout.Unidades.First(); 
+    var dirigenteEstaEnUnidad = dirigente.Unidades.Any(u => u.Id == unidadDelScout.Id);
+
+    if (!dirigenteEstaEnUnidad)
+      throw new ApplicationException("No tienes permiso para validar objetivos de este Scout, ya que no pertenecen a tu misma unidad.");
+
+    return await GetResume(scoutId);
+  }
+
   private async Task<IEnumerable<RamaObjetivosDto>> GetAndGroupObjetivos(int scoutId)
   {
     var objetivos = await _objetivoUsuarioRepository.GetByUsuarioIdWithFullTreeAsync(scoutId);

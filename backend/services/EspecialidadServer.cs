@@ -33,6 +33,7 @@ public class EspecialidadServer: IEspecialidadServer
     foreach (var espDto in especialidadesDto)
     {
       int aprobadosCount = 0;
+      int iniciadosCount = 0; 
 
       foreach (var reqDto in espDto.Requerimientos)
       {
@@ -41,11 +42,13 @@ public class EspecialidadServer: IEspecialidadServer
 
         if (rel?.Status == ObjetivoStatus.Cumplido) 
           aprobadosCount++;
+        else if (rel?.Status == ObjetivoStatus.Pendiente)
+          iniciadosCount++;
       }
 
-      espDto.Status = aprobadosCount == 0 ? "Sin iniciar" : 
-        aprobadosCount == espDto.Requerimientos.Count ? "Completada" : 
-        "En Progreso";
+      espDto.Status = aprobadosCount == espDto.Requerimientos.Count ? "Completada" : 
+        iniciadosCount + aprobadosCount > 0 ? "En Progreso" : 
+        "Sin iniciar";
     }
 
     return especialidadesDto;
@@ -127,5 +130,80 @@ public class EspecialidadServer: IEspecialidadServer
     var requerimientos = await _requisitoEspRepository.GetPendientesByUnidad(unidadId);
     
     return _mapper.Map<List<UserRequisitoEspDto>>(requerimientos);
+  }
+
+  public async Task<IEnumerable<EspecialidadResumeDto>> GetUserResume(int userId)
+  {
+    var user = await _userRepository.GetByIdWithTipoAndUnidadesAsync(userId);
+    
+    if (user == null || !user.Unidades.Any())
+      throw new ApplicationException("El usuario no se encuentró o no pertenece a ninguna unidad.");
+    
+    var unidadDelScout = user.Unidades.First();
+    
+    var requisitos = await _requisitoEspRepository.GetRequisitosByUser(userId);
+    requisitos = requisitos.Where(x => x.Requisito.Especialidad.RamaId == unidadDelScout?.RamaId);
+    
+    var result =  new Dictionary<string, EspecialidadResumeDto>();
+
+    foreach (var requisito in requisitos)
+    {
+      string name = requisito.Requisito.Especialidad.Nombre;
+      var status =  requisito.Status;
+      if (result.ContainsKey(name))
+      {
+        switch (status)
+        {
+          case ObjetivoStatus.Pendiente:
+            result[name].InProgressQuantity++;
+            break;
+          case ObjetivoStatus.Cumplido:
+            result[name].DoneQuantity++;
+            break;
+        }
+      }
+      else
+      {
+        var newRequisito = new EspecialidadResumeDto()
+        {
+          Name = name,
+          RequirementQuantity = requisito.Requisito.Especialidad.Requisitos.Count(),
+          InProgressQuantity = status == ObjetivoStatus.Pendiente ? 1 : 0,
+          DoneQuantity = status == ObjetivoStatus.Cumplido ? 1 : 0,
+        };
+        
+        result.Add(name, newRequisito);
+      }
+
+      foreach (var req in (result.Values))
+      {
+        if (req.DoneQuantity == req.RequirementQuantity)
+          result[req.Name].Status = "Terminado";
+        else
+          result[req.Name].Status = "En Progreso";
+      }
+    }
+
+    return result.Values.ToList();
+  }
+
+  public async Task<IEnumerable<EspecialidadResumeDto>> GetUserResume(int userId, int dirigenteId)
+  {
+    
+    var scout = await _userRepository.GetByIdWithTipoAndUnidadesAsync(userId);
+    if (scout == null || !scout.Unidades.Any())
+      throw new ApplicationException("El Scout no se encuentra o no pertenece a ninguna unidad.");
+
+    var dirigente = await _userRepository.GetByIdWithTipoAndUnidadesAsync(dirigenteId);
+    if (dirigente == null)
+      throw new ApplicationException("Dirigente no encontrado.");
+
+    var unidadDelScout = scout.Unidades.First(); 
+    var dirigenteEstaEnUnidad = dirigente.Unidades.Any(u => u.Id == unidadDelScout.Id);
+
+    if (!dirigenteEstaEnUnidad)
+      throw new ApplicationException("No tienes permiso para validar objetivos de este Scout, ya que no pertenecen a tu misma unidad.");
+
+    return await GetUserResume(userId);
   }
 }
