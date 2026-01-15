@@ -27,6 +27,11 @@ export default function ProfileBox({ user }) {
       {user.unidadEducativa && (
         <>
           <ProfileInfoItem
+            icon="arrow_warm_up"
+            label="Etapa"
+            data={user.etapa}
+          />
+          <ProfileInfoItem
             icon="school"
             label="Unidad Educativa"
             data={user.unidadEducativa}
@@ -36,6 +41,16 @@ export default function ProfileBox({ user }) {
       )}
       {user.profesion && (
         <>
+          <ProfileInfoItem
+            icon="sensor_occupied"
+            label="Cargo 1"
+            data={user.cargo1}
+          />
+          <ProfileInfoItem
+            icon="sensor_occupied"
+            label="Cargo 2"
+            data={user.cargo2}
+          />
           <ProfileInfoItem
             icon="school"
             label="Profesión"
