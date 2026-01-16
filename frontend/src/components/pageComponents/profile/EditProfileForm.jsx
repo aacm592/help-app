@@ -41,7 +41,7 @@ export default function EditProfileForm({ user, onCancel, onSuccess }) {
         <Input label="Género" name="genero" variant="light" />
         <Input label="E-mail" name="email" variant="light" />
 
-        {user.unidadEducativa && (
+        {user.rol === "Scout" && (
           <>
             <Input
               label="Unidad Educativa"
@@ -53,7 +53,7 @@ export default function EditProfileForm({ user, onCancel, onSuccess }) {
           </>
         )}
 
-        {user.profesion && (
+        {user.rol === "Dirigente" && (
           <>
             <Input label="Ocupación" name="ocupacion" variant="light" />
             <Input label="Profesión" name="profesion" variant="light" />

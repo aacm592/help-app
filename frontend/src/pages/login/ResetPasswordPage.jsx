@@ -28,8 +28,8 @@ const resetSchema = z
 
 export default function ResetPasswordPage() {
   const buttonClass =
-    "space-x-4 md:space-x-6 w-full bg-fuchsia-100 px-7 py-1.5 !outline-purple-400 outline-3";
-  const textClass = "text-[18px] md:text-[24px] text-black";
+    "space-x-4 xl:space-x-6 xl:w-3/7 w-full bg-fuchsia-100 px-7 py-1.5 !outline-purple-400 outline-3";
+  const textClass = "text-[18px] xl:text-[24px] text-black";
   const iconClass = "material-symbols-outlined text-4xl!";
 
   const [apiError, setApiError] = useState(null);
@@ -84,7 +84,7 @@ export default function ResetPasswordPage() {
 
       {apiError && (
         <div
-          className="w-2/3 md:w-1/3 p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-100"
+          className="w-2/3 xl:w-1/3 p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-100"
           role="alert"
         >
           {apiError}
@@ -92,7 +92,7 @@ export default function ResetPasswordPage() {
       )}
       {success && (
         <div
-          className="w-2/3 md:w-1/3 p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-100"
+          className="w-2/3 xl:w-1/3 p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-100"
           role="alert"
         >
           {success}
@@ -102,7 +102,7 @@ export default function ResetPasswordPage() {
       <FormProvider {...methods}>
         <form
           onSubmit={methods.handleSubmit(submit)}
-          className="flex flex-col gap-y-6 w-2/3 md:w-1/3"
+          className="flex flex-col gap-y-6 w-2/3 xl:w-1/3"
         >
           <Input
             label="Nombre de usuario"
@@ -134,7 +134,7 @@ export default function ResetPasswordPage() {
             rightContent={passwordButton}
           />
 
-          <div className="flex justify-between gap-10 mt-4">
+          <div className="flex xl:flex-row flex-col gap-y-10 justify-between mt-4">
             <Button
               dark
               type="submit"

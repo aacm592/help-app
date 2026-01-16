@@ -24,7 +24,7 @@ export default function ProfileBox({ user }) {
       <ProfileInfoItem icon="badge" label="Rol" data={user.rol} />{" "}
       <ProfileInfoItem icon="mobile" label="Celular" data={user.telf} />
       <ProfileInfoItem icon="wc" label="Género" data={user.genero} />
-      {user.unidadEducativa && (
+      {user.rol === "Scout" && (
         <>
           <ProfileInfoItem
             icon="arrow_warm_up"
@@ -39,7 +39,7 @@ export default function ProfileBox({ user }) {
           <ProfileInfoItem icon="school" label="Nivel" data={user.curso} />
         </>
       )}
-      {user.profesion && (
+      {user.rol === "Dirigente" && (
         <>
           <ProfileInfoItem
             icon="sensor_occupied"
