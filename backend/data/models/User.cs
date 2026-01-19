@@ -20,8 +20,7 @@ public class User
   
   public ICollection<RequisitoEspUser> RequisitoEspUser { get; set; } = new List<RequisitoEspUser>();
 
-  public ICollection<Permiso> Permisos { get; set; } = new List<Permiso>();
-
+  public ICollection<UserPermiso> UserPermisos { get; set; } = new List<UserPermiso>();
   [MaxLength(10)]
   public string? PasswordResetToken { get; set; }
 
