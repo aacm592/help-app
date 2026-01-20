@@ -1,6 +1,7 @@
 using backend.data.models;
 using backend.data.models.especialidades;
 using backend.data.models.profile;
+using backend.data.models.registros;
 using backend.data.seeders;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,6 +31,9 @@ public class ScoutsAppContext: DbContext
   public DbSet<RequisitoEsp> RequisitosEsp { get; set; }
   public DbSet<RequisitoEspUser> RequisitoEspUsers { get; set; }
   public DbSet<UserPermiso> UserPermisos { get; set; }
+  public DbSet<Gestion> Gestiones { get; set; }
+  public DbSet<Registro> Registros { get; set; }
+  
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     base.OnModelCreating(modelBuilder);
@@ -180,6 +184,37 @@ public class ScoutsAppContext: DbContext
         .WithMany() 
         .HasForeignKey(up => up.DistritoId)
         .OnDelete(DeleteBehavior.Restrict);
+    });
+    
+    modelBuilder.Entity<Registro>(entity =>
+    {
+      entity.HasKey(e => new { e.GestionId, e.UserId });
+      
+      entity.HasOne(e => e.User)
+        .WithMany(r => r.Registros)
+        .HasForeignKey(e => e.UserId);
+      
+      entity.HasOne(e => e.Gestion)
+        .WithMany(r => r.Registros)
+        .HasForeignKey(e => e.GestionId);
+    });
+    
+    modelBuilder.Entity<RegistroScout>(entity =>
+    {
+      entity.HasKey(rs => new { rs.GestionId, rs.UserId });
+
+      entity.HasOne(rs => rs.Registro)
+        .WithOne(r => r.RegistroScout)
+        .HasForeignKey<RegistroScout>(rs => new { rs.GestionId, rs.UserId });
+    });
+
+    modelBuilder.Entity<RegistroDiri>(entity =>
+    {
+      entity.HasKey(rd => new { rd.GestionId, rd.UserId });
+
+      entity.HasOne(rd => rd.Registro)
+        .WithOne(r => r.RegistroDiri)
+        .HasForeignKey<RegistroDiri>(rd => new { rd.GestionId, rd.UserId });
     });
   }
 }

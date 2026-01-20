@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using backend.data.models.especialidades;
 using backend.data.models.profile;
+using backend.data.models.registros;
 
 namespace backend.data.models;
 
@@ -27,4 +28,5 @@ public class User
   public DateTime? PasswordResetTokenExpiry { get; set; }
   
   public UserProfile? Profile { get; set; }
+  public ICollection<Registro> Registros { get; set; } = new List<Registro>();
 }
