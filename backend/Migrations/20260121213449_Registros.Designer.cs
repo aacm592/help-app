@@ -12,8 +12,8 @@ using backend.data;
 namespace backend.Migrations
 {
     [DbContext(typeof(ScoutsAppContext))]
-    [Migration("20260120191004_registros")]
-    partial class registros
+    [Migration("20260121213449_Registros")]
+    partial class Registros
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -517,17 +517,10 @@ namespace backend.Migrations
                     b.Property<int>("PermisoId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("GrupoScoutId")
+                    b.Property<int>("AreaId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("DistritoId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("UserId", "PermisoId", "GrupoScoutId", "DistritoId");
-
-                    b.HasIndex("DistritoId");
-
-                    b.HasIndex("GrupoScoutId");
+                    b.HasKey("UserId", "PermisoId");
 
                     b.HasIndex("PermisoId");
 
@@ -977,18 +970,6 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.data.models.UserPermiso", b =>
                 {
-                    b.HasOne("backend.data.models.Distrito", "Distrito")
-                        .WithMany()
-                        .HasForeignKey("DistritoId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("backend.data.models.GrupoScout", "GrupoScout")
-                        .WithMany()
-                        .HasForeignKey("GrupoScoutId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("backend.data.models.Permiso", "Permiso")
                         .WithMany("UserPermisos")
                         .HasForeignKey("PermisoId")
@@ -1000,10 +981,6 @@ namespace backend.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Distrito");
-
-                    b.Navigation("GrupoScout");
 
                     b.Navigation("Permiso");
 

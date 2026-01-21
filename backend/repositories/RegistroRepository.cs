@@ -1,0 +1,26 @@
+using backend.data;
+using backend.data.models.registros;
+using backend.repositories.interfaces;
+
+namespace backend.repositories;
+
+public class RegistroRepository: IRegistroRepository
+{
+  private readonly ScoutsAppContext _context;
+
+  public RegistroRepository(ScoutsAppContext context)
+  {
+    _context = context;
+  }
+
+  public async Task<Registro> Create(Registro registro)
+  {
+    await _context.Registros.AddAsync(registro);
+    return registro;
+  }
+
+  public async Task Update()
+  {
+    await _context.SaveChangesAsync();
+  }
+}

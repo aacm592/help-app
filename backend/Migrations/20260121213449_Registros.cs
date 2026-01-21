@@ -7,11 +7,45 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace backend.Migrations
 {
     /// <inheritdoc />
-    public partial class registros : Migration
+    public partial class Registros : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_UserPermisos_Distritos_DistritoId",
+                table: "UserPermisos");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_UserPermisos_GruposScout_GrupoScoutId",
+                table: "UserPermisos");
+
+            migrationBuilder.DropPrimaryKey(
+                name: "PK_UserPermisos",
+                table: "UserPermisos");
+
+            migrationBuilder.DropIndex(
+                name: "IX_UserPermisos_DistritoId",
+                table: "UserPermisos");
+
+            migrationBuilder.DropIndex(
+                name: "IX_UserPermisos_GrupoScoutId",
+                table: "UserPermisos");
+
+            migrationBuilder.DropColumn(
+                name: "GrupoScoutId",
+                table: "UserPermisos");
+
+            migrationBuilder.RenameColumn(
+                name: "DistritoId",
+                table: "UserPermisos",
+                newName: "AreaId");
+
+            migrationBuilder.AddPrimaryKey(
+                name: "PK_UserPermisos",
+                table: "UserPermisos",
+                columns: new[] { "UserId", "PermisoId" });
+
             migrationBuilder.CreateTable(
                 name: "Gestiones",
                 columns: table => new
@@ -127,6 +161,53 @@ namespace backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "Gestiones");
+
+            migrationBuilder.DropPrimaryKey(
+                name: "PK_UserPermisos",
+                table: "UserPermisos");
+
+            migrationBuilder.RenameColumn(
+                name: "AreaId",
+                table: "UserPermisos",
+                newName: "DistritoId");
+
+            migrationBuilder.AddColumn<int>(
+                name: "GrupoScoutId",
+                table: "UserPermisos",
+                type: "integer",
+                nullable: false,
+                defaultValue: 0);
+
+            migrationBuilder.AddPrimaryKey(
+                name: "PK_UserPermisos",
+                table: "UserPermisos",
+                columns: new[] { "UserId", "PermisoId", "GrupoScoutId", "DistritoId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserPermisos_DistritoId",
+                table: "UserPermisos",
+                column: "DistritoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserPermisos_GrupoScoutId",
+                table: "UserPermisos",
+                column: "GrupoScoutId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_UserPermisos_Distritos_DistritoId",
+                table: "UserPermisos",
+                column: "DistritoId",
+                principalTable: "Distritos",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_UserPermisos_GruposScout_GrupoScoutId",
+                table: "UserPermisos",
+                column: "GrupoScoutId",
+                principalTable: "GruposScout",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
         }
     }
 }

@@ -165,7 +165,7 @@ public class ScoutsAppContext: DbContext
     
     modelBuilder.Entity<UserPermiso>(entity =>
     {
-      entity.HasKey(up => new { up.UserId, up.PermisoId, up.GrupoScoutId, up.DistritoId });
+      entity.HasKey(up => new { up.UserId, up.PermisoId});
 
       entity.HasOne(up => up.User)
         .WithMany(u => u.UserPermisos)
@@ -174,16 +174,6 @@ public class ScoutsAppContext: DbContext
       entity.HasOne(up => up.Permiso)
         .WithMany(p => p.UserPermisos)
         .HasForeignKey(up => up.PermisoId);
-
-      entity.HasOne(up => up.GrupoScout)
-        .WithMany()
-        .HasForeignKey(up => up.GrupoScoutId)
-        .OnDelete(DeleteBehavior.Restrict);
-
-      entity.HasOne(up => up.Distrito)
-        .WithMany() 
-        .HasForeignKey(up => up.DistritoId)
-        .OnDelete(DeleteBehavior.Restrict);
     });
     
     modelBuilder.Entity<Registro>(entity =>

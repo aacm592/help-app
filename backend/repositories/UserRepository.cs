@@ -47,6 +47,7 @@ public class UserRepository : IUserRepository
     return await _context.Users
       .Include(u => u.Profile)
       .Include(u => u.Tipo)
+      .Include(u => u.UserPermisos)
       .Include(u => u.Unidades)
         .ThenInclude(un => un.Rama)
       .Include(u => u.Unidades)

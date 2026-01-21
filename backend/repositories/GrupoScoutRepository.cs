@@ -26,4 +26,16 @@ public class GrupoScoutRepository : IGrupoScoutRepository
       .OrderBy(g => g.Nombre)
       .ToListAsync();
   }
+
+  public async Task<GrupoScout?> GetById(int id)
+  {
+    return await _context.GruposScout
+      .Include(g => g.Unidades)
+      .ThenInclude(u => u.Usuarios)
+      .ThenInclude(u => u.Profile)
+      .Include(g => g.Unidades)
+      .ThenInclude(u => u.Usuarios)
+      .ThenInclude(u => u.Tipo)
+      .FirstOrDefaultAsync(g => g.Id == id);
+  }
 }
