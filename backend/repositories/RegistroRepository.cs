@@ -16,6 +16,7 @@ public class RegistroRepository: IRegistroRepository
   public async Task<Registro> Create(Registro registro)
   {
     await _context.Registros.AddAsync(registro);
+    await _context.SaveChangesAsync();
     return registro;
   }
 

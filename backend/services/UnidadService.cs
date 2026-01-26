@@ -179,6 +179,9 @@ public class UnidadService : IUnidadService
     }
     else
     {
+      if (user.Unidades.Count > 2)
+        throw new ApplicationException("Los Dirigentes solo pueden pertenecer a 2 unidades a la vez.");
+      
       if (unidad.GrupoScout == null)
         throw new ApplicationException("Error de datos: La unidad no tiene Grupo Scout asignado.");
 

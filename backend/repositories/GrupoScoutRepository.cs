@@ -30,6 +30,7 @@ public class GrupoScoutRepository : IGrupoScoutRepository
   public async Task<GrupoScout?> GetById(int id)
   {
     return await _context.GruposScout
+      .Include(g => g.Distrito)
       .Include(g => g.Unidades)
       .ThenInclude(u => u.Usuarios)
       .ThenInclude(u => u.Profile)

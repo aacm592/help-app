@@ -33,7 +33,7 @@ public class GrupoScoutController : ControllerBase
   }
   
   [Authorize(Roles = "2")]
-  [Authorize(Roles = "p1")]
+  [Authorize(Roles = "p1, p2")]
   [HttpGet("unidades/users")]
   public async Task<IActionResult> GetUsers()
   {
