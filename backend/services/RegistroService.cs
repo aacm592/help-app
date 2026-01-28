@@ -1,3 +1,4 @@
+using backend.data.models;
 using backend.data.models.registros;
 using backend.enums;
 using backend.repositories.interfaces;
@@ -25,9 +26,7 @@ public class RegistroService : IRegistroService
 
   public async Task RegisterUserToGroup(int scoutId, int diriId)
   {
-    var gestion = await _gestiónRepository.GetGestionActual();
-    if (gestion == null)
-      throw new ApplicationException("No hay una gestión activa actualmente");
+    var gestion = await GetGestion();
 
     var diri = await _userRepository.GetByIdWithTipoAndUnidadesAsync(diriId);
     if (diri == null)
@@ -45,20 +44,8 @@ public class RegistroService : IRegistroService
     var scout = await _userRepository.GetByIdWithTipoAndUnidadesAsync(scoutId);
     if (scout == null)
       throw new ApplicationException("El scout no existe");
-    
-    var permisoScout = scout.UserPermisos.FirstOrDefault(p => p.PermisoId == 1 || p.PermisoId == 2);
-    
-    switch (permisoScout)
-    {
-      case null:
-        if (scout.Unidades.Count > 1 && !scout.Unidades.Any(u => u.GrupoScoutId == permisoDiri.AreaId))
-          throw new ApplicationException("No estás en el mismo grupo que el scout");
-        break;
-      default:
-        if(permisoScout.AreaId != permisoDiri.AreaId)
-          throw new ApplicationException("No estás en el mismo grupo que el scout");
-        break;
-    }
+
+    VerifyScoutsOnTheSameGroup(scout, diri);
 
     var registro = new Registro()
     {
@@ -101,4 +88,62 @@ public class RegistroService : IRegistroService
 
     await _registroRepository.Create(registro);
   }
+
+  public async Task CancelRegisterToGroup(int scoutId, int diriId)
+  {
+    var gestion = GetGestion();
+    
+    var diri = await _userRepository.GetByIdWithTipoAndUnidadesAsync(diriId);
+    if (diri == null)
+      throw new ApplicationException("Usuario no encontrado");
+    
+    var permisoDiri = diri.UserPermisos.FirstOrDefault(p => p.PermisoId == 1 || p.PermisoId == 2);
+    
+    if (permisoDiri == null)
+      throw new ApplicationException("No tienes permisos para registrar usuarios a un grupo scout");
+
+    var grupo = await _grupoScoutRepository.GetById(permisoDiri.AreaId);
+    if (grupo == null)
+      throw new ApplicationException("Grupo no encontrado");
+    
+    var scout = await _userRepository.GetByIdWithTipoAndUnidadesAsync(scoutId);
+    if (scout == null)
+      throw new ApplicationException("El scout no existe");
+    
+    var registro = await _registroRepository.GetRegistroByUserId(scoutId, gestion.Id);
+    if (registro == null)
+      throw new ApplicationException("Registro no encontrado");
+    
+    if (registro.Status != RegistroStatus.RegistroGrupo)
+      throw new ApplicationException("No se puede cancelar el registro");
+    
+    await _registroRepository.Delete(registro);
+  }
+
+  private async Task<Gestion> GetGestion()
+  {
+    var gestion = await _gestiónRepository.GetGestionActual();
+    if (gestion == null)
+      throw new ApplicationException("No hay una gestión activa actualmente");
+    return gestion;
+  }
+
+  private void VerifyScoutsOnTheSameGroup(User scout, User diri)
+  {
+    var permisoScout = scout.UserPermisos.FirstOrDefault(p => p.PermisoId == 1 || p.PermisoId == 2);
+    var permisoDiri = diri.UserPermisos.FirstOrDefault(p => p.PermisoId == 1 || p.PermisoId == 2);
+
+    switch (permisoScout)
+    {
+      case null:
+        if (scout.Unidades.Count > 1 && !scout.Unidades.Any(u => u.GrupoScoutId == permisoDiri!.AreaId))
+          throw new ApplicationException("No estás en el mismo grupo que el scout");
+        break;
+      default:
+        if(permisoScout.AreaId != permisoDiri!.AreaId)
+          throw new ApplicationException("No estás en el mismo grupo que el scout");
+        break;
+    }
+  }
+  
 }

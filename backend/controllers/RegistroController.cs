@@ -8,19 +8,19 @@ namespace backend.controllers;
 [Authorize]
 [Controller]
 [Route("api/[controller]")]
-public class RegistroControler: ControllerBase
+public class RegistroController: ControllerBase
 {
   private readonly IRegistroService _registroService;
 
-  public RegistroControler(IRegistroService registroService)
+  public RegistroController(IRegistroService registroService)
   {
     _registroService = registroService;
   }
 
   [Authorize(Roles = "2")]
   [Authorize(Roles = "p1, p2")]
-  [HttpGet("/users/{scoutId}")]
-  public async Task<IActionResult> GetUsers(int scoutId)
+  [HttpGet("/grupo/user")]
+  public async Task<IActionResult> RegisterUserToGroup(int scoutId)
   {
     try
     {
@@ -30,6 +30,30 @@ public class RegistroControler: ControllerBase
 
       await _registroService.RegisterUserToGroup(scoutId, userId);
       return Ok(new { Message = "Usuario registrado correctamente." });
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
+  
+  [Authorize(Roles = "2")]
+  [Authorize(Roles = "p1, p2")]
+  [HttpDelete("/grupo/user")]
+  public async Task<IActionResult> DeleteRegisterUserToGroup(int scoutId)
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      await _registroService.CancelRegisterToGroup(scoutId, userId);
+      return Ok(new { Message = "Registro cancelado correctamente." });
     }
     catch (ApplicationException ex)
     {
