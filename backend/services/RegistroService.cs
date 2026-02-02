@@ -1,5 +1,6 @@
 using backend.data.models;
 using backend.data.models.registros;
+using backend.dtos.auth;
 using backend.enums;
 using backend.repositories.interfaces;
 using backend.services.interfaces;
@@ -24,7 +25,7 @@ public class RegistroService : IRegistroService
     _profileRepository = profileRepository;
   }
 
-  public async Task RegisterUserToGroup(int scoutId, int diriId)
+  public async Task RegisterUserToGroup(IdDto scoutId, int diriId)
   {
     var gestion = await GetGestion();
 
@@ -41,7 +42,7 @@ public class RegistroService : IRegistroService
     if (grupo == null)
       throw new ApplicationException("Grupo no encontrado");
     
-    var scout = await _userRepository.GetByIdWithTipoAndUnidadesAsync(scoutId);
+    var scout = await _userRepository.GetByIdWithTipoAndUnidadesAsync(scoutId.Id);
     if (scout == null)
       throw new ApplicationException("El scout no existe");
 
@@ -66,7 +67,7 @@ public class RegistroService : IRegistroService
     switch (scout.TipoId)
     {
       case 1:
-        var ps = await _profileRepository.GetScoutProfile(scoutId);
+        var ps = await _profileRepository.GetScoutProfile(scoutId.Id);
         registro.RegistroScout = new RegistroScout()
         {
           Curso = ps!.ScoutProfile!.Curso,
@@ -75,7 +76,7 @@ public class RegistroService : IRegistroService
         };
         break;
       case 2:
-        var pd = await _profileRepository.GetDiriProfile(scoutId);
+        var pd = await _profileRepository.GetDiriProfile(scoutId.Id);
         registro.RegistroDiri = new RegistroDiri()
         {
           Cargo1 = pd!.DiriProfile!.Cargo1,
@@ -89,7 +90,7 @@ public class RegistroService : IRegistroService
     await _registroRepository.Create(registro);
   }
 
-  public async Task CancelRegisterToGroup(int scoutId, int diriId)
+  public async Task CancelRegisterToGroup(IdDto scoutId, int diriId)
   {
     var gestion = GetGestion();
     
@@ -106,11 +107,11 @@ public class RegistroService : IRegistroService
     if (grupo == null)
       throw new ApplicationException("Grupo no encontrado");
     
-    var scout = await _userRepository.GetByIdWithTipoAndUnidadesAsync(scoutId);
+    var scout = await _userRepository.GetByIdWithTipoAndUnidadesAsync(scoutId.Id);
     if (scout == null)
       throw new ApplicationException("El scout no existe");
     
-    var registro = await _registroRepository.GetRegistroByUserId(scoutId, gestion.Id);
+    var registro = await _registroRepository.GetRegistroByUserId(scoutId.Id, gestion.Id);
     if (registro == null)
       throw new ApplicationException("Registro no encontrado");
     

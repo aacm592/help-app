@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using backend.dtos.auth;
 using backend.services.interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,8 +20,8 @@ public class RegistroController: ControllerBase
 
   [Authorize(Roles = "2")]
   [Authorize(Roles = "p1, p2")]
-  [HttpGet("/grupo/user")]
-  public async Task<IActionResult> RegisterUserToGroup(int scoutId)
+  [HttpPost("/grupo/user")]
+  public async Task<IActionResult> RegisterUserToGroup(IdDto scoutId)
   {
     try
     {
@@ -44,7 +45,7 @@ public class RegistroController: ControllerBase
   [Authorize(Roles = "2")]
   [Authorize(Roles = "p1, p2")]
   [HttpDelete("/grupo/user")]
-  public async Task<IActionResult> DeleteRegisterUserToGroup(int scoutId)
+  public async Task<IActionResult> DeleteRegisterUserToGroup(IdDto scoutId)
   {
     try
     {

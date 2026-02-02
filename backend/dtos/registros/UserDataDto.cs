@@ -6,4 +6,7 @@ public class UserDataDto
   public string Nombre { get; set; } = string.Empty;
   public int Edad { get; set; }
   public string Rol { get; set; } = string.Empty;
+  public string RegistroStatus { get; set; } = string.Empty;
+  public string Grupo { get; set; } = string.Empty;
+  public string Distrito { get; set; } = string.Empty;
 }

@@ -19,6 +19,11 @@ public class GestionRepository: IGestionRepository
     return await _context.Gestiones.FirstOrDefaultAsync(x => x.Active);
   }
 
+  public async Task<Gestion?> GetUltimaGestion()
+  {
+    return await _context.Gestiones.OrderBy(g => g.Id).LastOrDefaultAsync();
+  }
+  
   public async Task<Gestion?> CreateGestion(Gestion gestion)
   {
     await _context.Gestiones.AddAsync(gestion);

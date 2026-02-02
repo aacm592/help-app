@@ -16,8 +16,6 @@ public class GestionService: IGestionService
   public async Task CrearGestion(int year)
   {
     var gestionActual = await _gestionRepository.GetGestionActual();
-    gestionActual.Year = year;
-    
     
     if (gestionActual != null)
       throw new ApplicationException("Hay una gestión activa actualmente");

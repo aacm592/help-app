@@ -27,7 +27,7 @@ public class GrupoScoutRepository : IGrupoScoutRepository
       .ToListAsync();
   }
 
-  public async Task<GrupoScout?> GetById(int id)
+  public async Task<GrupoScout?> GetByIdWithUsers(int id, int gestionId)
   {
     return await _context.GruposScout
       .Include(g => g.Distrito)
@@ -37,6 +37,33 @@ public class GrupoScoutRepository : IGrupoScoutRepository
       .Include(g => g.Unidades)
       .ThenInclude(u => u.Usuarios)
       .ThenInclude(u => u.Tipo)
+      .Include(g => g.Unidades)
+      .ThenInclude(u => u.Usuarios)
+      .ThenInclude(u => u.Registros.Where(x => x.GestionId == gestionId))
       .FirstOrDefaultAsync(g => g.Id == id);
+  }
+  
+  public async Task<GrupoScout?> GetByRamaWithUsers(int id, int gestionId, int ramaId)
+  {
+    return await _context.GruposScout
+      .Include(g => g.Distrito)
+      .Include(g => g.Unidades.Where(u => u.RamaId == ramaId))
+      .ThenInclude(u => u.Usuarios)
+      .ThenInclude(u => u.Profile)
+      .Include(g => g.Unidades.Where(u => u.RamaId == ramaId))
+      .ThenInclude(u => u.Usuarios)
+      .ThenInclude(u => u.Tipo)
+      .Include(g => g.Unidades.Where(u => u.RamaId == ramaId))
+      .ThenInclude(u => u.Usuarios)
+      .ThenInclude(u => u.Registros.Where(x => x.GestionId == gestionId))
+      .FirstOrDefaultAsync(g => g.Id == id);
+  }
+
+  public async Task<GrupoScout?> GetById(int id)
+  {
+    return await _context.GruposScout
+      .Include(g => g.Distrito)
+      .Include(g => g.Unidades)
+      .FirstOrDefaultAsync(g => g.Id == id);  
   }
 }
