@@ -56,4 +56,28 @@ public class GrupoScoutService : IGrupoScoutService
   
     return _mapper.Map<List<GrupoUnidadesResponseDto>>(grupo.Unidades.ToList());
   }
+
+  public async Task<IEnumerable<GrupoUnidadesResponseDto>> GetUsersByRamaId(int userId, int ramaId)
+  {
+    var user = await _userRepository.GetByIdWithTipoAndUnidadesAsync(userId);
+    if (user == null)
+      throw new ApplicationException("Usuario no encontrado.");
+
+    var permiso = user.UserPermisos.FirstOrDefault(x => x.PermisoId == 1 || x.PermisoId == 2);
+  
+    if (permiso == null)
+      throw new ApplicationException("El usuario no tiene el permiso de responsable de grupo.");
+
+    if (permiso.AreaId <= 0)
+      throw new ApplicationException("El usuario no tiene un ID de grupo válido asignado.");
+
+    var gestion = await _gestionRepository.GetUltimaGestion();
+
+    var grupo = await _grupoScoutRepository.GetByRamaWithUsers(permiso.AreaId, gestion!.Id, ramaId);
+  
+    if (grupo == null)
+      throw new ApplicationException("El grupo asignado al usuario no existe en la base de datos.");
+    
+    return _mapper.Map<List<GrupoUnidadesResponseDto>>(grupo.Unidades.ToList());
+  }
 }

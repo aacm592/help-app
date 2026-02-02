@@ -46,6 +46,7 @@ public class GrupoScoutRepository : IGrupoScoutRepository
   public async Task<GrupoScout?> GetByRamaWithUsers(int id, int gestionId, int ramaId)
   {
     return await _context.GruposScout
+      .AsNoTracking()
       .Include(g => g.Distrito)
       .Include(g => g.Unidades.Where(u => u.RamaId == ramaId))
       .ThenInclude(u => u.Usuarios)
