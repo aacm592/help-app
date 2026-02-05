@@ -30,16 +30,27 @@ public class GrupoScoutRepository : IGrupoScoutRepository
   public async Task<GrupoScout?> GetByIdWithUsers(int id, int gestionId)
   {
     return await _context.GruposScout
-      .Include(g => g.Distrito)
+      .AsNoTracking()
       .Include(g => g.Unidades)
       .ThenInclude(u => u.Usuarios)
       .ThenInclude(u => u.Profile)
+      .ThenInclude(p => p!.DiriProfile)
+      .Include(g => g.Unidades)
+      .ThenInclude(u => u.Usuarios)
+      .ThenInclude(u => u.Profile)
+      .ThenInclude(p => p!.ScoutProfile)
       .Include(g => g.Unidades)
       .ThenInclude(u => u.Usuarios)
       .ThenInclude(u => u.Tipo)
       .Include(g => g.Unidades)
       .ThenInclude(u => u.Usuarios)
-      .ThenInclude(u => u.Registros.Where(x => x.GestionId == gestionId))
+      .ThenInclude(u => u.Registros.Where(r => r.GestionId == gestionId))
+      .ThenInclude(r => r.RegistroScout)
+      .Include(g => g.Unidades)
+      .ThenInclude(u => u.Usuarios)
+      .ThenInclude(u => u.Registros.Where(r => r.GestionId == gestionId))
+      .ThenInclude(r => r.RegistroDiri)
+      .AsSplitQuery()
       .FirstOrDefaultAsync(g => g.Id == id);
   }
   
@@ -47,16 +58,19 @@ public class GrupoScoutRepository : IGrupoScoutRepository
   {
     return await _context.GruposScout
       .AsNoTracking()
-      .Include(g => g.Distrito)
       .Include(g => g.Unidades.Where(u => u.RamaId == ramaId))
       .ThenInclude(u => u.Usuarios)
       .ThenInclude(u => u.Profile)
+      .ThenInclude(u => u!.DiriProfile)
+      .Include(g => g.Unidades.Where(u => u.RamaId == ramaId))
+      .ThenInclude(u => u.Usuarios)
+      .ThenInclude(u => u.Profile)
+      .ThenInclude(u => u!.ScoutProfile)
       .Include(g => g.Unidades.Where(u => u.RamaId == ramaId))
       .ThenInclude(u => u.Usuarios)
       .ThenInclude(u => u.Tipo)
       .Include(g => g.Unidades.Where(u => u.RamaId == ramaId))
       .ThenInclude(u => u.Usuarios)
-      .ThenInclude(u => u.Registros.Where(x => x.GestionId == gestionId))
       .FirstOrDefaultAsync(g => g.Id == id);
   }
 

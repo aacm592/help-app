@@ -15,10 +15,20 @@ public class UnidadProfile: Profile
       .ForMember(dest => dest.GrupoScoutNombre, 
         opt => opt.MapFrom(src => src.GrupoScout.Nombre));
 
-    CreateMap<Unidad, GrupoUnidadesResponseDto>()
-      .ForMember(dest => dest.Nombre,
-        opt => opt.MapFrom(src => src.Nombre))
+    CreateMap<Unidad, UnidadUsersDto>()
       .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-      .ForMember(dest => dest.Usuarios, opt => opt.MapFrom(src => src.Usuarios));
+      .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.Nombre))
+      .ForMember(dest => dest.Dirigentes, opt => opt.MapFrom(src => 
+        src.Usuarios.Where(u => u.Profile!.DiriProfile != null)))
+      .ForMember(dest => dest.Scouts, opt => opt.MapFrom(src => 
+        src.Usuarios.Where(u => u.Profile!.ScoutProfile != null && u.Profile.DiriProfile == null)));
+    
+    CreateMap<Unidad, UnidadRegistrosDto>()
+      .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+      .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.Nombre))
+      .ForMember(dest => dest.Dirigentes, opt => opt.MapFrom(src => 
+        src.Usuarios.Where(u => u.Profile!.DiriProfile != null).Select(u => u.Registros)))
+      .ForMember(dest => dest.Scouts, opt => opt.MapFrom(src => 
+        src.Usuarios.Where(u => u.Profile!.ScoutProfile != null && u.Profile.DiriProfile == null).Select(u => u.Registros)));
   }
 }

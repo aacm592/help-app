@@ -33,7 +33,7 @@ public class GrupoScoutService : IGrupoScoutService
     return _mapper.Map<IEnumerable<CatalogDto>>(grupos);
   }
 
-  public async Task<IEnumerable<GrupoUnidadesResponseDto>> UsersById(int userId)
+  public async Task<IEnumerable<UnidadUsersDto>> UsersById(int userId)
   {
     var user = await _userRepository.GetByIdWithTipoAndUnidadesAsync(userId);
     if (user == null)
@@ -54,10 +54,10 @@ public class GrupoScoutService : IGrupoScoutService
     if (grupo == null)
       throw new ApplicationException("El grupo asignado al usuario no existe en la base de datos.");
   
-    return _mapper.Map<List<GrupoUnidadesResponseDto>>(grupo.Unidades.ToList());
+    return _mapper.Map<List<UnidadUsersDto>>(grupo.Unidades.ToList());
   }
 
-  public async Task<IEnumerable<GrupoUnidadesResponseDto>> GetUsersByRamaId(int userId, int ramaId)
+  public async Task<IEnumerable<UnidadUsersDto>> GetUsersByRamaId(int userId, int ramaId)
   {
     var user = await _userRepository.GetByIdWithTipoAndUnidadesAsync(userId);
     if (user == null)
@@ -78,6 +78,6 @@ public class GrupoScoutService : IGrupoScoutService
     if (grupo == null)
       throw new ApplicationException("El grupo asignado al usuario no existe en la base de datos.");
     
-    return _mapper.Map<List<GrupoUnidadesResponseDto>>(grupo.Unidades.ToList());
+    return _mapper.Map<List<UnidadUsersDto>>(grupo.Unidades.ToList());
   }
 }
