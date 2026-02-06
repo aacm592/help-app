@@ -9,4 +9,7 @@ public interface IGrupoScoutService
   Task<IEnumerable<CatalogDto>> GetByDistritoIdAsync(int distritoId);
   Task<IEnumerable<UnidadUsersDto>> UsersById(int id);
   Task<IEnumerable<UnidadUsersDto>> GetUsersByRamaId(int id, int ramaId);
+  Task<IEnumerable<UnidadRegistrosDto>> GetRegistros(int id);
+  Task<IEnumerable<UnidadRegistrosDto>> GetRegistrosByRama(int id, int ramaId);
+  
 }

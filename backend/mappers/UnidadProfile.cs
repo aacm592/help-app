@@ -27,8 +27,12 @@ public class UnidadProfile: Profile
       .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
       .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.Nombre))
       .ForMember(dest => dest.Dirigentes, opt => opt.MapFrom(src => 
-        src.Usuarios.Where(u => u.Profile!.DiriProfile != null).Select(u => u.Registros)))
+        src.Usuarios
+          .Where(u => u.Registros.FirstOrDefault()!.RegistroDiri != null)
+          .Select(u => u.Registros.FirstOrDefault())))
       .ForMember(dest => dest.Scouts, opt => opt.MapFrom(src => 
-        src.Usuarios.Where(u => u.Profile!.ScoutProfile != null && u.Profile.DiriProfile == null).Select(u => u.Registros)));
+        src.Usuarios
+          .Where(u => u.Registros.FirstOrDefault()!.RegistroScout != null)
+          .Select(u => u.Registros.FirstOrDefault())));
   }
 }

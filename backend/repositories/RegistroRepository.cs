@@ -1,4 +1,5 @@
 using backend.data;
+using backend.data.models;
 using backend.data.models.registros;
 using backend.repositories.interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,36 @@ public class RegistroRepository: IRegistroRepository
   public async Task<Registro?> GetRegistroByUserId(int userId, int gestionId)
   {
     return await _context.Registros.FirstOrDefaultAsync(x => x.UserId == userId && x.GestionId == gestionId);
+  }
+
+  public async Task<GrupoScout?> GetGroupRegisters(int id, int gestionId)
+  {
+    return await _context.GruposScout
+      .AsNoTracking()
+      .Include(g => g.Unidades)
+      .ThenInclude(u => u.Usuarios.Where(x => x.Registros.FirstOrDefault(r => r.GestionId == gestionId) != null))
+      .ThenInclude(u => u.Registros.Where(x => x.GestionId == gestionId))
+      .ThenInclude(r => r.RegistroDiri)
+      .Include(g => g.Unidades)
+      .ThenInclude(u => u.Usuarios.Where(x => x.Registros.FirstOrDefault(r => r.GestionId == gestionId) != null))
+      .ThenInclude(u => u.Registros.Where(x => x.GestionId == gestionId))
+      .ThenInclude(r => r.RegistroScout)
+      .FirstOrDefaultAsync(g => g.Id == id);
+  }
+
+  public async Task<GrupoScout?> GetGroupRegistersByRama(int id, int gestionId, int ramaId)
+  {
+    return await _context.GruposScout
+      .AsNoTracking()
+      .Include(g => g.Unidades.Where(u => u.RamaId == ramaId))
+      .ThenInclude(u => u.Usuarios.Where(x => x.Registros.FirstOrDefault(r => r.GestionId == gestionId) != null))
+      .ThenInclude(u => u.Registros.Where(x => x.GestionId == gestionId))
+      .ThenInclude(r => r.RegistroScout)
+      .Include(g => g.Unidades.Where(u => u.RamaId == ramaId))
+      .ThenInclude(u => u.Usuarios.Where(x => x.Registros.FirstOrDefault(r => r.GestionId == gestionId) != null))
+      .ThenInclude(u => u.Registros.Where(x => x.GestionId == gestionId))
+      .ThenInclude(r => r.RegistroDiri)
+      .FirstOrDefaultAsync(g => g.Id == id);
   }
 
   public async Task Delete(Registro registro)

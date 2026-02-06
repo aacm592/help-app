@@ -1,7 +1,7 @@
 using backend.dtos.registros;
 using backend.dtos.responses;
 
-namespace backend.dtos.responses;
+namespace backend.dtos.registros;
 
 public class UnidadRegistrosDto: CatalogDto
 {
