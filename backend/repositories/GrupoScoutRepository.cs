@@ -42,7 +42,9 @@ public class GrupoScoutRepository : IGrupoScoutRepository
       .Include(g => g.Unidades)
       .ThenInclude(u => u.Usuarios)
       .ThenInclude(u => u.Tipo)
-      .AsSplitQuery()
+      .Include(g => g.Unidades)
+      .ThenInclude(u => u.Usuarios)
+      .ThenInclude(u => u.Registros.Where(r => r.GestionId == gestionId))
       .FirstOrDefaultAsync(g => g.Id == id);
   }
   
@@ -61,6 +63,9 @@ public class GrupoScoutRepository : IGrupoScoutRepository
       .Include(g => g.Unidades.Where(u => u.RamaId == ramaId))
       .ThenInclude(u => u.Usuarios)
       .ThenInclude(u => u.Tipo)
+      .Include(g => g.Unidades.Where(u => u.RamaId == ramaId))
+      .ThenInclude(u => u.Usuarios)
+      .ThenInclude(u => u.Registros.Where(r => r.GestionId == gestionId))
       .FirstOrDefaultAsync(g => g.Id == id);
   }
 
