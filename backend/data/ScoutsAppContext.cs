@@ -1,6 +1,7 @@
 using backend.data.models;
 using backend.data.models.especialidades;
 using backend.data.models.profile;
+using backend.data.models.registros;
 using backend.data.seeders;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,7 +30,10 @@ public class ScoutsAppContext: DbContext
   public DbSet<Especialidad> Especialidades { get; set; }
   public DbSet<RequisitoEsp> RequisitosEsp { get; set; }
   public DbSet<RequisitoEspUser> RequisitoEspUsers { get; set; }
-
+  public DbSet<UserPermiso> UserPermisos { get; set; }
+  public DbSet<Gestion> Gestiones { get; set; }
+  public DbSet<Registro> Registros { get; set; }
+  
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     base.OnModelCreating(modelBuilder);
@@ -79,12 +83,20 @@ public class ScoutsAppContext: DbContext
       new AreaCrecimiento { Id = 5, Nombre = "Espiritualidad" },
       new AreaCrecimiento { Id = 6, Nombre = "Creatividad" }
     );
-    
-    modelBuilder.Entity<User>()
-      .HasMany(t => t.Permisos)
-      .WithMany(p => p.Users)
-      .UsingEntity(j => j.ToTable("PermisosUsers"));
 
+    // Siembra de Áreas de Permisos
+    modelBuilder.Entity<Permiso>().HasData(
+      new Permiso {Id = 1, Nombre = "Responsable de grupo"},
+      new Permiso {Id = 2, Nombre = "Administrador de grupo"},
+      new Permiso {Id = 3, Nombre = "Director de distrito"},
+      new Permiso {Id = 4, Nombre = "Administrador de distrito"},
+      new Permiso {Id = 5, Nombre = "Miembro del equipo distrital"},
+      new Permiso {Id = 6, Nombre = "Miembro del equipo nacional"},
+      new Permiso {Id = 7, Nombre = "Administrador nacional"},
+      new Permiso {Id = 8, Nombre = "Ejecutivo nacional"},
+      new Permiso {Id = 9, Nombre = "Jefe scout nacional"}
+    );
+    
     modelBuilder.Entity<User>()
       .HasMany(u => u.Unidades)
       .WithMany(un => un.Usuarios)
@@ -150,5 +162,49 @@ public class ScoutsAppContext: DbContext
       .HasOne(u => u.ScoutProfile)
       .WithOne(p => p.UserProfile)
       .HasForeignKey<ScoutProfile>(p => p.Id);
+    
+    modelBuilder.Entity<UserPermiso>(entity =>
+    {
+      entity.HasKey(up => new { up.UserId, up.PermisoId});
+
+      entity.HasOne(up => up.User)
+        .WithMany(u => u.UserPermisos)
+        .HasForeignKey(up => up.UserId);
+
+      entity.HasOne(up => up.Permiso)
+        .WithMany(p => p.UserPermisos)
+        .HasForeignKey(up => up.PermisoId);
+    });
+    
+    modelBuilder.Entity<Registro>(entity =>
+    {
+      entity.HasKey(e => new { e.GestionId, e.UserId });
+      
+      entity.HasOne(e => e.User)
+        .WithMany(r => r.Registros)
+        .HasForeignKey(e => e.UserId);
+      
+      entity.HasOne(e => e.Gestion)
+        .WithMany(r => r.Registros)
+        .HasForeignKey(e => e.GestionId);
+    });
+    
+    modelBuilder.Entity<RegistroScout>(entity =>
+    {
+      entity.HasKey(rs => new { rs.GestionId, rs.UserId });
+
+      entity.HasOne(rs => rs.Registro)
+        .WithOne(r => r.RegistroScout)
+        .HasForeignKey<RegistroScout>(rs => new { rs.GestionId, rs.UserId });
+    });
+
+    modelBuilder.Entity<RegistroDiri>(entity =>
+    {
+      entity.HasKey(rd => new { rd.GestionId, rd.UserId });
+
+      entity.HasOne(rd => rd.Registro)
+        .WithOne(r => r.RegistroDiri)
+        .HasForeignKey<RegistroDiri>(rd => new { rd.GestionId, rd.UserId });
+    });
   }
 }

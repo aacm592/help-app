@@ -42,6 +42,8 @@ builder.Services.AddScoped<IObjetivoUsuarioRepository, ObjetivoUsuarioRepository
 builder.Services.AddScoped<IRequisitoEspRepository, RequisitoEspRepository>();
 builder.Services.AddScoped<IEspecialidadRepository, EspecialidadRepository>();
 builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
+builder.Services.AddScoped<IRegistroRepository, RegistroRepository>();
+builder.Services.AddScoped<IGestionRepository, GestionRepository>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUnidadService, UnidadService>();
@@ -53,6 +55,8 @@ builder.Services.AddScoped<IObjetivoEducativoService, ObjetivoEducativoService>(
 builder.Services.AddScoped<IObjetivoUsuarioService, ObjetivoUsuarioService>();
 builder.Services.AddScoped<IEspecialidadServer, EspecialidadServer>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
+builder.Services.AddScoped<IRegistroService, RegistroService>();
+builder.Services.AddScoped<IGestionService, GestionService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 

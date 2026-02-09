@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using backend.data.models.especialidades;
 using backend.data.models.profile;
+using backend.data.models.registros;
 
 namespace backend.data.models;
 
@@ -20,12 +21,12 @@ public class User
   
   public ICollection<RequisitoEspUser> RequisitoEspUser { get; set; } = new List<RequisitoEspUser>();
 
-  public ICollection<Permiso> Permisos { get; set; } = new List<Permiso>();
-
+  public ICollection<UserPermiso> UserPermisos { get; set; } = new List<UserPermiso>();
   [MaxLength(10)]
   public string? PasswordResetToken { get; set; }
 
   public DateTime? PasswordResetTokenExpiry { get; set; }
   
   public UserProfile? Profile { get; set; }
+  public ICollection<Registro> Registros { get; set; } = new List<Registro>();
 }

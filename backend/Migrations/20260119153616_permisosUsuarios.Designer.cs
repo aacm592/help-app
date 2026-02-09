@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using backend.data;
@@ -11,9 +12,11 @@ using backend.data;
 namespace backend.Migrations
 {
     [DbContext(typeof(ScoutsAppContext))]
-    partial class ScoutsAppContextModelSnapshot : ModelSnapshot
+    [Migration("20260119153616_permisosUsuarios")]
+    partial class permisosUsuarios
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -514,10 +517,17 @@ namespace backend.Migrations
                     b.Property<int>("PermisoId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("AreaId")
+                    b.Property<int>("GrupoScoutId")
                         .HasColumnType("integer");
 
-                    b.HasKey("UserId", "PermisoId");
+                    b.Property<int>("DistritoId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserId", "PermisoId", "GrupoScoutId", "DistritoId");
+
+                    b.HasIndex("DistritoId");
+
+                    b.HasIndex("GrupoScoutId");
 
                     b.HasIndex("PermisoId");
 
@@ -704,155 +714,6 @@ namespace backend.Migrations
                     b.ToTable("UserProfiles");
                 });
 
-            modelBuilder.Entity("backend.data.models.registros.Gestion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("Year")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Gestiones");
-                });
-
-            modelBuilder.Entity("backend.data.models.registros.Registro", b =>
-                {
-                    b.Property<int>("GestionId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Ci")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Distrito")
-                        .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("character varying(25)");
-
-                    b.Property<DateTime>("EnvioDistrito")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("EnvioNacional")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("FechaNacimiento")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Genero")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
-
-                    b.Property<string>("Grupo")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("character varying(60)");
-
-                    b.Property<string>("Rama")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<DateTime>("RegistroDistrito")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("RegistroGrupo")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("RegistroNacional")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Unidad")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("character varying(60)");
-
-                    b.HasKey("GestionId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Registros");
-                });
-
-            modelBuilder.Entity("backend.data.models.registros.RegistroDiri", b =>
-                {
-                    b.Property<int>("GestionId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Cargo1")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("Cargo2")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("Ocupacion")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
-
-                    b.Property<string>("Profesion")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
-
-                    b.HasKey("GestionId", "UserId");
-
-                    b.ToTable("RegistroDiri");
-                });
-
-            modelBuilder.Entity("backend.data.models.registros.RegistroScout", b =>
-                {
-                    b.Property<int>("GestionId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Curso")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
-
-                    b.Property<string>("Etapa")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("character varying(15)");
-
-                    b.Property<string>("UnidadEducativa")
-                        .IsRequired()
-                        .HasMaxLength(70)
-                        .HasColumnType("character varying(70)");
-
-                    b.HasKey("GestionId", "UserId");
-
-                    b.ToTable("RegistroScout");
-                });
-
             modelBuilder.Entity("UnidadUser", b =>
                 {
                     b.HasOne("backend.data.models.Unidad", null)
@@ -967,6 +828,18 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.data.models.UserPermiso", b =>
                 {
+                    b.HasOne("backend.data.models.Distrito", "Distrito")
+                        .WithMany()
+                        .HasForeignKey("DistritoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("backend.data.models.GrupoScout", "GrupoScout")
+                        .WithMany()
+                        .HasForeignKey("GrupoScoutId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("backend.data.models.Permiso", "Permiso")
                         .WithMany("UserPermisos")
                         .HasForeignKey("PermisoId")
@@ -978,6 +851,10 @@ namespace backend.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Distrito");
+
+                    b.Navigation("GrupoScout");
 
                     b.Navigation("Permiso");
 
@@ -1065,47 +942,6 @@ namespace backend.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("backend.data.models.registros.Registro", b =>
-                {
-                    b.HasOne("backend.data.models.registros.Gestion", "Gestion")
-                        .WithMany("Registros")
-                        .HasForeignKey("GestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("backend.data.models.User", "User")
-                        .WithMany("Registros")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Gestion");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("backend.data.models.registros.RegistroDiri", b =>
-                {
-                    b.HasOne("backend.data.models.registros.Registro", "Registro")
-                        .WithOne("RegistroDiri")
-                        .HasForeignKey("backend.data.models.registros.RegistroDiri", "GestionId", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Registro");
-                });
-
-            modelBuilder.Entity("backend.data.models.registros.RegistroScout", b =>
-                {
-                    b.HasOne("backend.data.models.registros.Registro", "Registro")
-                        .WithOne("RegistroScout")
-                        .HasForeignKey("backend.data.models.registros.RegistroScout", "GestionId", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Registro");
-                });
-
             modelBuilder.Entity("backend.data.models.AreaCrecimiento", b =>
                 {
                     b.Navigation("ObjetivosEducativos");
@@ -1154,8 +990,6 @@ namespace backend.Migrations
 
                     b.Navigation("Profile");
 
-                    b.Navigation("Registros");
-
                     b.Navigation("RequisitoEspUser");
 
                     b.Navigation("UserPermisos");
@@ -1176,18 +1010,6 @@ namespace backend.Migrations
                     b.Navigation("DiriProfile");
 
                     b.Navigation("ScoutProfile");
-                });
-
-            modelBuilder.Entity("backend.data.models.registros.Gestion", b =>
-                {
-                    b.Navigation("Registros");
-                });
-
-            modelBuilder.Entity("backend.data.models.registros.Registro", b =>
-                {
-                    b.Navigation("RegistroDiri");
-
-                    b.Navigation("RegistroScout");
                 });
 #pragma warning restore 612, 618
         }

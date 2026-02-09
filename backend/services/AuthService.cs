@@ -186,6 +186,10 @@ public class AuthService: IAuthService
       new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
     };
     
+    if (user.UserPermisos.FirstOrDefault() != null)
+      foreach (var up in user.UserPermisos)
+        claims.Add(new Claim(ClaimTypes.Role, "p" + up.PermisoId));
+    
     var tokenDescriptor = new SecurityTokenDescriptor
     {
       Subject = new ClaimsIdentity(claims),
