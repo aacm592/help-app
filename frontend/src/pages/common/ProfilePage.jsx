@@ -127,7 +127,7 @@ export default function ProfilePage() {
     return <LoadingPage />;
   }
   return (
-    <div className="w-full max-w-lg mx-auto pt-4">
+    <div className="w-full max-w-lg mx-auto px-4 py-8">
       <div className="flex flex-col items-center mb-10">
         <img
           src={logo}

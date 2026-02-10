@@ -6,14 +6,14 @@ import {
 import { useNavigate } from "react-router-dom";
 import EspecialidadPendienteItem from "../../components/pageComponents/especialidades/EspecialidadPendienteItem";
 import { useAuth } from "../../contexts/AuthContext";
-import LoadingPage from "../../components/LoadingPage";
 import Button from "../../components/Button";
 
 export default function GestionarEspecialidadesPage() {
   const { user } = useAuth();
-  const unidad = user.unidades[0];
+  const unidad = user?.unidades?.[0];
   const [pendientes, setPendientes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [apiError, setApiError] = useState(null);
   const nav = useNavigate();
 
   useEffect(() => {
@@ -24,11 +24,13 @@ export default function GestionarEspecialidadesPage() {
 
     const getPendientes = async () => {
       setIsLoading(true);
+      setApiError(null);
       try {
         const pendList = await getEspecialidadesPendientes(unidad.id);
         setPendientes(pendList);
       } catch (error) {
         console.error("Error al conseguir requisitos pendientes", error);
+        setApiError("Hubo un problema al cargar las especialidades.");
       } finally {
         setIsLoading(false);
       }
@@ -40,30 +42,43 @@ export default function GestionarEspecialidadesPage() {
   const validate = async (usuarioId, objetivoId, indx) => {
     try {
       const request = { usuarioId, objetivoId };
-      console.log(request);
       await validateEspecialdiad(request);
-      const newList = pendientes.filter((_, i) => i !== indx);
-      setPendientes(newList);
+      setPendientes((prev) => prev.filter((_, i) => i !== indx));
     } catch (error) {
       console.error("Error al validar requisitos", error);
+      alert("No se pudo completar la validación.");
     }
   };
 
-  if (isLoading) return <LoadingPage />;
+  const renderContent = () => {
+    if (isLoading) {
+      return (
+        <div className="flex justify-center items-center p-10">
+          <span className="material-symbols-outlined text-purple-700 text-6xl! animate-spin">
+            progress_activity
+          </span>
+        </div>
+      );
+    }
 
-  return (
-    <div className="flex flex-col w-full items-center">
-      <div className="flex flex-col md:items-center space-y-5 items-end md:flex-row-reverse md:justify-between md:w-3/4 lg:w-1/2 w-full">
-        <Button className="px-4 py-2 h-fit w-fit" onClick={() => nav(-1)}>
-          <span className="material-symbols-outlined mr-2">arrow_back</span>
-          Volver
-        </Button>
-        <h1 className="text-purple-900 w-full md:text-left text-center">Gestionar especialidades</h1>
-      </div>
-      <p className="text-2xl text-left md:w-3/4 lg:w-1/2 w-full font-extrabold">
-        Unidad: {unidad.nombre}
-      </p>
-      <div className="space-y-5 md:w-3/4 lg:w-1/2 w-full">
+    if (apiError) {
+      return (
+        <div className="w-full p-3 mb-4 text-sm text-center text-red-800 rounded-lg bg-red-100">
+          {apiError}
+        </div>
+      );
+    }
+
+    if (pendientes.length === 0) {
+      return (
+        <p className="text-center text-gray-600 text-lg p-6 bg-gray-100 rounded-lg">
+          No hay especialidades pendientes de validación.
+        </p>
+      );
+    }
+
+    return (
+      <div className="space-y-5">
         {pendientes.map((p, i) => (
           <EspecialidadPendienteItem
             key={i}
@@ -73,12 +88,28 @@ export default function GestionarEspecialidadesPage() {
             scoutId={p.scoutId}
             id={p.requerimientoId}
             onConfirm={(usuarioId, objetivoId) => {
-              console.log(p);
               validate(usuarioId, objetivoId, i);
             }}
           />
         ))}
       </div>
+    );
+  };
+
+  return (
+    <div className="w-full lg:md:w-3/4 md:w-4/5 mx-auto p-4 md:p-8">
+      <div className="flex-1">
+        <h1 className="text-purple-900 md:text-left text-center">
+          Gestionar Especialidades
+        </h1>
+        {unidad && (
+          <p className="text-xl text-violet-600 font-extrabold">
+            Unidad: {unidad.nombre}
+          </p>
+        )}
+      </div>
+
+      {renderContent()}
     </div>
   );
 }

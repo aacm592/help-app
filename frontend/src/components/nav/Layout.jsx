@@ -10,7 +10,7 @@ export default function Layout() {
   return (
     <div className="flex h-screen overflow-hidden">
       <SideMenu menuItems={menu} />
-      <div className="flex-1 bg-gray-100 overflow-y-auto p-4 md:p-8">
+      <div className="flex-1 overflow-y-auto w-full">
         <Outlet />
       </div>
     </div>
