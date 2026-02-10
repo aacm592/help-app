@@ -1,8 +1,11 @@
 import { useState } from "react";
 import Button from "../Button";
+import { useNavigate } from "react-router-dom";
 
 export default function MenuSection({ icon, title, links, onOptionClick }) {
   const [isOpen, setIsOpen] = useState(false);
+  const nav = useNavigate();
+
   return (
     <div className="w-full mb-6">
       <Button
@@ -27,10 +30,13 @@ export default function MenuSection({ icon, title, links, onOptionClick }) {
           {links.map((link, index) => (
             <li
               key={index}
-              onClick={() => onOptionClick()}
+              onClick={() => {
+                nav(link.path);
+                onOptionClick();
+              }}
               className="group flex active:scale-95 items-center md:px-12 px-0 py-3 text-purple-200 hover:bg-purple-800 hover:text-white cursor-pointer transition-colors justify-center md:justify-start"
             >
-              <span className="text-sm font-medium">{link}</span>
+              <span className="text-sm font-medium">{link.label}</span>
             </li>
           ))}
         </ul>

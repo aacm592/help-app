@@ -29,14 +29,15 @@ export default function SideMenu({ menuItems }) {
         bg-purple-900 py-4 overflow-y-auto transition-transform duration-300
       `}
       >
-        {menuItems.map((mi) => {
+        {menuItems.map((mi, i) => (
           <MenuSection
+            key={i}
             icon={mi.icon}
-            title={mi.tittle}
+            title={mi.title}
             links={mi.links}
             onOptionClick={closeMenu}
-          />;
-        })}
+          />
+        ))}
       </aside>
     </>
   );

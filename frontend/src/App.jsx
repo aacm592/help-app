@@ -12,9 +12,7 @@ import HomeUnidadDirigente from "./pages/dirigente/HomeUnidadDirigente";
 import ObjetivosPage from "./pages/scout/ObjetivosPage";
 import GestionarObjetivosPage from "./pages/dirigente/GestionarObjetivosPage";
 import VerUnidadPage from "./pages/dirigente/VerUnidadPage";
-import DirigenteUnitLayout from "./components/nav/DirigenteUnitLayout";
 import ProfilePage from "./pages/common/ProfilePage";
-import ScoutLayout from "./components/nav/ScoutLayout";
 import MiProgresoPage from "./pages/scout/MiProgresoPage";
 import VerProgresoScoutPage from "./pages/dirigente/VerProgresoScoutPage";
 import ScrollToTop from "./components/ScrollToTop";
@@ -22,6 +20,7 @@ import ResetPasswordPage from "./pages/login/ResetPasswordPage";
 import EspecialidadesPage from "./pages/scout/EspecialidadesPage";
 import GestionarEspecialidadesPage from "./pages/dirigente/GestionarEspecialidadesPage";
 import ScoutProfilePage from "./pages/dirigente/ScoutProfilePage";
+import Layout from "./components/nav/Layout";
 
 function App() {
   return (
@@ -42,7 +41,7 @@ function App() {
           <Route path="/diri" element={<SelectUnidadPage />} />
           <Route path="/diri/crear-unidad" element={<CreateUnidadPage />} />
 
-          <Route element={<DirigenteUnitLayout />}>
+          <Route element={<Layout />}>
             <Route
               path="/diri/unidad/:unidadId/home"
               element={<HomeUnidadDirigente />}
@@ -67,10 +66,7 @@ function App() {
               path="/diri/unidad/:unidadId/scout/:scoutId/perfil"
               element={<ScoutProfilePage />}
             />
-            <Route
-              path="/diri/unidad/:unidadId/profile"
-              element={<ProfilePage />}
-            />
+            <Route path="/diri/profile" element={<ProfilePage />} />
           </Route>
         </Route>
 
@@ -78,7 +74,7 @@ function App() {
         <Route element={<RoleProtectedRoute allowedRoles={[1]} />}>
           <Route path="/scout" element={<SelectUnidadPage />} />
 
-          <Route element={<ScoutLayout />}>
+          <Route element={<Layout />}>
             <Route path="/scout/home" element={<HomeUnidadScout />} />
             <Route path="/scout/objetivos" element={<ObjetivosPage />} />
             <Route
