@@ -33,6 +33,9 @@ public class UnidadService : IUnidadService
     EnsureDirigente(creador);
     EnsureSameGrupoIfAlreadyInUnit(creador, dto.GrupoScoutId);
 
+    if (creador.Unidades.Count >= 2)
+      throw new ApplicationException("No puedes estar en más de 2 unidades a la vez.");
+      
     var codigo = await GenerateUniqueCodigoAsync();
 
     var nuevaUnidad = new Unidad

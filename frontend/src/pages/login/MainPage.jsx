@@ -10,7 +10,7 @@ function MainPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col justify-center items-center bg-purple-600 min-h-screen h-full w-screen py-10 gap-y-8">
+    <div className="flex flex-col justify-center items-center bg-purple-600 min-h-screen h-full w-full py-10 gap-y-8">
       <h1 className="text-white">Bienvenido</h1>
       <img src={logo} alt="Flor de Liz Nacional" className="w-1/2 md:w-auto" />
 
