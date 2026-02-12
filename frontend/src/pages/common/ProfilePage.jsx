@@ -132,7 +132,7 @@ export default function ProfilePage() {
         <img
           src={logo}
           alt="Foto de perfil"
-          className="w-32 h-32 rounded-full object-cover border-4 border-purple-300 p-1"
+          className="w-40 h-40 rounded-full border-4 border-purple-300 p-2"
         />
 
         <h2 className="text-4xl font-bold text-purple-800 mt-4">

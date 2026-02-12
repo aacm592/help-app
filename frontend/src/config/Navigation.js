@@ -6,6 +6,10 @@ export const getNavigation = (user) => {
     title: "Yo",
     links: [
       {
+        label: "Inicio",
+        path: user?.tipoId === 1 ? "/scout" : "/diri",
+      },
+      {
         label: "Mi Perfil",
         path: user?.tipoId === 1 ? "/scout/profile" : "/diri/profile",
       },
@@ -39,7 +43,7 @@ export const getNavigation = (user) => {
         title: "Objetivos",
         links: [
           { label: "Elegir", path: "/scout/objetivos" },
-          { label: "Mi progreso", path: "/scout/objetivos/mi-progreso" },
+          //   { label: "Mi progreso", path: "/scout/objetivos/mi-progreso" },
         ],
       },
       {
@@ -47,10 +51,7 @@ export const getNavigation = (user) => {
         title: "Especialidades",
         links: [
           { label: "Elegir", path: "/scout/especialidades" },
-          {
-            label: "Mi Progreso",
-            path: "/scout/especialidades/mi-progreso",
-          },
+          //         { label: "Mi Progreso", path: "/scout/especialidades/mi-progreso",},
         ],
       },
     );

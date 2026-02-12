@@ -3,6 +3,7 @@ import UnidadInfoBox from "../../components/pageComponents/UnidadInfoBox";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
+// Sin usar
 export default function HomeUnidadScout() {
   const { user } = useAuth();
   const nav = useNavigate();
