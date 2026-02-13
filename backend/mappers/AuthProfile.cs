@@ -11,6 +11,8 @@ public class AuthProfile: Profile
     CreateMap<User, UserResponseDto>()
       .ForMember(dest => dest.Nombre, 
         opt => opt.MapFrom(src => src.Profile != null ? src.Profile.Nombre : string.Empty)) 
+      .ForMember(dest => dest.Apellidos, 
+        opt => opt.MapFrom(src => src.Profile != null ? src.Profile.Apellido : string.Empty)) 
       .ForMember(dest => dest.FechaNacimiento, 
         opt => opt.MapFrom(src => src.Profile != null ? src.Profile.FechaNacimiento : default(DateTime)))
 
