@@ -21,7 +21,7 @@ export default function SalirUnidadButton({
     if (isLoading || !unidadId) return;
 
     const confirmado = window.confirm(
-      "¿Estás seguro de que quieres salir de esta unidad?"
+      "¿Estás seguro de que quieres salir de esta unidad?",
     );
     if (!confirmado) {
       return;
@@ -29,7 +29,7 @@ export default function SalirUnidadButton({
 
     if (esUltimoDirigente) {
       const confirmadoUltimo = window.confirm(
-        "ADVERTENCIA: Eres el último dirigente en esta unidad.\n\nSi sales, la unidad será eliminada permanentemente y todos los scouts serán expulsados.\n\n¿Estás seguro de que quieres continuar?"
+        "ADVERTENCIA: Eres el último dirigente en esta unidad.\n\nSi sales, la unidad será eliminada permanentemente y todos los scouts serán expulsados.\n\n¿Estás seguro de que quieres continuar?",
       );
       if (!confirmadoUltimo) {
         return;
