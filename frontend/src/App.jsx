@@ -22,6 +22,7 @@ import GestionarEspecialidadesPage from "./pages/dirigente/GestionarEspecialidad
 import ScoutProfilePage from "./pages/dirigente/ScoutProfilePage";
 import Layout from "./components/nav/Layout";
 import Home from "./pages/common/Home";
+import UnidadPage from "./pages/dirigente/UnidadPage";
 
 function App() {
   return (
@@ -70,6 +71,7 @@ function App() {
               element={<ScoutProfilePage />}
             />
             <Route path="/diri/profile" element={<ProfilePage />} />
+            <Route path="/diri/unidad/:unidadId" element={<UnidadPage />} />
           </Route>
         </Route>
 

@@ -33,6 +33,7 @@ export const getNavigation = (user) => {
         icon: "shield_person",
         title: `Unidad: ${unidad?.nombre || "S/N"}`,
         links: [
+          { label: "Ver Unidad", path: `/diri/unidad/${unidad.id}` },
           { label: "Miembros", path: `/diri/unidad/${unidad.id}/miembros` },
           {
             label: "Gestionar Objetivos",
