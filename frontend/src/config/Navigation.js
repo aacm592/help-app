@@ -1,7 +1,6 @@
 export const getNavigation = (user) => {
   const sections = [];
 
-  // Definición de los links básicos para la sección "Yo"
   const userLinks = [
     {
       label: "Inicio",
@@ -13,7 +12,6 @@ export const getNavigation = (user) => {
     },
   ];
 
-  // Añadimos "Mi progreso" solo si es un Scout (tipoId 1)
   if (user?.tipoId === 1) {
     userLinks.push({
       label: "Mi progreso",
@@ -46,6 +44,16 @@ export const getNavigation = (user) => {
         ],
       });
     });
+    if (user?.unidades.length < 2) {
+      sections.push({
+        icon: "camping",
+        title: `Unidades`,
+        links: [
+          { label: "Crear Unidad", path: `/crear-unidad` },
+          { label: "Unirse a una unidad", path: `/unirse-unidad` },
+        ],
+      });
+    }
   }
 
   if (user?.tipoId === 1) {

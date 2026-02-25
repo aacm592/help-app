@@ -61,7 +61,9 @@ export const AuthProvider = ({ children }) => {
     if (user) {
       const updatedUser = {
         ...user,
-        unidades: user.unidades.filter((u) => u.id !== unidadId),
+        unidades: user.unidades.filter(
+          (u) => String(u.id) !== String(unidadId),
+        ),
       };
 
       setUser(updatedUser);

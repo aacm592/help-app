@@ -57,16 +57,12 @@ export default function ProfilePage() {
       const comprobarMiembros = async () => {
         try {
           const miembros = await getMiembrosUnidad(currentUnit.id);
-          console.log("[DEBUG] Miembros obtenidos:", miembros);
 
           const dirigentes = miembros.filter((m) => m.tipoId === 2);
-          console.log("[DEBUG] Dirigentes encontrados:", dirigentes);
 
           if (dirigentes.length === 1 && dirigentes[0].id === user.id) {
-            console.log("[DEBUG] ¡ES EL ÚLTIMO DIRIGENTE!");
             setEsUltimoDirigente(true);
           } else {
-            console.log("[DEBUG] No es el último dirigente.");
             setEsUltimoDirigente(false);
           }
         } catch (error) {

@@ -4,6 +4,7 @@ import SalirUnidadButton from "../../components/pageComponents/SalirUnidadButton
 import { useEffect, useState } from "react";
 import LoadingPage from "../../components/LoadingPage";
 import Button from "../../components/Button";
+import { getMiembrosUnidad } from "../../services/unidadService";
 
 export default function UnidadPage() {
   const { unidadId } = useParams();
@@ -11,6 +12,9 @@ export default function UnidadPage() {
   const infoItemClass = "py-2 flex items-center gap-3";
   const labelClass = "font-semibold text-gray-600";
   const dataClass = "text-xl font-bold text-purple-800";
+
+  const [esUltimoDirigente, setEsUltimoDirigente] = useState(false);
+  const [loadingCheck, setLoadingCheck] = useState(true);
 
   const [unidad, setUnidad] = useState();
   const [isCopied, setIsCopied] = useState(false);
@@ -29,6 +33,34 @@ export default function UnidadPage() {
       setTimeout(() => setIsCopied(false), 2000);
     }
   };
+
+  useEffect(() => {
+      if (user?.tipoId === 2 && unidad) {
+        setLoadingCheck(true);
+
+        const comprobarMiembros = async () => {
+          try {
+            const miembros = await getMiembrosUnidad(unidad.id);
+
+            const dirigentes = miembros.filter((m) => m.tipoId === 2);
+
+            if (dirigentes.length === 1 && dirigentes[0].id === user.id) {
+              setEsUltimoDirigente(true);
+            } else {
+              setEsUltimoDirigente(false);
+            }
+          } catch (error) {
+            console.error("Error al comprobar miembros:", error.message);
+            setEsUltimoDirigente(false);
+          } finally {
+            setLoadingCheck(false);
+          }
+        };
+        comprobarMiembros();
+      } else {
+        setLoadingCheck(false);
+      }
+    }, [unidad, user]);
 
   if (!unidad) return <LoadingPage />;
 
@@ -66,7 +98,9 @@ export default function UnidadPage() {
       <SalirUnidadButton
         className=""
         unidadId={unidadId}
-        onSuccessRedirectPath={"/inicio"}
+        onSuccessRedirectPath={"/home"}
+        esUltimoDirigente={esUltimoDirigente}
+        disabled={loadingCheck}
       />
     </div>
   );
