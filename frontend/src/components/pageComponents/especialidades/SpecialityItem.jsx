@@ -7,10 +7,10 @@ export default function SpecialityItem({ name, status, description, req, onSelec
   const [isOpen, setIsOpen] = useState(false);
   const [requerimientos, setRequerimientos] = useState(req);
 
-  const selectReq = async (id, indx) => {
+  const selectReq = async (id) => {
     try {
-      const newReq = requerimientos.map((r, i) =>
-        i === indx ? { ...r, status: "En Progreso" } : r
+      const newReq = requerimientos.map((r) =>
+        id === r.id ? { ...r, status: "En Progreso" } : r
       );
 
       setRequerimientos(newReq);
@@ -57,7 +57,7 @@ export default function SpecialityItem({ name, status, description, req, onSelec
               status={r.status}
               info={r.descripcion}
               id={r.id}
-              onSelect={(x) => selectReq(x, i)}
+              onSelect={(x) => selectReq(x)}
             />
           ))}
         </div>

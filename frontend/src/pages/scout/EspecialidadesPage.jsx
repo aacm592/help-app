@@ -42,8 +42,8 @@ export default function EspecialidadesPage() {
   }, [unidad, nav]);
 
   const selectReq = (id) => {
-    const newEsp = especialidades.map((r) =>
-      r.id === id ? { ...r, status: "En Progreso" } : r
+    const newEsp = especialidades.map((e) =>
+      e.idEspecialidad === id ? { ...e, status: "En Progreso" } : e,
     );
     setEspecialidades(newEsp);
   };
@@ -68,12 +68,12 @@ export default function EspecialidadesPage() {
         {especialidadesFiltradas.length > 0 ? (
           especialidadesFiltradas.map((e) => (
             <SpecialitItem
-              key={e.id || e.nombre}
+              key={e.idEspecialidad || e.nombre}
               name={e.nombre}
               status={e.status}
               description={e.descripcion}
               req={e.requerimientos}
-              onSelect={() => selectReq(e.id)}
+              onSelect={() => selectReq(e.idEspecialidad)}
             />
           ))
         ) : (
