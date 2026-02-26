@@ -11,7 +11,11 @@ const registroSchema = z
   .object({
     nombre: z
       .string()
-      .min(4, { message: "Por favor, ingresa tu nombre completo" }),
+      .min(4, { message: "Por favor, ingresa tu(s) nombre(s)" }),
+
+    apellido: z
+      .string()
+      .min(6, { message: "Por favor, ingresa tus apellidos" }),
 
     nombreUsuario: z
       .string()
@@ -109,8 +113,15 @@ export default function RegisterPage() {
           className="flex flex-col gap-y-6 w-2/3 xl:w-1/3"
         >
           <Input
-            label="Nombre Completo"
+            label="Nombres"
             name="nombre"
+            type="text"
+            placeholder="Ej: Juan Pérez"
+          />
+
+          <Input
+            label="Apellidos"
+            name="apellido"
             type="text"
             placeholder="Ej: Juan Pérez"
           />

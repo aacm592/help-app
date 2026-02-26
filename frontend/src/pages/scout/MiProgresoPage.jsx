@@ -32,7 +32,7 @@ export default function MiProgresoPage() {
   if (isLoading) return <LoadingPage />;
 
   return (
-    <div className="w-full">
+    <div className="w-full p-4">
       <h1 className="text-purple-950 w-full text-center">Mi Progreso</h1>
       <h2 className="text-purple-900 text-3xl font-bold">
         Progresión personal
@@ -45,9 +45,7 @@ export default function MiProgresoPage() {
         />
       ))}
 
-      <h2 className="text-purple-900 text-3xl font-bold">
-        Especialidades
-      </h2>
+      <h2 className="text-purple-900 text-3xl font-bold">Especialidades</h2>
       <ResumenEspecialidadesScout especialidades={resumenEspecialidades} />
     </div>
   );

@@ -55,6 +55,7 @@ public class AuthService: IAuthService
     var userProfile = new UserProfile
     {
       Nombre = registerDto.Nombre,
+      Apellido = registerDto.Apellido,
       FechaNacimiento = fechaNacimientoUtc,
     };
 

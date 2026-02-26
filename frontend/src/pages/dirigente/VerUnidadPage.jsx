@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import Button from "../../components/Button";
 import {
@@ -13,7 +13,6 @@ import Modal from "../../components/Modal";
 export default function VerUnidadPage() {
   const { unidadId } = useParams();
   const { user } = useAuth();
-  const nav = useNavigate();
 
   const [miembros, setMiembros] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,7 +26,7 @@ export default function VerUnidadPage() {
   const [scoutForCode, setScoutForCode] = useState(null);
   const [isCopied, setIsCopied] = useState(false);
 
-  const unidadActual = user?.unidades.find((u) => u.id.toString() === unidadId);
+  const unidad = user?.unidades.find((u) => u.id.toString() === unidadId);
 
   useEffect(() => {
     const cargarMiembros = async () => {
@@ -49,7 +48,7 @@ export default function VerUnidadPage() {
     if (removingId) return;
 
     const confirmado = window.confirm(
-      `¿Estás seguro de que quieres sacar a ${miembroARemover.nombre} de la unidad?`
+      `¿Estás seguro de que quieres sacar a ${miembroARemover.nombre} de la unidad?`,
     );
     if (!confirmado) {
       return;
@@ -86,6 +85,7 @@ export default function VerUnidadPage() {
       setGeneratingCodeId(null);
     }
   };
+
   const handleCopyCode = () => {
     if (generatedCode) {
       navigator.clipboard.writeText(generatedCode);
@@ -138,65 +138,57 @@ export default function VerUnidadPage() {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-gray-50 text-black p-8 w-screen">
-      <div className="w-full max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex-1">
-            <h1 className="text-purple-900">Miembros de la Unidad</h1>
-            {unidadActual && (
-              <p className="text-xl text-gray-700">{unidadActual.nombre}</p>
-            )}
-          </div>
+    <div className="w-full lg:md:w-3/4 md:w-4/5 mx-auto p-4 md:p-8">
+      <div className="flex-1">
+        <h1 className="text-purple-900 md:text-left text-center">
+          Miembros de la Unidad
+        </h1>
+        {unidad && (
+          <p className="text-xl text-violet-600 font-extrabold">
+            Unidad: {unidad.nombre}
+          </p>
+        )}
+      </div>
+      {apiError && (
+        <div
+          className="w-full p-3 mb-4 text-sm text-center text-red-800 rounded-lg bg-red-100"
+          role="alert"
+        >
+          {apiError}
+        </div>
+      )}
+
+      {renderContent()}
+
+      <Modal
+        isOpen={isCodeModalOpen}
+        onClose={handleCloseModal}
+        title={`Código para ${scoutForCode || ""}`}
+      >
+        <div className="flex flex-col items-center gap-4">
+          <p className="text-center text-gray-700">
+            Comparte este código con el scout. Expira en 1 hora.
+          </p>
+          <code className="text-4xl font-bold text-purple-800 bg-purple-100 p-4 rounded-lg tracking-widest">
+            {generatedCode}
+          </code>
           <Button
-            className="px-4 py-2"
-            onClick={() => nav(`/diri/unidad/${unidadId}/home`)}
+            className="w-full justify-center px-5 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700"
+            onClick={handleCopyCode}
           >
-            <span className="material-symbols-outlined mr-2">arrow_back</span>
-            Volver
+            <span className="material-symbols-outlined mr-2">
+              {isCopied ? "check" : "content_copy"}
+            </span>
+            {isCopied ? "¡Copiado!" : "Copiar Código"}
+          </Button>
+          <Button
+            className="w-full justify-center px-5 py-2 bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300"
+            onClick={handleCloseModal}
+          >
+            Cerrar
           </Button>
         </div>
-
-        {apiError && (
-          <div
-            className="w-full p-3 mb-4 text-sm text-center text-red-800 rounded-lg bg-red-100"
-            role="alert"
-          >
-            {apiError}
-          </div>
-        )}
-
-        {renderContent()}
-
-        <Modal
-          isOpen={isCodeModalOpen}
-          onClose={handleCloseModal}
-          title={`Código para ${scoutForCode || ""}`}
-        >
-          <div className="flex flex-col items-center gap-4">
-            <p className="text-center text-gray-700">
-              Comparte este código con el scout. Expira en 1 hora.
-            </p>
-            <code className="text-4xl font-bold text-purple-800 bg-purple-100 p-4 rounded-lg tracking-widest">
-              {generatedCode}
-            </code>
-            <Button
-              className="w-full justify-center px-5 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700"
-              onClick={handleCopyCode}
-            >
-              <span className="material-symbols-outlined mr-2">
-                {isCopied ? "check" : "content_copy"}
-              </span>
-              {isCopied ? "¡Copiado!" : "Copiar Código"}
-            </Button>
-            <Button
-              className="w-full justify-center px-5 py-2 bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300"
-              onClick={handleCloseModal}
-            >
-              Cerrar
-            </Button>
-          </div>
-        </Modal>
-      </div>
+      </Modal>
     </div>
   );
 }

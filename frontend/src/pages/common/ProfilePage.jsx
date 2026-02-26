@@ -57,16 +57,12 @@ export default function ProfilePage() {
       const comprobarMiembros = async () => {
         try {
           const miembros = await getMiembrosUnidad(currentUnit.id);
-          console.log("[DEBUG] Miembros obtenidos:", miembros);
 
           const dirigentes = miembros.filter((m) => m.tipoId === 2);
-          console.log("[DEBUG] Dirigentes encontrados:", dirigentes);
 
           if (dirigentes.length === 1 && dirigentes[0].id === user.id) {
-            console.log("[DEBUG] ¡ES EL ÚLTIMO DIRIGENTE!");
             setEsUltimoDirigente(true);
           } else {
-            console.log("[DEBUG] No es el último dirigente.");
             setEsUltimoDirigente(false);
           }
         } catch (error) {
@@ -127,12 +123,12 @@ export default function ProfilePage() {
     return <LoadingPage />;
   }
   return (
-    <div className="w-full max-w-lg mx-auto pt-4">
+    <div className="w-full max-w-lg mx-auto px-4 py-8">
       <div className="flex flex-col items-center mb-10">
         <img
           src={logo}
           alt="Foto de perfil"
-          className="w-32 h-32 rounded-full object-cover border-4 border-purple-300 p-1"
+          className="w-40 h-40 rounded-full border-4 border-purple-300 p-2"
         />
 
         <h2 className="text-4xl font-bold text-purple-800 mt-4">

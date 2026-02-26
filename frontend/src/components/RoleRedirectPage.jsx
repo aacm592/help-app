@@ -13,16 +13,19 @@ export default function RoleRedirectPage() {
       switch (user.tipoId) {
         case 1: // --- Rol Scout ---
           if (tieneUnidades) {
-            navigate("/scout/home", { replace: true });
-          } else {
             navigate("/scout", { replace: true });
+          } else {
+            navigate("/inicio", { replace: true });
           }
           break;
 
         case 2: // --- Rol Dirigente ---
-          navigate("/diri", { replace: true });
+          if (tieneUnidades) {
+            navigate("/diri", { replace: true });
+          } else {
+            navigate("/inicio", { replace: true });
+          }
           break;
-
         default:
           // --- Otros roles o si no tiene tipoId ---
           navigate("/", { replace: true });
