@@ -5,16 +5,18 @@ export default function MiembrosUnidadTable({
   rama,
   scouts,
   dirigentes,
-  sHeads,
-  sInfo,
-  dHeads,
-  dInfo,
+  sHeads = [],
+  dHeads = [],
   tableClassName,
   thClassName,
   tdClassName,
   onRegister,
   hasButon = false,
+  deletLevel,
+  onCancel,
 }) {
+  const buttonClassName = "w-full p-2 justify-center rounded-md";
+  const cancelButtonClassName = `${buttonClassName} bg-red-600 text-yellow-300 border-red-950`;
   return (
     <div className="w-full mb-10 flex flex-col gap-4">
       <div>
@@ -37,7 +39,11 @@ export default function MiembrosUnidadTable({
                 <th className={thClassName}>Curso</th>
                 <th className={thClassName}>Etapa</th>
                 <th className={thClassName}>Estado de Registro</th>
-                {sHeads}
+                {sHeads.map((i, h) => (
+                  <th key={i} className={thClassName}>
+                    {h}
+                  </th>
+                ))}
                 {hasButon && <th className={thClassName}>Registrar</th>}
               </tr>
             </thead>
@@ -57,16 +63,26 @@ export default function MiembrosUnidadTable({
                   <td className={`${tdClassName} text-purple-700 font-bold`}>
                     {a.registroStatus}
                   </td>
-                  {sInfo}
+                  {a.info}
                   {hasButon && (
                     <td className={`${tdClassName} text-purple-700 font-bold`}>
                       {a.registroStatus == "No registrado" ? (
                         <Button
+                          className={`${buttonClassName}`}
                           onClick={() => {
                             onRegister(a.id);
                           }}
                         >
                           Registrar
+                        </Button>
+                      ) : a.registroStatus == deletLevel ? (
+                        <Button
+                          className={cancelButtonClassName}
+                          onClick={() => {
+                            onCancel(a.id);
+                          }}
+                        >
+                          Cancelar registro
                         </Button>
                       ) : (
                         a.registroStatus
@@ -94,7 +110,11 @@ export default function MiembrosUnidadTable({
                 <th className={thClassName}>Cargo 1</th>
                 <th className={thClassName}>Cargo 2</th>
                 <th className={thClassName}>Registro</th>
-                {dHeads}
+                {dHeads.map((i, h) => (
+                  <th key={i} className={thClassName}>
+                    {h}
+                  </th>
+                ))}
                 {hasButon && <th className={thClassName}>Registrar</th>}
               </tr>
             </thead>
@@ -118,15 +138,26 @@ export default function MiembrosUnidadTable({
                   <td className={`${tdClassName} text-purple-700 font-bold`}>
                     {a.registroStatus}
                   </td>
-                  {dInfo}
+                  {a.info}
                   {hasButon && (
                     <td className={`${tdClassName} text-purple-700 font-bold`}>
                       {a.registroStatus == "No registrado" ? (
                         <Button
-                          className="w-full py-2 justify-center rounded-md"
-                          onClick={() => onRegister(a.id)}
+                          className={`${buttonClassName}`}
+                          onClick={() => {
+                            onRegister(a.id);
+                          }}
                         >
                           Registrar
+                        </Button>
+                      ) : a.registroStatus == deletLevel ? (
+                        <Button
+                          className={cancelButtonClassName}
+                          onClick={() => {
+                            onCancel(a.id);
+                          }}
+                        >
+                          Cancelar registro
                         </Button>
                       ) : (
                         a.registroStatus

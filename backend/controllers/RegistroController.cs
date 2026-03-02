@@ -20,8 +20,8 @@ public class RegistroController: ControllerBase
 
   [Authorize(Roles = "2")]
   [Authorize(Roles = "p1, p2")]
-  [HttpPost("/grupo/user")]
-  public async Task<IActionResult> RegisterUserToGroup(IdDto scoutId)
+  [HttpPost("grupo/user")]
+  public async Task<IActionResult> RegisterUserToGroup([FromBody] IdDto scoutId)
   {
     try
     {
@@ -44,8 +44,8 @@ public class RegistroController: ControllerBase
   
   [Authorize(Roles = "2")]
   [Authorize(Roles = "p1, p2")]
-  [HttpDelete("/grupo/user")]
-  public async Task<IActionResult> DeleteRegisterUserToGroup(IdDto scoutId)
+  [HttpDelete("grupo/user")]
+  public async Task<IActionResult> DeleteRegisterUserToGroup([FromBody] IdDto scoutId)
   {
     try
     {

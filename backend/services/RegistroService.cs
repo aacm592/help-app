@@ -92,7 +92,7 @@ public class RegistroService : IRegistroService
 
   public async Task CancelRegisterToGroup(IdDto scoutId, int diriId)
   {
-    var gestion = GetGestion();
+    var gestion = await GetGestion();
     
     var diri = await _userRepository.GetByIdWithTipoAndUnidadesAsync(diriId);
     if (diri == null)

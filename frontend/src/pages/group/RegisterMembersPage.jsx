@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { getMiembrosUnidadWithRegisters } from "../../services/unidadService";
 import LoadingPage from "../../components/LoadingPage";
 import MiembrosUnidadTable from "../../components/pageComponents/group/MiembrosUnidadTable";
-import Button from "../../components/Button";
+import { registerUserToGroup } from "../../services/registerService";
 
 export default function RegisterMembersPage() {
   const { unidadId } = useParams();
@@ -30,6 +30,30 @@ export default function RegisterMembersPage() {
     getUnidad();
   }, [unidadId]);
 
+  const register = async (id) => {
+    try {
+      await registerUserToGroup(id);
+
+      setUnidad((prevUnidad) => {
+        const updateMemberStatus = (members) =>
+          members.map((m) =>
+            m.id === id ? { ...m, registroStatus: "RegistroGrupo" } : m,
+          );
+
+        return {
+          ...prevUnidad,
+          scouts: updateMemberStatus(prevUnidad.scouts),
+          dirigentes: updateMemberStatus(prevUnidad.dirigentes),
+        };
+      });
+
+      alert("Usuario registrado en el grupo con éxito");
+    } catch (error) {
+      console.error("Error al registrar miembro:", error);
+      alert(error.response?.data || "No se pudo completar el registro");
+    }
+  };
+
   if (isLoading) return <LoadingPage />;
 
   return (
@@ -45,10 +69,9 @@ export default function RegisterMembersPage() {
         thClassName={thClassName}
         tdClassName={tdClassName}
         tableClassName={tableClassName}
+        deletLevel={"RegistroGrupo"}
         hasButon
-        onRegister={(x) => {
-          console.log(x);
-        }}
+        onRegister={register}
       />
     </div>
   );
