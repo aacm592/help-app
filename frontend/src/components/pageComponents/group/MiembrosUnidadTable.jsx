@@ -3,11 +3,14 @@ export default function MiembrosUnidadTable({
   rama,
   scouts,
   dirigentes,
+  sHeads,
+  sInfo,
+  dHeads,
+  dInfo,
+  tableClassName,
+  thClassName,
+  tdClassName,
 }) {
-  const thClassName =
-    "border-y border-gray-100 px-2 py-5 text-purple-900 font-bold";
-  const tdClassName = "border-y border-gray-300 px-2 py-4";
-
   return (
     <div className="w-full mb-10 flex flex-col gap-4">
       <div>
@@ -21,7 +24,7 @@ export default function MiembrosUnidadTable({
 
         <div className="overflow-x-auto rounded-2xl border border-gray-300 shadow-sm">
           <table className="w-full border-collapse">
-            <thead className="bg-purple-300">
+            <thead className={tableClassName}>
               <tr>
                 <th className={thClassName}>Nombre</th>
                 <th className={thClassName}>Edad</th>
@@ -30,6 +33,7 @@ export default function MiembrosUnidadTable({
                 <th className={thClassName}>Curso</th>
                 <th className={thClassName}>Etapa</th>
                 <th className={thClassName}>Registro</th>
+                {sHeads}
               </tr>
             </thead>
             <tbody className="text-center bg-slate-50">
@@ -48,6 +52,7 @@ export default function MiembrosUnidadTable({
                   <td className={`${tdClassName} text-purple-700 font-bold`}>
                     {a.registroStatus}
                   </td>
+                  {sInfo}
                 </tr>
               ))}
             </tbody>
@@ -69,6 +74,7 @@ export default function MiembrosUnidadTable({
                 <th className={thClassName}>Cargo 1</th>
                 <th className={thClassName}>Cargo 2</th>
                 <th className={thClassName}>Registro</th>
+                {dHeads}
               </tr>
             </thead>
             <tbody className="text-center bg-slate-50">
@@ -91,6 +97,7 @@ export default function MiembrosUnidadTable({
                   <td className={`${tdClassName} text-purple-700 font-bold`}>
                     {a.registroStatus}
                   </td>
+                  {dInfo}
                 </tr>
               ))}
             </tbody>

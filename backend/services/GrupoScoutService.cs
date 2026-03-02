@@ -130,4 +130,30 @@ public class GrupoScoutService : IGrupoScoutService
     
     return _mapper.Map<List<UnidadRegistrosDto>>(grupo.Unidades.ToList());  
   }
+  
+  public async Task<IEnumerable<UnidadResumenDto>> GetUnidadesResumenByGrupo(int userId)
+  {
+    var user = await _userRepository.GetByIdWithTipoAndUnidadesAsync(userId);
+    if (user == null) throw new ApplicationException("Usuario no encontrado.");
+
+    var permiso = user.UserPermisos.FirstOrDefault(x => x.PermisoId == 1 || x.PermisoId == 2);
+    if (permiso == null || permiso.AreaId <= 0)
+      throw new ApplicationException("El usuario no tiene un grupo asignado o permisos suficientes.");
+
+    var gestion = await _gestionRepository.GetUltimaGestion();
+    if (gestion == null) throw new ApplicationException("No hay una gestión activa configurada.");
+
+    var grupo = await _grupoScoutRepository.GetByIdWithUsers(permiso.AreaId, gestion.Id);
+    if (grupo == null) throw new ApplicationException("Grupo no encontrado.");
+
+    var unidadesResumen = grupo.Unidades.Select(u => new UnidadResumenDto
+    {
+      Id = u.Id,
+      Nombre = u.Nombre,
+      Total = u.Usuarios.Count,
+      Registrados = u.Usuarios.Count(usr => usr.Registros.Any(r => r.GestionId == gestion.Id))
+    });
+
+    return unidadesResumen;
+  }
 }
