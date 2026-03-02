@@ -12,6 +12,7 @@ public class UnidadService : IUnidadService
 {
   private readonly IUnidadRepository _unidadRepository;
   private readonly IUserRepository _userRepository;
+  private readonly IGestionRepository _gestionRepository;
   private readonly IMapper _mapper;
 
   private static readonly char[] CodigoChars =
@@ -20,11 +21,12 @@ public class UnidadService : IUnidadService
   public UnidadService(
     IUnidadRepository unidadRepository,
     IUserRepository userRepository,
-    IMapper mapper)
+    IMapper mapper, IGestionRepository gestionRepository)
   {
     _unidadRepository = unidadRepository;
     _userRepository = userRepository;
     _mapper = mapper;
+    _gestionRepository = gestionRepository;
   }
 
   public async Task<UnidadResponseDto> Create(CreateUnidadDto dto, int creadorId)
@@ -119,6 +121,24 @@ public class UnidadService : IUnidadService
       throw new ApplicationException("No tienes permiso para ver los miembros de esta unidad.");
 
     return _mapper.Map<IEnumerable<UserResponseDto>>(unidad.Usuarios);
+  }
+
+  public async Task<UnidadUsersDto> GetUnidadMembersAndRegisters(int userId, int unidadId)
+  {
+    var user = await _userRepository.GetByIdWithTipoAndUnidadesAsync(userId);
+    if (user == null) throw new ApplicationException("Usuario no encontrado.");
+
+    var permiso = user.UserPermisos.FirstOrDefault(x => x.PermisoId == 1 || x.PermisoId == 2);
+    if (permiso == null) throw new ApplicationException("No tienes permisos de responsable.");
+
+    var gestion = await _gestionRepository.GetUltimaGestion();
+
+    var unidad = await _unidadRepository.GetByIdWithUsersAndRegisters(unidadId, gestion!.Id);
+
+    if (unidad == null || unidad.GrupoScoutId != permiso.AreaId)
+      throw new ApplicationException("La unidad no existe o no pertenece a su grupo.");
+
+    return _mapper.Map<UnidadUsersDto>(unidad);
   }
 
   private async Task<User> GetUserOrThrowAsync(int userId)
