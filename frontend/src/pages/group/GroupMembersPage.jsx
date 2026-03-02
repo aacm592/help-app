@@ -26,14 +26,20 @@ export default function GroupMembersPage() {
   if (isLoading) return <LoadingPage />;
   return (
     <div className="w-full p-4">
-      <h1>Miembros del grupo</h1>
+      <h1 className="text-purple-900 md:text-left text-center">
+        Miembros del grupo
+      </h1>
       {unidades.map((u) => (
-        <MiembrosUnidadTable
-          key={u.id}
-          unidad={u.nombre}
-          scouts={u.scouts}
-          dirigentes={u.dirigentes}
-        />
+        <>
+          <MiembrosUnidadTable
+            key={u.id}
+            unidad={u.nombre}
+            scouts={u.scouts}
+            dirigentes={u.dirigentes}
+            rama={u.rama}
+          />
+          <br />
+        </>
       ))}
     </div>
   );

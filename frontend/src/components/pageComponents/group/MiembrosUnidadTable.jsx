@@ -1,12 +1,22 @@
-export default function MiembrosUnidadTable({ unidad, scouts, dirigentes }) {
+export default function MiembrosUnidadTable({
+  unidad,
+  rama,
+  scouts,
+  dirigentes,
+}) {
   const thClassName =
     "border-y border-gray-100 px-2 py-5 text-purple-900 font-bold";
   const tdClassName = "border-y border-gray-300 px-2 py-4";
 
   return (
-    <div className="w-full mb-10 flex flex-col gap-8">
+    <div className="w-full mb-10 flex flex-col gap-4">
       <div>
-        <h2 className="text-2xl font-bold text-purple-800 mb-4">{unidad}</h2>
+        <h2 className="text-2xl font-bold text-purple-900 mb-4">
+          Unidad: {unidad}
+        </h2>
+        <h2 className="text-2xl font-bold text-purple-900 mb-4">
+          Rama: {rama}
+        </h2>
         <h2 className="text-xl font-bold text-purple-800 mb-4">Scouts</h2>
 
         <div className="overflow-x-auto rounded-2xl border border-gray-300 shadow-sm">

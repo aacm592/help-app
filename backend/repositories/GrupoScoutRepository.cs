@@ -45,6 +45,8 @@ public class GrupoScoutRepository : IGrupoScoutRepository
       .Include(g => g.Unidades)
       .ThenInclude(u => u.Usuarios)
       .ThenInclude(u => u.Registros.Where(r => r.GestionId == gestionId))
+      .Include(g => g.Unidades)
+      .ThenInclude(u => u.Rama)
       .FirstOrDefaultAsync(g => g.Id == id);
   }
   
