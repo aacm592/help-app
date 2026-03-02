@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../../contexts/AuthContext";
 
 export default function RoleProtectedRoute({ allowedRoles = [] }) {
   const { isAuthenticated, user } = useAuth();
@@ -8,7 +8,7 @@ export default function RoleProtectedRoute({ allowedRoles = [] }) {
     return <Navigate to="/" replace />;
   }
 
-  const isAllowed = user && allowedRoles.includes(user.tipoId);
+  const isAllowed = user && (allowedRoles.includes(user.tipoId));
 
   if (!isAllowed) {
     return <Navigate to="/home" replace />;

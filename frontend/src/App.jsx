@@ -3,11 +3,8 @@ import MainPage from "./pages/login/MainPage";
 import RegisterPage from "./pages/login/RegisterPage";
 import SelectUnidadPage from "./pages/dirigente/SelectUnidadPage";
 import CreateUnidadPage from "./pages/dirigente/CreateUnidadPage";
-import ProtectedRoute from "./components/pageComponents/ProtectedRoute";
-import RoleProtectedRoute from "./components/pageComponents/RoleProtectedRoute";
 import RoleRedirectPage from "./components/RoleRedirectPage";
 import JoinUnidadPage from "./pages/JoinUnidad";
-// import HomeUnidadScout from "./pages/scout/HomeUnidadScout";
 import HomeUnidadDirigente from "./pages/dirigente/HomeUnidadDirigente";
 import ObjetivosPage from "./pages/scout/ObjetivosPage";
 import GestionarObjetivosPage from "./pages/dirigente/GestionarObjetivosPage";
@@ -23,6 +20,10 @@ import ScoutProfilePage from "./pages/dirigente/ScoutProfilePage";
 import Layout from "./components/nav/Layout";
 import Home from "./pages/common/Home";
 import UnidadPage from "./pages/dirigente/UnidadPage";
+import RoleProtectedRoute from "./components/pageComponents/protectedRoutes.jsx/RoleProtectedRoute";
+import ProtectedRoute from "./components/pageComponents/protectedRoutes.jsx/ProtectedRoute";
+import PermisoProtectedRoute from "./components/pageComponents/protectedRoutes.jsx/PermisoProtectedRoute";
+import GroupMembersPage from "./pages/group/GroupMembersPage";
 
 function App() {
   return (
@@ -72,6 +73,13 @@ function App() {
             />
             <Route path="/diri/profile" element={<ProfilePage />} />
             <Route path="/diri/unidad/:unidadId" element={<UnidadPage />} />
+
+            <Route element={<PermisoProtectedRoute allowedPermisos={[1]} />}>
+              <Route
+                path="/grupo/miembros"
+                element={<GroupMembersPage />}
+              />
+            </Route>
           </Route>
         </Route>
 

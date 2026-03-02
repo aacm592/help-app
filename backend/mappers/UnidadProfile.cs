@@ -17,6 +17,7 @@ public class UnidadProfile: Profile
 
     CreateMap<Unidad, UnidadUsersDto>()
       .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+      .ForMember(dest => dest.Rama, opt => opt.MapFrom(src => src.Rama.Nombre))
       .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.Nombre))
       .ForMember(dest => dest.Dirigentes, opt => opt.MapFrom(src => 
         src.Usuarios.Where(u => u.Profile!.DiriProfile != null)))

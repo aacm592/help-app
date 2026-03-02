@@ -71,5 +71,13 @@ export const getNavigation = (user) => {
     );
   }
 
+  if (user?.permisos.find((x) => x.id == 1)) {
+    sections.push({
+      icon: "groups_3",
+      title: "Grupo Scout",
+      links: [{ label: "Ver miembros", path: "/grupo/miembros" }],
+    });
+  }
+
   return sections;
 };
