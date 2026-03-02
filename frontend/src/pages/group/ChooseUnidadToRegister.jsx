@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { getUnidadeDeGrupo } from "../../services/grupoService";
 import Button from "../../components/Button";
 import LoadingPage from "../../components/LoadingPage";
+import { useNavigate } from "react-router-dom";
 
 export default function ChooseUnidadToRegister() {
   const [unidades, setUnidades] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const nav = useNavigate();
 
   useEffect(() => {
     const getUnidades = async () => {
@@ -34,7 +36,7 @@ export default function ChooseUnidadToRegister() {
             key={u.id}
             className="p-5 flex flex-col w-full md:w-1/2 bg-purple-300"
             onClick={() => {
-              console.log(u.id);
+              nav(`/grupo/registrar/${u.id}`);
             }}
           >
             <h2 className="text-2xl">{u.nombre}</h2>

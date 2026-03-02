@@ -137,7 +137,7 @@ public class UnidadController : ControllerBase
   
   [Authorize(Roles = "2")]
   [Authorize(Roles = "p1, p2")]
-  [HttpGet("/unidad/{unidadId}/registers")]
+  [HttpGet("{unidadId}/registers")]
   public async Task<IActionResult> GetUnidadById(int unidadId)
   {
     try

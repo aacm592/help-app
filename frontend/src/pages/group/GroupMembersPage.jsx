@@ -33,8 +33,8 @@ export default function GroupMembersPage() {
       <h1 className="text-purple-900 md:text-left text-center">
         Miembros del grupo
       </h1>
-      {unidades.map((u) => (
-        <>
+      <div className="flex flex-col py-6 gap-10">
+        {unidades.map((u) => (
           <MiembrosUnidadTable
             key={u.id}
             unidad={u.nombre}
@@ -45,9 +45,8 @@ export default function GroupMembersPage() {
             tdClassName={tdClassName}
             tableClassName={tableClassName}
           />
-          <br />
-        </>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }

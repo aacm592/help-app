@@ -25,6 +25,7 @@ import ProtectedRoute from "./components/pageComponents/protectedRoutes.jsx/Prot
 import PermisoProtectedRoute from "./components/pageComponents/protectedRoutes.jsx/PermisoProtectedRoute";
 import GroupMembersPage from "./pages/group/GroupMembersPage";
 import ChooseUnidadToRegister from "./pages/group/ChooseUnidadToRegister";
+import RegisterMembersPage from "./pages/group/RegisterMembersPage";
 
 function App() {
   return (
@@ -75,11 +76,15 @@ function App() {
             <Route path="/diri/profile" element={<ProfilePage />} />
             <Route path="/diri/unidad/:unidadId" element={<UnidadPage />} />
 
-            <Route element={<PermisoProtectedRoute allowedPermisos={[1]} />}>
+            <Route element={<PermisoProtectedRoute allowedPermisos={[1, 2]} />}>
               <Route path="/grupo/miembros" element={<GroupMembersPage />} />
               <Route
                 path="/grupo/registrar"
                 element={<ChooseUnidadToRegister />}
+              />
+              <Route
+                path="/grupo/registrar/:unidadId"
+                element={<RegisterMembersPage />}
               />
             </Route>
           </Route>

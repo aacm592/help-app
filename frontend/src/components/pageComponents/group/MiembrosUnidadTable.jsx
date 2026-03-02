@@ -1,3 +1,5 @@
+import Button from "../../Button";
+
 export default function MiembrosUnidadTable({
   unidad,
   rama,
@@ -10,6 +12,8 @@ export default function MiembrosUnidadTable({
   tableClassName,
   thClassName,
   tdClassName,
+  onRegister,
+  hasButon = false,
 }) {
   return (
     <div className="w-full mb-10 flex flex-col gap-4">
@@ -32,8 +36,9 @@ export default function MiembrosUnidadTable({
                 <th className={thClassName}>Unidad Educativa</th>
                 <th className={thClassName}>Curso</th>
                 <th className={thClassName}>Etapa</th>
-                <th className={thClassName}>Registro</th>
+                <th className={thClassName}>Estado de Registro</th>
                 {sHeads}
+                {hasButon && <th className={thClassName}>Registrar</th>}
               </tr>
             </thead>
             <tbody className="text-center bg-slate-50">
@@ -53,6 +58,21 @@ export default function MiembrosUnidadTable({
                     {a.registroStatus}
                   </td>
                   {sInfo}
+                  {hasButon && (
+                    <td className={`${tdClassName} text-purple-700 font-bold`}>
+                      {a.registroStatus == "No registrado" ? (
+                        <Button
+                          onClick={() => {
+                            onRegister(a.id);
+                          }}
+                        >
+                          Registrar
+                        </Button>
+                      ) : (
+                        a.registroStatus
+                      )}
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
@@ -75,6 +95,7 @@ export default function MiembrosUnidadTable({
                 <th className={thClassName}>Cargo 2</th>
                 <th className={thClassName}>Registro</th>
                 {dHeads}
+                {hasButon && <th className={thClassName}>Registrar</th>}
               </tr>
             </thead>
             <tbody className="text-center bg-slate-50">
@@ -98,6 +119,20 @@ export default function MiembrosUnidadTable({
                     {a.registroStatus}
                   </td>
                   {dInfo}
+                  {hasButon && (
+                    <td className={`${tdClassName} text-purple-700 font-bold`}>
+                      {a.registroStatus == "No registrado" ? (
+                        <Button
+                          className="w-full py-2 justify-center rounded-md"
+                          onClick={() => onRegister(a.id)}
+                        >
+                          Registrar
+                        </Button>
+                      ) : (
+                        a.registroStatus
+                      )}
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>

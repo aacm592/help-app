@@ -72,3 +72,17 @@ export const removerDeUnidad = async (unidadId, usuarioToRemoveId) => {
     }
   }
 };
+
+export async function getMiembrosUnidadWithRegisters(unidadId) {
+  try {
+    const response = await api.get(`/Unidad/${unidadId}/registers`);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw new Error(error.response.data);
+    } else {
+      console.error("Error al buscar la unidad:", error.message);
+      throw new Error("No se pudo conectar con el servidor.");
+    }
+  }
+}
