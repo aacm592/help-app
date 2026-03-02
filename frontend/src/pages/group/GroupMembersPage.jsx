@@ -29,7 +29,7 @@ export default function GroupMembersPage() {
 
   if (isLoading) return <LoadingPage />;
   return (
-    <div className="w-full p-4">
+    <div className="w-full md:px-10 px-4 py-4">
       <h1 className="text-purple-900 md:text-left text-center">
         Miembros del grupo
       </h1>

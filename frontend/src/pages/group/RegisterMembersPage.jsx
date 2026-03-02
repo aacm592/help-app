@@ -3,7 +3,10 @@ import { useParams } from "react-router-dom";
 import { getMiembrosUnidadWithRegisters } from "../../services/unidadService";
 import LoadingPage from "../../components/LoadingPage";
 import MiembrosUnidadTable from "../../components/pageComponents/group/MiembrosUnidadTable";
-import { registerUserToGroup } from "../../services/registerService";
+import {
+  cancelRegisterUserToGroup,
+  registerUserToGroup,
+} from "../../services/registerService";
 
 export default function RegisterMembersPage() {
   const { unidadId } = useParams();
@@ -54,10 +57,34 @@ export default function RegisterMembersPage() {
     }
   };
 
+  const cancelRgister = async (id) => {
+    try {
+      await cancelRegisterUserToGroup(id);
+
+      setUnidad((prevUnidad) => {
+        const updateMemberStatus = (members) =>
+          members.map((m) =>
+            m.id === id ? { ...m, registroStatus: "No registrado" } : m,
+          );
+
+        return {
+          ...prevUnidad,
+          scouts: updateMemberStatus(prevUnidad.scouts),
+          dirigentes: updateMemberStatus(prevUnidad.dirigentes),
+        };
+      });
+
+      alert("Registro cancelado");
+    } catch (error) {
+      console.error("Error al cancelar registro:", error);
+      alert(error.response?.data || "No se pudo cancelar el registro");
+    }
+  };
+
   if (isLoading) return <LoadingPage />;
 
   return (
-    <div className="w-full p-4">
+    <div className="w-full md:px-10 px-4 py-4">
       <h1 className="text-purple-900 md:text-left text-center">
         Registrar miembros
       </h1>
@@ -72,6 +99,7 @@ export default function RegisterMembersPage() {
         deletLevel={"RegistroGrupo"}
         hasButon
         onRegister={register}
+        onCancel={cancelRgister}
       />
     </div>
   );

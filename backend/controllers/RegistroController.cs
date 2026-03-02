@@ -44,8 +44,8 @@ public class RegistroController: ControllerBase
   
   [Authorize(Roles = "2")]
   [Authorize(Roles = "p1, p2")]
-  [HttpDelete("grupo/user")]
-  public async Task<IActionResult> DeleteRegisterUserToGroup([FromBody] IdDto scoutId)
+  [HttpDelete("grupo/user/{scoutId}")]
+  public async Task<IActionResult> DeleteRegisterUserToGroup(int scoutId)
   {
     try
     {
