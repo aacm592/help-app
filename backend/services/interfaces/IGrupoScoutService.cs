@@ -11,5 +11,5 @@ public interface IGrupoScoutService
   Task<IEnumerable<UnidadUsersDto>> GetUsersByRamaId(int id, int ramaId);
   Task<IEnumerable<UnidadRegistrosDto>> GetRegistros(int id);
   Task<IEnumerable<UnidadRegistrosDto>> GetRegistrosByRama(int id, int ramaId);
-  
+  Task<IEnumerable<UnidadResumenDto>> GetUnidadesResumenByGrupo(int userId);
 }

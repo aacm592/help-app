@@ -75,7 +75,11 @@ export const getNavigation = (user) => {
     sections.push({
       icon: "groups_3",
       title: "Grupo Scout",
-      links: [{ label: "Ver miembros", path: "/grupo/miembros" }],
+      links: [
+        { label: "Ver miembros", path: "/grupo/miembros" },
+        { label: "Ver registros", path: "/grupo/registros" },
+        { label: "Registrar scouts", path: "/grupo/registrar" },
+      ],
     });
   }
 

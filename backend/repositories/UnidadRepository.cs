@@ -53,6 +53,22 @@ public class UnidadRepository: IUnidadRepository
       .FirstOrDefaultAsync(u => u.Id == unidadId);
   }
   
+  public async Task<Unidad?> GetByIdWithUsersAndRegisters(int unidadId, int gestionId)
+  {
+    return await _context.Unidades
+      .Include(u => u.Usuarios)
+      .ThenInclude(u => u.Profile)
+      .ThenInclude(p => p!.DiriProfile)
+      .Include(u => u.Usuarios)
+      .ThenInclude(u => u.Profile)
+      .ThenInclude(p => p!.ScoutProfile)
+      .Include(u => u.Usuarios)
+      .ThenInclude(u => u.Tipo)
+      .Include(u => u.Usuarios)
+      .ThenInclude(u => u.Registros.Where(r => r.GestionId == gestionId))
+      .FirstOrDefaultAsync(u => u.Id == unidadId);
+  }
+  
   public async Task DeleteAsync(Unidad unidad)
   {
     _context.Unidades.Remove(unidad);

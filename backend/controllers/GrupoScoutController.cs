@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using backend.dtos.registros;
 using backend.services.interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -80,7 +79,6 @@ public class GrupoScoutController : ControllerBase
     }
   }
   
-  
   [Authorize(Roles = "2")]
   [Authorize(Roles = "p1, p2")]
   [HttpGet("unidades/registros")]
@@ -117,6 +115,30 @@ public class GrupoScoutController : ControllerBase
         return Unauthorized("Token de usuario inválido.");
 
       var resultado = await _grupoScoutService.GetRegistrosByRama(userId, id);
+      return Ok(resultado);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
+  
+  [Authorize(Roles = "2")]
+  [Authorize(Roles = "p1, p2")]
+  [HttpGet("unidades")]
+  public async Task<IActionResult> GetUnidadesResumen()
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      var resultado = await _grupoScoutService.GetUnidadesResumenByGrupo(userId);
       return Ok(resultado);
     }
     catch (ApplicationException ex)

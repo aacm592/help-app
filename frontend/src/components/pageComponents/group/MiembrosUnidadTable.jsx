@@ -1,13 +1,23 @@
+import Button from "../../Button";
+
 export default function MiembrosUnidadTable({
   unidad,
   rama,
   scouts,
   dirigentes,
+  sHeads = [],
+  dHeads = [],
+  tableClassName,
+  thClassName,
+  tdClassName,
+  trClassName,
+  onRegister,
+  hasButon = false,
+  deletLevel,
+  onCancel,
 }) {
-  const thClassName =
-    "border-y border-gray-100 px-2 py-5 text-purple-900 font-bold";
-  const tdClassName = "border-y border-gray-300 px-2 py-4";
-
+  const buttonClassName = "w-full p-2 justify-center rounded-md";
+  const cancelButtonClassName = `${buttonClassName} bg-red-600 text-yellow-300 border-red-950`;
   return (
     <div className="w-full mb-10 flex flex-col gap-4">
       <div>
@@ -21,7 +31,7 @@ export default function MiembrosUnidadTable({
 
         <div className="overflow-x-auto rounded-2xl border border-gray-300 shadow-sm">
           <table className="w-full border-collapse">
-            <thead className="bg-purple-300">
+            <thead className={tableClassName}>
               <tr>
                 <th className={thClassName}>Nombre</th>
                 <th className={thClassName}>Edad</th>
@@ -29,12 +39,18 @@ export default function MiembrosUnidadTable({
                 <th className={thClassName}>Unidad Educativa</th>
                 <th className={thClassName}>Curso</th>
                 <th className={thClassName}>Etapa</th>
-                <th className={thClassName}>Registro</th>
+                <th className={thClassName}>Estado de Registro</th>
+                {sHeads.map((i, h) => (
+                  <th key={i} className={thClassName}>
+                    {h}
+                  </th>
+                ))}
+                {hasButon && <th className={thClassName}>Registrar</th>}
               </tr>
             </thead>
             <tbody className="text-center bg-slate-50">
               {scouts.map((a, i) => (
-                <tr key={i} className="hover:bg-purple-100 transition-colors">
+                <tr key={i} className={trClassName}>
                   <td
                     className={`${tdClassName} text-left font-semibold text-gray-800`}
                   >
@@ -48,6 +64,32 @@ export default function MiembrosUnidadTable({
                   <td className={`${tdClassName} text-purple-700 font-bold`}>
                     {a.registroStatus}
                   </td>
+                  {a.info}
+                  {hasButon && (
+                    <td className={`${tdClassName} text-purple-700 font-bold`}>
+                      {a.registroStatus == "No registrado" ? (
+                        <Button
+                          className={`${buttonClassName}`}
+                          onClick={() => {
+                            onRegister(a.id);
+                          }}
+                        >
+                          Registrar
+                        </Button>
+                      ) : a.registroStatus == deletLevel ? (
+                        <Button
+                          className={cancelButtonClassName}
+                          onClick={() => {
+                            onCancel(a.id);
+                          }}
+                        >
+                          Cancelar registro
+                        </Button>
+                      ) : (
+                        a.registroStatus
+                      )}
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
@@ -59,7 +101,7 @@ export default function MiembrosUnidadTable({
         <h2 className="text-xl font-bold text-purple-800 mb-4">Dirigentes</h2>
         <div className="overflow-x-auto rounded-2xl border border-gray-300 shadow-sm">
           <table className="w-full border-collapse">
-            <thead className="bg-purple-300">
+            <thead className={tableClassName}>
               <tr>
                 <th className={thClassName}>Nombre</th>
                 <th className={thClassName}>Edad</th>
@@ -68,15 +110,18 @@ export default function MiembrosUnidadTable({
                 <th className={thClassName}>Ocupación</th>
                 <th className={thClassName}>Cargo 1</th>
                 <th className={thClassName}>Cargo 2</th>
-                <th className={thClassName}>Registro</th>
+                <th className={thClassName}>Estado de Registro</th>
+                {dHeads.map((i, h) => (
+                  <th key={i} className={thClassName}>
+                    {h}
+                  </th>
+                ))}
+                {hasButon && <th className={thClassName}>Registrar</th>}
               </tr>
             </thead>
             <tbody className="text-center bg-slate-50">
               {dirigentes.map((a) => (
-                <tr
-                  key={a.id}
-                  className="hover:bg-purple-100 transition-colors"
-                >
+                <tr key={a.id} className={trClassName}>
                   <td
                     className={`${tdClassName} text-left font-semibold text-gray-800`}
                   >
@@ -91,6 +136,32 @@ export default function MiembrosUnidadTable({
                   <td className={`${tdClassName} text-purple-700 font-bold`}>
                     {a.registroStatus}
                   </td>
+                  {a.info}
+                  {hasButon && (
+                    <td className={`${tdClassName} text-purple-700 font-bold`}>
+                      {a.registroStatus == "No registrado" ? (
+                        <Button
+                          className={`${buttonClassName}`}
+                          onClick={() => {
+                            onRegister(a.id);
+                          }}
+                        >
+                          Registrar
+                        </Button>
+                      ) : a.registroStatus == deletLevel ? (
+                        <Button
+                          className={cancelButtonClassName}
+                          onClick={() => {
+                            onCancel(a.id);
+                          }}
+                        >
+                          Cancelar registro
+                        </Button>
+                      ) : (
+                        a.registroStatus
+                      )}
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>

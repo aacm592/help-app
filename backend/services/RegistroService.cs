@@ -90,9 +90,9 @@ public class RegistroService : IRegistroService
     await _registroRepository.Create(registro);
   }
 
-  public async Task CancelRegisterToGroup(IdDto scoutId, int diriId)
+  public async Task CancelRegisterToGroup(int scoutId, int diriId)
   {
-    var gestion = GetGestion();
+    var gestion = await GetGestion();
     
     var diri = await _userRepository.GetByIdWithTipoAndUnidadesAsync(diriId);
     if (diri == null)
@@ -107,11 +107,11 @@ public class RegistroService : IRegistroService
     if (grupo == null)
       throw new ApplicationException("Grupo no encontrado");
     
-    var scout = await _userRepository.GetByIdWithTipoAndUnidadesAsync(scoutId.Id);
+    var scout = await _userRepository.GetByIdWithTipoAndUnidadesAsync(scoutId);
     if (scout == null)
       throw new ApplicationException("El scout no existe");
     
-    var registro = await _registroRepository.GetRegistroByUserId(scoutId.Id, gestion.Id);
+    var registro = await _registroRepository.GetRegistroByUserId(scoutId, gestion.Id);
     if (registro == null)
       throw new ApplicationException("Registro no encontrado");
     
