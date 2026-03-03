@@ -10,6 +10,7 @@ export default function MiembrosUnidadTable({
   tableClassName,
   thClassName,
   tdClassName,
+  trClassName,
   onRegister,
   hasButon = false,
   deletLevel,
@@ -49,7 +50,7 @@ export default function MiembrosUnidadTable({
             </thead>
             <tbody className="text-center bg-slate-50">
               {scouts.map((a, i) => (
-                <tr key={i} className="hover:bg-purple-100 transition-colors">
+                <tr key={i} className={trClassName}>
                   <td
                     className={`${tdClassName} text-left font-semibold text-gray-800`}
                   >
@@ -100,7 +101,7 @@ export default function MiembrosUnidadTable({
         <h2 className="text-xl font-bold text-purple-800 mb-4">Dirigentes</h2>
         <div className="overflow-x-auto rounded-2xl border border-gray-300 shadow-sm">
           <table className="w-full border-collapse">
-            <thead className="bg-purple-300">
+            <thead className={tableClassName}>
               <tr>
                 <th className={thClassName}>Nombre</th>
                 <th className={thClassName}>Edad</th>
@@ -109,7 +110,7 @@ export default function MiembrosUnidadTable({
                 <th className={thClassName}>Ocupación</th>
                 <th className={thClassName}>Cargo 1</th>
                 <th className={thClassName}>Cargo 2</th>
-                <th className={thClassName}>Registro</th>
+                <th className={thClassName}>Estado de Registro</th>
                 {dHeads.map((i, h) => (
                   <th key={i} className={thClassName}>
                     {h}
@@ -120,10 +121,7 @@ export default function MiembrosUnidadTable({
             </thead>
             <tbody className="text-center bg-slate-50">
               {dirigentes.map((a) => (
-                <tr
-                  key={a.id}
-                  className="hover:bg-purple-100 transition-colors"
-                >
+                <tr key={a.id} className={trClassName}>
                   <td
                     className={`${tdClassName} text-left font-semibold text-gray-800`}
                   >

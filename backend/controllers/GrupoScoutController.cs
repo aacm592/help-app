@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using backend.dtos.registros;
 using backend.services.interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -79,7 +78,6 @@ public class GrupoScoutController : ControllerBase
       return StatusCode(500, $"Error interno: {ex.Message}");
     }
   }
-  
   
   [Authorize(Roles = "2")]
   [Authorize(Roles = "p1, p2")]

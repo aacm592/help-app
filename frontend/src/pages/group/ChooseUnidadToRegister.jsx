@@ -28,13 +28,13 @@ export default function ChooseUnidadToRegister() {
   if (isLoading) return <LoadingPage />;
 
   return (
-    <div className="w-full p-4 flex flex-col justify-cente">
+    <div className="w-full p-4 flex flex-col justify-center">
       <h1 className="text-purple-900 text-center">Unidades</h1>
-      <div className="w-full p-4 flex flex-col items-center gap-4">
+      <div className="w-full p-4 flex flex-col items-center">
         {unidades.map((u) => (
           <Button
             key={u.id}
-            className="p-5 flex flex-col w-full md:w-1/2 bg-purple-300"
+            className="p-4 flex flex-col w-full lg:w-1/3 border-2 m-10 rounded-xl hover:bg-purple-300 active:bg-purple-500 "
             onClick={() => {
               nav(`/grupo/registrar/${u.id}`);
             }}

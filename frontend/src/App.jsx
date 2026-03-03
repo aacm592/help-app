@@ -26,6 +26,7 @@ import PermisoProtectedRoute from "./components/pageComponents/protectedRoutes.j
 import GroupMembersPage from "./pages/group/GroupMembersPage";
 import ChooseUnidadToRegister from "./pages/group/ChooseUnidadToRegister";
 import RegisterMembersPage from "./pages/group/RegisterMembersPage";
+import RegistrosGrupoPage from "./pages/group/RegistrosGrupoPage";
 
 function App() {
   return (
@@ -78,6 +79,7 @@ function App() {
 
             <Route element={<PermisoProtectedRoute allowedPermisos={[1, 2]} />}>
               <Route path="/grupo/miembros" element={<GroupMembersPage />} />
+              <Route path="/grupo/registros" element={<RegistrosGrupoPage />} />
               <Route
                 path="/grupo/registrar"
                 element={<ChooseUnidadToRegister />}

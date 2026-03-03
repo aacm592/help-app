@@ -1,21 +1,22 @@
 import { useEffect, useState } from "react";
 import MiembrosUnidadTable from "../../components/pageComponents/group/MiembrosUnidadTable";
 import LoadingPage from "../../components/LoadingPage";
-import { getGroupMembers } from "../../services/grupoService";
+import { getGroupRegisters } from "../../services/registerService";
 
-export default function GroupMembersPage() {
+export default function RegistrosGrupoPage() {
   const [unidades, setUnidades] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const thClassName =
-    "border-y border-gray-100 px-2 py-5 text-green-900 font-bold";
+    "border-y border-gray-100 px-2 py-5 text-purple-900 font-bold";
   const tdClassName = "border-y border-gray-300 px-2 py-4";
-  const tableClassName = "bg-sky-200";
-  const trClassName = "hover:bg-indigo-50 transition-colors";
+  const tableClassName = "bg-violet-300";
+  const trClassName = "hover:bg-violet-100 transition-colors";
+
   useEffect(() => {
     const getResumen = async () => {
       setIsLoading(true);
       try {
-        const grupo = await getGroupMembers();
+        const grupo = await getGroupRegisters();
         setUnidades(grupo);
       } catch (error) {
         console.error("Error al obtener resumenes", error);

@@ -17,6 +17,7 @@ export default function RegisterMembersPage() {
     "border-y border-gray-100 px-2 py-5 text-purple-900 font-bold";
   const tdClassName = "border-y border-gray-300 px-2 py-4";
   const tableClassName = "bg-purple-300";
+  const trClassName = "hover:bg-purple-100 transition-colors";
 
   useEffect(() => {
     const getUnidad = async () => {
@@ -96,6 +97,7 @@ export default function RegisterMembersPage() {
         thClassName={thClassName}
         tdClassName={tdClassName}
         tableClassName={tableClassName}
+        trClassName={trClassName}
         deletLevel={"RegistroGrupo"}
         hasButon
         onRegister={register}
