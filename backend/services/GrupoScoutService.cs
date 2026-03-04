@@ -50,8 +50,10 @@ public class GrupoScoutService : IGrupoScoutService
       throw new ApplicationException("El usuario no tiene un ID de grupo válido asignado.");
 
     var gestion = await _gestionRepository.GetUltimaGestion();
-
-    var grupo = await _grupoScoutRepository.GetByIdWithUsers(permiso.AreaId, gestion!.Id);
+    int gestionId = 0;
+    if (gestion != null) gestionId = gestion.Id;
+    
+    var grupo = await _grupoScoutRepository.GetByIdWithUsers(permiso.AreaId, gestionId);
   
     if (grupo == null)
       throw new ApplicationException("El grupo asignado al usuario no existe en la base de datos.");
@@ -74,8 +76,10 @@ public class GrupoScoutService : IGrupoScoutService
       throw new ApplicationException("El usuario no tiene un ID de grupo válido asignado.");
 
     var gestion = await _gestionRepository.GetUltimaGestion();
-
-    var grupo = await _grupoScoutRepository.GetByRamaWithUsers(permiso.AreaId, gestion!.Id, ramaId);
+    int gestionId = 0;
+    if (gestion != null) gestionId = gestion.Id;
+    
+    var grupo = await _grupoScoutRepository.GetByRamaWithUsers(permiso.AreaId, gestionId, ramaId);
   
     if (grupo == null)
       throw new ApplicationException("El grupo asignado al usuario no existe en la base de datos.");
@@ -155,5 +159,39 @@ public class GrupoScoutService : IGrupoScoutService
     });
 
     return unidadesResumen;
+  }
+
+  public async Task<IEnumerable<UserDataDto<DiriInfoDto>>> GetAdmins(int userId)
+  {
+    var user = await _userRepository.GetByIdWithTipoAndUnidadesAsync(userId);
+    if (user == null) throw new ApplicationException("Usuario no encontrado.");
+    
+    var permiso = user.UserPermisos.FirstOrDefault(x => x.PermisoId == 1 || x.PermisoId == 2);
+    if (permiso == null || permiso.AreaId <= 0)
+      throw new ApplicationException("El usuario no tiene un grupo asignado o permisos suficientes.");
+    var gestion = await _gestionRepository.GetUltimaGestion();
+    int gestionId = 0;
+    if (gestion != null) gestionId = gestion.Id;
+
+    var allAdmins = await _userRepository.GetUsersByPermisoAndArea(new[] { 1, 2 }, permiso.AreaId, gestionId);
+    
+    return _mapper.Map<List<UserDataDto<DiriInfoDto>>>(allAdmins);  
+  }
+  
+  public async Task<IEnumerable<UserRegistrosDto<DiriInfoDto>>> GetAdminsRegisters(int userId)
+  {
+    var user = await _userRepository.GetByIdWithTipoAndUnidadesAsync(userId);
+    if (user == null) throw new ApplicationException("Usuario no encontrado.");
+    
+    var permiso = user.UserPermisos.FirstOrDefault(x => x.PermisoId == 1 || x.PermisoId == 2);
+    if (permiso == null || permiso.AreaId <= 0)
+      throw new ApplicationException("El usuario no tiene un grupo asignado o permisos suficientes.");
+    
+    var gestion = await _gestionRepository.GetUltimaGestion();
+    if (gestion == null) throw new ApplicationException("No hay una gestión activa configurada.");
+
+    var allAdmins = await _registroRepository.GetRegistersByPermisoAndArea(new[] { 1, 2 }, permiso.AreaId, gestion.Id);
+    
+    return _mapper.Map<List<UserRegistrosDto<DiriInfoDto>>>(allAdmins);  
   }
 }

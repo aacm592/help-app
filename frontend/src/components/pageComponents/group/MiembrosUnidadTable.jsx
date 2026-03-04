@@ -1,12 +1,11 @@
-import Button from "../../Button";
+import GenericTable from "../../GenericTable";
+import MemberRow from "./MemberRow";
 
 export default function MiembrosUnidadTable({
   unidad,
   rama,
   scouts,
   dirigentes,
-  sHeads = [],
-  dHeads = [],
   tableClassName,
   thClassName,
   tdClassName,
@@ -18,156 +17,75 @@ export default function MiembrosUnidadTable({
 }) {
   const buttonClassName = "w-full p-2 justify-center rounded-md";
   const cancelButtonClassName = `${buttonClassName} bg-red-600 text-yellow-300 border-red-950`;
+
+  const commonProps = {
+    hasButton: hasButon,
+    onRegister,
+    onCancel,
+    deletLevel,
+    tdClassName,
+    trClassName,
+    buttonClassName,
+    cancelButtonClassName,
+  };
+
   return (
-    <div className="w-full mb-10 flex flex-col gap-4">
-      <div>
-        <h2 className="text-2xl font-bold text-purple-900 mb-4">
-          Unidad: {unidad}
-        </h2>
-        <h2 className="text-2xl font-bold text-purple-900 mb-4">
-          Rama: {rama}
-        </h2>
-        <h2 className="text-xl font-bold text-purple-800 mb-4">Scouts</h2>
+    <div className="w-full mb-10 flex flex-col gap-8">
+      <header>
+        <h2 className="text-2xl font-bold text-purple-900">Unidad: {unidad}</h2>
+        <h2 className="text-2xl font-bold text-purple-900">Rama: {rama}</h2>
+      </header>
 
-        <div className="overflow-x-auto rounded-2xl border border-gray-300 shadow-sm">
-          <table className="w-full border-collapse">
-            <thead className={tableClassName}>
-              <tr>
-                <th className={thClassName}>Nombre</th>
-                <th className={thClassName}>Edad</th>
-                <th className={thClassName}>Rol</th>
-                <th className={thClassName}>Unidad Educativa</th>
-                <th className={thClassName}>Curso</th>
-                <th className={thClassName}>Etapa</th>
-                <th className={thClassName}>Estado de Registro</th>
-                {sHeads.map((i, h) => (
-                  <th key={i} className={thClassName}>
-                    {h}
-                  </th>
-                ))}
-                {hasButon && <th className={thClassName}>Registrar</th>}
-              </tr>
-            </thead>
-            <tbody className="text-center bg-slate-50">
-              {scouts.map((a, i) => (
-                <tr key={i} className={trClassName}>
-                  <td
-                    className={`${tdClassName} text-left font-semibold text-gray-800`}
-                  >
-                    {a.nombre}
-                  </td>
-                  <td className={tdClassName}>{a.edad}</td>
-                  <td className={tdClassName}>{a.rol}</td>
-                  <td className={tdClassName}>{a.datos.unidadEducativa}</td>
-                  <td className={tdClassName}>{a.datos.curso}</td>
-                  <td className={tdClassName}>{a.datos.etapa}</td>
-                  <td className={`${tdClassName} text-purple-700 font-bold`}>
-                    {a.registroStatus}
-                  </td>
-                  {a.info}
-                  {hasButon && (
-                    <td className={`${tdClassName} text-purple-700 font-bold`}>
-                      {a.registroStatus == "No registrado" ? (
-                        <Button
-                          className={`${buttonClassName}`}
-                          onClick={() => {
-                            onRegister(a.id);
-                          }}
-                        >
-                          Registrar
-                        </Button>
-                      ) : a.registroStatus == deletLevel ? (
-                        <Button
-                          className={cancelButtonClassName}
-                          onClick={() => {
-                            onCancel(a.id);
-                          }}
-                        >
-                          Cancelar registro
-                        </Button>
-                      ) : (
-                        a.registroStatus
-                      )}
-                    </td>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <GenericTable
+        title="Scouts"
+        tableClassName={tableClassName}
+        thClassName={thClassName}
+        headers={[
+          "Nombre",
+          "Edad",
+          "Rol",
+          "U. Educativa",
+          "Curso",
+          "Etapa",
+          "Estado",
+          ...(hasButon ? ["Acción"] : []),
+        ]}
+      >
+        {scouts.map((s) => (
+          <MemberRow
+            key={s.id}
+            member={s}
+            fields={["unidadEducativa", "curso", "etapa"]}
+            {...commonProps}
+          />
+        ))}
+      </GenericTable>
 
-      <div>
-        <h2 className="text-xl font-bold text-purple-800 mb-4">Dirigentes</h2>
-        <div className="overflow-x-auto rounded-2xl border border-gray-300 shadow-sm">
-          <table className="w-full border-collapse">
-            <thead className={tableClassName}>
-              <tr>
-                <th className={thClassName}>Nombre</th>
-                <th className={thClassName}>Edad</th>
-                <th className={thClassName}>Rol</th>
-                <th className={thClassName}>Profesión</th>
-                <th className={thClassName}>Ocupación</th>
-                <th className={thClassName}>Cargo 1</th>
-                <th className={thClassName}>Cargo 2</th>
-                <th className={thClassName}>Estado de Registro</th>
-                {dHeads.map((i, h) => (
-                  <th key={i} className={thClassName}>
-                    {h}
-                  </th>
-                ))}
-                {hasButon && <th className={thClassName}>Registrar</th>}
-              </tr>
-            </thead>
-            <tbody className="text-center bg-slate-50">
-              {dirigentes.map((a) => (
-                <tr key={a.id} className={trClassName}>
-                  <td
-                    className={`${tdClassName} text-left font-semibold text-gray-800`}
-                  >
-                    {a.nombre}
-                  </td>
-                  <td className={tdClassName}>{a.edad}</td>
-                  <td className={tdClassName}>{a.rol}</td>
-                  <td className={tdClassName}>{a.datos.profesion}</td>
-                  <td className={tdClassName}>{a.datos.ocupacion}</td>
-                  <td className={tdClassName}>{a.datos.cargo1}</td>
-                  <td className={tdClassName}>{a.datos.cargo2}</td>
-                  <td className={`${tdClassName} text-purple-700 font-bold`}>
-                    {a.registroStatus}
-                  </td>
-                  {a.info}
-                  {hasButon && (
-                    <td className={`${tdClassName} text-purple-700 font-bold`}>
-                      {a.registroStatus == "No registrado" ? (
-                        <Button
-                          className={`${buttonClassName}`}
-                          onClick={() => {
-                            onRegister(a.id);
-                          }}
-                        >
-                          Registrar
-                        </Button>
-                      ) : a.registroStatus == deletLevel ? (
-                        <Button
-                          className={cancelButtonClassName}
-                          onClick={() => {
-                            onCancel(a.id);
-                          }}
-                        >
-                          Cancelar registro
-                        </Button>
-                      ) : (
-                        a.registroStatus
-                      )}
-                    </td>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <GenericTable
+        title="Dirigentes"
+        tableClassName={tableClassName}
+        thClassName={thClassName}
+        headers={[
+          "Nombre",
+          "Edad",
+          "Rol",
+          "Profesión",
+          "Ocupación",
+          "Cargo 1",
+          "Cargo 2",
+          "Estado",
+          ...(hasButon ? ["Acción"] : []),
+        ]}
+      >
+        {dirigentes.map((d) => (
+          <MemberRow
+            key={d.id}
+            member={d}
+            fields={["profesion", "ocupacion", "cargo1", "cargo2"]}
+            {...commonProps}
+          />
+        ))}
+      </GenericTable>
     </div>
   );
 }

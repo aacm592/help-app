@@ -61,6 +61,15 @@ public class RegistroRepository: IRegistroRepository
       .ThenInclude(r => r.RegistroDiri)
       .FirstOrDefaultAsync(g => g.Id == id);
   }
+  
+  public async Task<IEnumerable<Registro?>> GetRegistersByPermisoAndArea(int[] permisoIds, int areaId, int gestionId)
+  {
+    return await _context.Registros
+      .Include(r => r.RegistroDiri)
+      .Include(r => r.RegistroScout)
+      .Where(r => r.User.UserPermisos.Any(p => permisoIds.Contains(p.PermisoId) && p.AreaId == areaId) && r.GestionId == gestionId)
+      .ToListAsync();
+  }
 
   public async Task Delete(Registro registro)
   {

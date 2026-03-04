@@ -77,6 +77,7 @@ export const getNavigation = (user) => {
       title: "Grupo Scout",
       links: [
         { label: "Ver miembros", path: "/grupo/miembros" },
+        { label: "Ver administradores", path: "/grupo/admins" },
         { label: "Ver registros", path: "/grupo/registros" },
         { label: "Registrar scouts", path: "/grupo/registrar" },
       ],
