@@ -47,7 +47,7 @@ export default function MiembrosUnidadTable({
           "U. Educativa",
           "Curso",
           "Etapa",
-          "Estado",
+          "Estado de registro",
           ...(hasButon ? ["Acción"] : []),
         ]}
       >
@@ -73,7 +73,7 @@ export default function MiembrosUnidadTable({
           "Ocupación",
           "Cargo 1",
           "Cargo 2",
-          "Estado",
+          "Estado de registro",
           ...(hasButon ? ["Acción"] : []),
         ]}
       >

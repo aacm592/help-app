@@ -44,6 +44,14 @@ export default function ChooseUnidadToRegister() {
             <h3 className="text-lg"> Registrados: {u.registrados}</h3>
           </Button>
         ))}
+        <Button
+          className="p-4 flex flex-col w-full lg:w-1/3 border-2 m-10 rounded-xl hover:bg-purple-300 active:bg-purple-500 "
+          onClick={() => {
+            nav(`/grupo/registrar/admins`);
+          }}
+        >
+          <h2 className="text-2xl">Administradores</h2>
+        </Button>
       </div>
     </div>
   );
