@@ -46,6 +46,9 @@ public class UserRepository : IUserRepository
   {
     return await _context.Users
       .Include(u => u.Profile)
+      .ThenInclude(p => p!.ScoutProfile)
+      .Include(u => u.Profile)
+      .ThenInclude(p => p!.DiriProfile)
       .Include(u => u.Tipo)
       .Include(u => u.UserPermisos)
       .Include(u => u.Unidades)
@@ -54,7 +57,20 @@ public class UserRepository : IUserRepository
         .ThenInclude(un => un.GrupoScout)
       .FirstOrDefaultAsync(u => u.Id == userId);
   }
-  
+
+  public async Task<IEnumerable<User>?> GetUsersByPermisoAndArea(int[] permisoIds, int areaId, int gestionId)
+  {
+    return await _context.Users
+      .Include(u => u.Profile)
+      .ThenInclude(p => p!.ScoutProfile)
+      .Include(u => u.Profile)
+      .ThenInclude(p => p!.DiriProfile)     
+      .Include(u => u.Registros.Where(r => r.GestionId == gestionId))
+      .Include(u => u.Tipo)
+      .Include(u => u.UserPermisos)
+      .Where(u => u.UserPermisos.Any(p => permisoIds.Contains(p.PermisoId) && p.AreaId == areaId))
+      .ToListAsync();
+  }
   public async Task UpdateAsync(User user)
   {
     _context.Users.Update(user);

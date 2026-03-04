@@ -43,3 +43,13 @@ export async function getGroupRegisters() {
     throw new Error("No se pudo cargar los registros de grupos.");
   }
 }
+
+export async function getGroupAdminsRegisters() {
+  try {
+    const response = await api.get(`/GrupoScout/admins/registros`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener los registros de admins del grupo", error);
+    throw new Error("No se pudo cargar los registros de admins del grupo.");
+  }
+}

@@ -27,6 +27,8 @@ import GroupMembersPage from "./pages/group/GroupMembersPage";
 import ChooseUnidadToRegister from "./pages/group/ChooseUnidadToRegister";
 import RegisterMembersPage from "./pages/group/RegisterMembersPage";
 import RegistrosGrupoPage from "./pages/group/RegistrosGrupoPage";
+import GroupAdminsPage from "./pages/group/GroupAdminsPage";
+import RegisterGroupAdminsPage from "./pages/group/RegisterGroupAdminsPage";
 
 function App() {
   return (
@@ -79,6 +81,7 @@ function App() {
 
             <Route element={<PermisoProtectedRoute allowedPermisos={[1, 2]} />}>
               <Route path="/grupo/miembros" element={<GroupMembersPage />} />
+              <Route path="/grupo/admins" element={<GroupAdminsPage />} />
               <Route path="/grupo/registros" element={<RegistrosGrupoPage />} />
               <Route
                 path="/grupo/registrar"
@@ -87,6 +90,10 @@ function App() {
               <Route
                 path="/grupo/registrar/:unidadId"
                 element={<RegisterMembersPage />}
+              />
+              <Route
+                path="/grupo/registrar/admins"
+                element={<RegisterGroupAdminsPage />}
               />
             </Route>
           </Route>

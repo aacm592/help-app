@@ -71,15 +71,21 @@ export const getNavigation = (user) => {
     );
   }
 
+  const groupLinks = [
+    { label: "Ver miembros", path: "/grupo/miembros" },
+    { label: "Ver registros", path: "/grupo/registros" },
+    { label: "Registrar scouts", path: "/grupo/registrar" },
+  ];
+
   if (user?.permisos.find((x) => x.id == 1)) {
+    groupLinks.push({ label: "Ver administradores", path: "/grupo/admins" });
+  }
+
+  if (user?.permisos.find((x) => x.id == 1 || x.id == 2)) {
     sections.push({
       icon: "groups_3",
       title: "Grupo Scout",
-      links: [
-        { label: "Ver miembros", path: "/grupo/miembros" },
-        { label: "Ver registros", path: "/grupo/registros" },
-        { label: "Registrar scouts", path: "/grupo/registrar" },
-      ],
+      links: groupLinks,
     });
   }
 

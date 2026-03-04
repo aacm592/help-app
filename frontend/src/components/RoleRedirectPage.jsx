@@ -9,6 +9,7 @@ export default function RoleRedirectPage() {
   useEffect(() => {
     if (user) {
       const tieneUnidades = user.unidades && user.unidades.length > 0;
+      const tienePermisos = user.permisos && user.permisos.length > 0;
 
       switch (user.tipoId) {
         case 1: // --- Rol Scout ---
@@ -21,6 +22,8 @@ export default function RoleRedirectPage() {
 
         case 2: // --- Rol Dirigente ---
           if (tieneUnidades) {
+            navigate("/diri", { replace: true });
+          } else if (tienePermisos) {
             navigate("/diri", { replace: true });
           } else {
             navigate("/inicio", { replace: true });

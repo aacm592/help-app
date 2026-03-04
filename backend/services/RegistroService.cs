@@ -47,7 +47,8 @@ public class RegistroService : IRegistroService
       throw new ApplicationException("El scout no existe");
 
     VerifyScoutsOnTheSameGroup(scout, diri);
-
+    VerifyScoutHasFullProfile(scout);
+    
     var registro = new Registro()
     {
       GestionId = gestion.Id,
@@ -144,6 +145,51 @@ public class RegistroService : IRegistroService
         if(permisoScout.AreaId != permisoDiri!.AreaId)
           throw new ApplicationException("No estás en el mismo grupo que el scout");
         break;
+    }
+  }
+
+  private void VerifyScoutHasFullProfile(User scout)
+  {
+    var perfil = scout.Profile;
+
+    if (perfil == null)
+      throw new ApplicationException("El usuario no tiene un perfil creado.");
+
+    if (string.IsNullOrWhiteSpace(perfil.Nombre) || 
+        string.IsNullOrWhiteSpace(perfil.Apellido) ||
+        string.IsNullOrWhiteSpace(perfil.Genero) ||
+        perfil.Ci == 0 || 
+        perfil.FechaNacimiento == default)
+    {
+      throw new ApplicationException("El perfil base del usuario está incompleto (Nombre, Apellido, CI, Género o Fecha de Nacimiento).");
+    }
+
+    switch (scout.TipoId)
+    {
+      case 1:
+        var sp = perfil.ScoutProfile;
+        if (sp == null || 
+            string.IsNullOrWhiteSpace(sp.UnidadEducativa) || 
+            string.IsNullOrWhiteSpace(sp.Curso) || 
+            string.IsNullOrWhiteSpace(sp.Etapa))
+        {
+          throw new ApplicationException("El perfil de Scout está incompleto (Unidad Educativa, Curso o Etapa).");
+        }
+        break;
+
+      case 2:
+        var dp = perfil.DiriProfile;
+        if (dp == null || 
+            string.IsNullOrWhiteSpace(dp.Profesion) || 
+            string.IsNullOrWhiteSpace(dp.Ocupacion) || 
+            string.IsNullOrWhiteSpace(dp.Cargo1))
+        {
+          throw new ApplicationException("El perfil de Dirigente está incompleto (Profesión, Ocupación o Cargo).");
+        }
+        break;
+            
+      default:
+        throw new ApplicationException("Tipo de usuario no reconocido para validación de perfil.");
     }
   }
   
