@@ -54,7 +54,7 @@ export default function RegisterMembersPage() {
       alert("Usuario registrado en el grupo con éxito");
     } catch (error) {
       console.error("Error al registrar miembro:", error);
-      alert(error.response?.data || "No se pudo completar el registro");
+      alert(error || "No se pudo completar el registro");
     }
   };
 
