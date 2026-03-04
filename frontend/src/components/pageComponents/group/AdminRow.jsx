@@ -1,17 +1,13 @@
 import Button from "../../Button";
 
-export default function MemberRow({
+export default function AdminRow({
   member,
   fields,
   hasButton,
-  onRegister,
-  onCancel,
-  deletLevel,
+  onDelete,
   tdClassName,
   trClassName,
   buttonClassName,
-  cancelButtonClassName,
-  cancelButtonMessage = "Cancelar registro",
 }) {
   return (
     <tr className={trClassName}>
@@ -33,23 +29,9 @@ export default function MemberRow({
 
       {hasButton && (
         <td className={`${tdClassName} text-purple-700 font-bold`}>
-          {member.registroStatus === "No registrado" ? (
-            <Button
-              className={buttonClassName}
-              onClick={() => onRegister(member.id)}
-            >
-              Registrar
-            </Button>
-          ) : member.registroStatus === deletLevel ? (
-            <Button
-              className={cancelButtonClassName}
-              onClick={() => onCancel(member.id)}
-            >
-              {cancelButtonMessage}
-            </Button>
-          ) : (
-            member.registroStatus
-          )}
+          <Button className={buttonClassName} onClick={onDelete}>
+            Quitar Administrador
+          </Button>
         </td>
       )}
     </tr>

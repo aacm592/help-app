@@ -78,7 +78,7 @@ export default function RegisterMembersPage() {
       alert("Registro cancelado");
     } catch (error) {
       console.error("Error al cancelar registro:", error);
-      alert(error.response?.data || "No se pudo cancelar el registro");
+      alert(error || "No se pudo cancelar el registro");
     }
   };
 

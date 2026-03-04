@@ -79,7 +79,7 @@ export default function RegisterGroupAdminsPage() {
   return (
     <div className="w-full md:px-10 px-4 py-4">
       <h1 className="text-purple-900 md:text-left text-center">
-        Miembros del grupo
+        Registrar miembros
       </h1>
       <GenericTable
         title="Administradores"
