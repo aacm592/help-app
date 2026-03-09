@@ -33,6 +33,15 @@ public class RegistroRepository: IRegistroRepository
     return await _context.Registros.FirstOrDefaultAsync(x => x.UserId == userId && x.GestionId == gestionId);
   }
 
+  public async Task<List<Registro>> GetMany(IEnumerable<int> userIds, int gestionId)
+  {
+    var ids = userIds.ToList(); 
+
+    return await _context.Registros
+      .Where(r => r.GestionId == gestionId && ids.Contains(r.UserId))
+      .ToListAsync();
+  }
+
   public async Task<GrupoScout?> GetGroupRegisters(int id, int gestionId)
   {
     return await _context.GruposScout

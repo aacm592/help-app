@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using backend.dtos.auth;
+using backend.dtos.registros;
 using backend.services.interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -55,6 +56,30 @@ public class RegistroController: ControllerBase
 
       await _registroService.CancelRegisterToGroup(scoutId, userId);
       return Ok(new { Message = "Registro cancelado correctamente." });
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
+
+  [Authorize(Roles = "2")]
+  [Authorize(Roles = "p1, p2")]
+  [HttpPost("send/distrito")]
+  public async Task<IActionResult> DeleteRegisterUserToGroup([FromBody] List<RegistroDto> users)
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      await _registroService.SendRegistersToDistrito(users, userId);
+      return Ok(new { Message = "Registros actualizados correctamente." });
     }
     catch (ApplicationException ex)
     {

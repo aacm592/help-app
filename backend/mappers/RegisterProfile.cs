@@ -1,5 +1,4 @@
 using AutoMapper;
-using backend.data.models;
 using backend.data.models.registros;
 using backend.dtos.registros;
 
@@ -42,8 +41,7 @@ public class RegisterProfile : Profile
       .ForMember(dest => dest.Datos, opt => opt.MapFrom(src => src.RegistroDiri));
 
     CreateMap<Registro, RegistroDto>()
-      .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
-      .ForMember(dest => dest.GestionId, opt => opt.MapFrom(src => src.GestionId));
+      .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId));
   }
 
     private static int CalculateAge(DateTime birthDate)
