@@ -70,7 +70,7 @@ public class RegistroController: ControllerBase
   [Authorize(Roles = "2")]
   [Authorize(Roles = "p1, p2")]
   [HttpPost("send/distrito")]
-  public async Task<IActionResult> DeleteRegisterUserToGroup([FromBody] List<RegistroDto> users)
+  public async Task<IActionResult> SendRegistersToDistrito([FromBody] List<RegistroDto> users)
   {
     try
     {
@@ -79,7 +79,55 @@ public class RegistroController: ControllerBase
         return Unauthorized("Token de usuario inválido.");
 
       await _registroService.SendRegistersToDistrito(users, userId);
-      return Ok(new { Message = "Registros actualizados correctamente." });
+      return Ok(new { Message = "Registros enviados al registro." });
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
+  
+  [Authorize(Roles = "2")]
+  [Authorize(Roles = "p3, p4")]
+  [HttpPost("register/distrito")]
+  public async Task<IActionResult> AcceptRegistrosDistrito([FromBody] List<RegistroDto> users)
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      await _registroService.AcceptRegistrosDistrito(users, userId);
+      return Ok(new { Message = "Usuarios registrados al distrito." });
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
+  
+  [Authorize(Roles = "2")]
+  [Authorize(Roles = "p3, p4")]
+  [HttpPost("send/nacional")]
+  public async Task<IActionResult> SendRegistrosToNacional([FromBody] List<RegistroDto> users)
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      await _registroService.AcceptRegistrosDistrito(users, userId);
+      return Ok(new { Message = "Usuarios registrados al distrito." });
     }
     catch (ApplicationException ex)
     {

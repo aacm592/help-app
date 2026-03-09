@@ -135,6 +135,26 @@ public class RegistroService : IRegistroService
     await ActualizarStatus(users.ToList(), RegistroStatus.EnviadoDistrito);
   }
   
+  public async Task AcceptRegistrosDistrito(IEnumerable<RegistroDto> users, int userId)
+  {
+    var permisos = await _permisoRepository.GetPermisosByUserId(userId);
+    var p = permisos.FirstOrDefault(x => x.PermisoId == 3 || x.PermisoId == 4);
+    if (p == null)
+      throw new ApplicationException("No tienes los permisos necesarios");
+    
+    await ActualizarStatus(users.ToList(), RegistroStatus.RegistroDistrito);
+  }
+  
+  public async Task SendRegistersToNacional(IEnumerable<RegistroDto> users, int userId)
+  {
+    var permisos = await _permisoRepository.GetPermisosByUserId(userId);
+    var p = permisos.FirstOrDefault(x => x.PermisoId == 3 || x.PermisoId == 4);
+    if (p == null)
+      throw new ApplicationException("No tienes los permisos necesarios");
+    
+    await ActualizarStatus(users.ToList(), RegistroStatus.EnviadoNacional);
+  }
+  
   private async Task ActualizarStatus(IEnumerable<RegistroDto> registrosDtos, RegistroStatus nuevoStatus)
   {
     var gestion = await GetGestion();
