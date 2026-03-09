@@ -1,6 +1,7 @@
 using backend.data;
 using backend.data.models;
 using backend.data.models.registros;
+using backend.enums;
 using backend.repositories.interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -60,6 +61,15 @@ public class RegistroRepository: IRegistroRepository
       .ThenInclude(u => u.Registros.Where(x => x.GestionId == gestionId))
       .ThenInclude(r => r.RegistroDiri)
       .FirstOrDefaultAsync(g => g.Id == id);
+  }
+
+  public async Task<IEnumerable<Registro>> GetRegistersByDistritoName(string distrito, int gestionId)
+  {
+    return await _context.Registros
+      .Include(r => r.RegistroDiri)
+      .Include(r => r.RegistroScout)
+      .Where(r => r.Distrito == distrito && r.GestionId == gestionId && r.Status == RegistroStatus.EnviadoDistrito)
+      .ToListAsync();
   }
   
   public async Task<IEnumerable<Registro?>> GetRegistersByPermisoAndArea(int[] permisoIds, int areaId, int gestionId)

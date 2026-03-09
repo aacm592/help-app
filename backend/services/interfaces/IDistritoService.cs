@@ -1,3 +1,4 @@
+using backend.dtos.registros;
 using backend.dtos.responses;
 
 namespace backend.services.interfaces;
@@ -5,4 +6,5 @@ namespace backend.services.interfaces;
 public interface IDistritoService
 {
   Task<IEnumerable<CatalogDto>> GetAllAsync();
+  Task<IEnumerable<GroupRegistroResumen>> GetResumenRegistrosByDistritoId(int userId);
 }

@@ -40,7 +40,11 @@ public class RegisterProfile : Profile
       .ForMember(dest => dest.Grupo, opt => opt.MapFrom(src => src.Grupo))
       .ForMember(dest => dest.RegistroStatus, opt => opt.MapFrom(src => src.Status.ToString()))
       .ForMember(dest => dest.Datos, opt => opt.MapFrom(src => src.RegistroDiri));
-    }
+
+    CreateMap<Registro, RegistroDto>()
+      .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+      .ForMember(dest => dest.GestionId, opt => opt.MapFrom(src => src.GestionId));
+  }
 
     private static int CalculateAge(DateTime birthDate)
     {

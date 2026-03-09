@@ -11,5 +11,6 @@ public interface IRegistroRepository
   Task<GrupoScout?> GetGroupRegisters(int id, int gestionId);
   Task<GrupoScout?> GetGroupRegistersByRama(int id, int gestionId, int ramaId);
   Task<IEnumerable<Registro?>> GetRegistersByPermisoAndArea(int[] permisoIds, int areaId, int gestionId);
+  Task<IEnumerable<Registro>> GetRegistersByDistritoName(string distrito, int gestionId);
   Task Delete(Registro registro);
 }
