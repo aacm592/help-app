@@ -40,7 +40,7 @@ export default function RegistrosGrupoPage() {
   return (
     <div className="w-full md:px-10 px-4 py-4">
       <h1 className="text-purple-900 md:text-left text-center">
-        Miembros del grupo
+        Registros del grupo
       </h1>
       <div className="flex flex-col py-6 gap-10">
         {unidades.map((u) => (
