@@ -34,8 +34,13 @@ public class PermisosService : IPermisosService
     if (VerifyPermisos(scout.UserPermisos, 1) || VerifyPermisos(scout.UserPermisos, 2))
       throw new ApplicationException("No se puedieron dar los permisos al usuario");
 
-    if (scout.Unidades.Count == 0)
-      return;
+    if (scout.Unidades.Any())
+    {
+      var unidad = scout.Unidades.First();
+        
+      if (unidad.GrupoScoutId != permiso.AreaId)
+        throw new ApplicationException("El usuario pertenece a un grupo diferente.");
+    }
 
     if (!user.Unidades.Any(u => u.GrupoScoutId == permiso.AreaId))
       throw new ApplicationException("El usuario no pertenece a tu grupo");
