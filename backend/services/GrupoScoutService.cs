@@ -1,6 +1,7 @@
 using AutoMapper;
 using backend.dtos.registros;
 using backend.dtos.responses;
+using backend.enums;
 using backend.repositories.interfaces;
 using backend.services.interfaces;
 
@@ -12,15 +13,17 @@ public class GrupoScoutService : IGrupoScoutService
   private readonly IUserRepository _userRepository;
   private readonly IGestionRepository _gestionRepository;
   private readonly IRegistroRepository _registroRepository;
+  private readonly IPermisoRepository _permisoRepository;
   private readonly IMapper _mapper;
 
-  public GrupoScoutService(IGrupoScoutRepository grupoScoutRepository, IMapper mapper, IUserRepository userRepository, IGestionRepository gestionRepository, IRegistroRepository registroRepository)
+  public GrupoScoutService(IGrupoScoutRepository grupoScoutRepository, IMapper mapper, IUserRepository userRepository, IGestionRepository gestionRepository, IRegistroRepository registroRepository, IPermisoRepository permisoRepository)
   {
     _grupoScoutRepository = grupoScoutRepository;
     _mapper = mapper;
     _userRepository = userRepository;
     _gestionRepository = gestionRepository;
     _registroRepository = registroRepository;
+    _permisoRepository = permisoRepository;
   }
 
   public async Task<IEnumerable<CatalogDto>> GetAllAsync()
@@ -193,5 +196,42 @@ public class GrupoScoutService : IGrupoScoutService
     var allAdmins = await _registroRepository.GetRegistersByPermisoAndArea(new[] { 1, 2 }, permiso.AreaId, gestion.Id);
     
     return _mapper.Map<List<UserRegistrosDto<DiriInfoDto>>>(allAdmins);  
+  }
+
+  public async Task<ResumenRegistrosDto> GetResumenRegistros(int userId)
+  {
+    var gestion = await _gestionRepository.GetGestionActual();
+    if (gestion == null)
+      throw new Exception("No hay gestión actual");
+
+    var permisos = await _permisoRepository.GetPermisosByUserId(userId);
+    var p = permisos.FirstOrDefault(x => x.PermisoId == 1 || x.PermisoId == 2); 
+    if (p == null)
+      throw new Exception("No tienes los permisos suficientes");
+
+    var grupo = await _grupoScoutRepository.GetById(p.AreaId);
+    if (grupo == null)
+      throw new Exception("El grupo no existe");
+
+    var registrosEnumerable = await _registroRepository.GetRegistersByDistritoAndGrupoName(grupo.Distrito.Nombre, grupo.Nombre, gestion.Id);
+    var registros = registrosEnumerable.ToList();
+    
+    var resumen = new ResumenRegistrosDto
+    {
+      Lobatos = registros.Count(r => r.Rama == "Lobatos"),
+      Explos = registros.Count(r => r.Rama == "Exploradores"),
+      Pios = registros.Count(r => r.Rama == "Pioneros"),
+      Rovers = registros.Count(r => r.Rama == "Rovers"),
+      Diris = registros.Count(r => r.RegistroDiri != null),
+        
+      RegistroGrupo = registros.Count(r => r.Status == RegistroStatus.RegistroGrupo),
+      EnviadosDistrito = registros.Count(r => r.Status == RegistroStatus.EnviadoDistrito),
+      RegistroDistrito = registros.Count(r => r.Status == RegistroStatus.RegistroDistrito),
+      EnviadosNacional = registros.Count(r => r.Status == RegistroStatus.EnviadoNacional),
+      RegistroNacional = registros.Count(r => r.Status == RegistroStatus.RegistroNacional),
+      RegistrosGrupo = _mapper.Map<List<RegistroDto>>(registros.Where(x => x.Status == RegistroStatus.RegistroGrupo).ToList())
+    };
+
+    return resumen;
   }
 }

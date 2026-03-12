@@ -81,6 +81,16 @@ public class RegistroRepository: IRegistroRepository
       .ToListAsync();
   }
   
+  public async Task<IEnumerable<Registro>> GetRegistersByDistritoAndGrupoName(string distrito, string grupo, int gestionId)
+  { 
+    return await _context.Registros
+      .Include(r => r.RegistroDiri)
+      .Include(r => r.RegistroScout)
+      .Where(r => r.Distrito == distrito && r.GestionId == gestionId && r.Grupo == grupo)
+      .ToListAsync();
+  }
+  
+  
   public async Task<IEnumerable<Registro?>> GetRegistersByPermisoAndArea(int[] permisoIds, int areaId, int gestionId)
   {
     return await _context.Registros

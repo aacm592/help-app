@@ -198,4 +198,28 @@ public class GrupoScoutController : ControllerBase
       return StatusCode(500, $"Error interno: {ex.Message}");
     }
   }
+  
+  [Authorize(Roles = "2")]
+  [Authorize(Roles = "p1, p2")]
+  [HttpGet("registros/resumen")]
+  public async Task<IActionResult> GetResumen()
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      var resultado = await _grupoScoutService.GetResumenRegistros(userId);
+      return Ok(resultado);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
 }
