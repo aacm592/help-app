@@ -1,6 +1,6 @@
 import Button from "../../Button";
 
-export default function GroupRegisters({ grupo }) {
+export default function GroupRegisters({ grupo, onClick }) {
   const pClassname = "w-full md:w-fit px-3 flex justify-between text-lg";
   const spanClassname = "px-2 font-black";
   return (
@@ -26,6 +26,7 @@ export default function GroupRegisters({ grupo }) {
         </div>
         <Button
           className={"w-full md:w-fit p-4 h-fit bg-purple-700 text-white"}
+          onClick={onClick}
         >
           Aceptar
         </Button>
