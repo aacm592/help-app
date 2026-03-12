@@ -1,6 +1,7 @@
 using backend.data;
 using backend.data.models;
 using backend.data.models.registros;
+using backend.enums;
 using backend.repositories.interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,6 +33,15 @@ public class RegistroRepository: IRegistroRepository
     return await _context.Registros.FirstOrDefaultAsync(x => x.UserId == userId && x.GestionId == gestionId);
   }
 
+  public async Task<List<Registro>> GetMany(IEnumerable<int> userIds, int gestionId)
+  {
+    var ids = userIds.ToList(); 
+
+    return await _context.Registros
+      .Where(r => r.GestionId == gestionId && ids.Contains(r.UserId))
+      .ToListAsync();
+  }
+
   public async Task<GrupoScout?> GetGroupRegisters(int id, int gestionId)
   {
     return await _context.GruposScout
@@ -61,6 +71,25 @@ public class RegistroRepository: IRegistroRepository
       .ThenInclude(r => r.RegistroDiri)
       .FirstOrDefaultAsync(g => g.Id == id);
   }
+
+  public async Task<IEnumerable<Registro>> GetRegistersByDistritoName(string distrito, int gestionId)
+  {
+    return await _context.Registros
+      .Include(r => r.RegistroDiri)
+      .Include(r => r.RegistroScout)
+      .Where(r => r.Distrito == distrito && r.GestionId == gestionId && r.Status == RegistroStatus.EnviadoDistrito)
+      .ToListAsync();
+  }
+  
+  public async Task<IEnumerable<Registro>> GetRegistersByDistritoAndGrupoName(string distrito, string grupo, int gestionId)
+  { 
+    return await _context.Registros
+      .Include(r => r.RegistroDiri)
+      .Include(r => r.RegistroScout)
+      .Where(r => r.Distrito == distrito && r.GestionId == gestionId && r.Grupo == grupo)
+      .ToListAsync();
+  }
+  
   
   public async Task<IEnumerable<Registro?>> GetRegistersByPermisoAndArea(int[] permisoIds, int areaId, int gestionId)
   {

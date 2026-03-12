@@ -18,4 +18,9 @@ public class DistritoRepository: IDistritoRepository
   {
     return await _context.Distritos.OrderBy(d => d.Nombre).ToListAsync();
   }
+
+  public async Task<Distrito?> GetDistritoById(int id)
+  {
+    return await _context.Distritos.FindAsync(id);
+  }
 }

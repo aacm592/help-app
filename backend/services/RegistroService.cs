@@ -1,6 +1,7 @@
 using backend.data.models;
 using backend.data.models.registros;
 using backend.dtos.auth;
+using backend.dtos.registros;
 using backend.enums;
 using backend.repositories.interfaces;
 using backend.services.interfaces;
@@ -14,15 +15,17 @@ public class RegistroService : IRegistroService
   private readonly IUserRepository _userRepository;
   private readonly IGrupoScoutRepository _grupoScoutRepository;
   private readonly IProfileRepository _profileRepository;
+  private readonly IPermisoRepository _permisoRepository;
 
   public RegistroService(IRegistroRepository registroRepository, IGestionRepository gestiónRepository,
-    IUserRepository userRepository, IGrupoScoutRepository grupoScoutRepository, IProfileRepository profileRepository)
+    IUserRepository userRepository, IGrupoScoutRepository grupoScoutRepository, IProfileRepository profileRepository, IPermisoRepository permisoRepository)
   {
     _registroRepository = registroRepository;
     _gestiónRepository = gestiónRepository;
     _userRepository = userRepository;
     _grupoScoutRepository = grupoScoutRepository;
     _profileRepository = profileRepository;
+    _permisoRepository = permisoRepository;
   }
 
   public async Task RegisterUserToGroup(IdDto scoutId, int diriId)
@@ -120,6 +123,71 @@ public class RegistroService : IRegistroService
       throw new ApplicationException("No se puede cancelar el registro");
     
     await _registroRepository.Delete(registro);
+  }
+
+  public async Task SendRegistersToDistrito(IEnumerable<RegistroDto> users, int userId)
+  {
+    var permisos = await _permisoRepository.GetPermisosByUserId(userId);
+    var p = permisos.FirstOrDefault(x => x.PermisoId == 1 || x.PermisoId == 2);
+    if (p == null)
+      throw new ApplicationException("No tienes los permisos necesarios");
+    
+    await ActualizarStatus(users.ToList(), RegistroStatus.EnviadoDistrito);
+  }
+  
+  public async Task AcceptRegistrosDistrito(IEnumerable<RegistroDto> users, int userId)
+  {
+    var permisos = await _permisoRepository.GetPermisosByUserId(userId);
+    var p = permisos.FirstOrDefault(x => x.PermisoId == 3 || x.PermisoId == 4);
+    if (p == null)
+      throw new ApplicationException("No tienes los permisos necesarios");
+    
+    await ActualizarStatus(users.ToList(), RegistroStatus.RegistroDistrito);
+  }
+  
+  public async Task SendRegistersToNacional(IEnumerable<RegistroDto> users, int userId)
+  {
+    var permisos = await _permisoRepository.GetPermisosByUserId(userId);
+    var p = permisos.FirstOrDefault(x => x.PermisoId == 3 || x.PermisoId == 4);
+    if (p == null)
+      throw new ApplicationException("No tienes los permisos necesarios");
+    
+    await ActualizarStatus(users.ToList(), RegistroStatus.EnviadoNacional);
+  }
+  
+  private async Task ActualizarStatus(IEnumerable<RegistroDto> registrosDtos, RegistroStatus nuevoStatus)
+  {
+    var gestion = await GetGestion();
+    
+    var listaDtos = registrosDtos.ToList(); 
+    if (!listaDtos.Any()) return;
+
+    var userIds = listaDtos.Select(d => d.UserId).Distinct().ToList();
+    
+    var registrosDb = await _registroRepository.GetMany(userIds, gestion.Id);
+
+    Console.WriteLine(registrosDb.Count);
+    if (!registrosDb.Any())
+      throw new ApplicationException("No se encontraron registros para actualizar en la base de datos.");
+    
+    foreach (var registro in registrosDb)
+    {
+      registro.Status = nuevoStatus;
+      SetStatusTimestamps(registro, nuevoStatus);
+    }
+    await _registroRepository.Update();
+  }
+
+  private void SetStatusTimestamps(Registro registro, RegistroStatus status)
+  {
+    var now = DateTime.UtcNow;
+    switch (status)
+    {
+      case RegistroStatus.EnviadoDistrito: registro.EnvioDistrito = now; break;
+      case RegistroStatus.RegistroDistrito: registro.RegistroDistrito = now; break;
+      case RegistroStatus.EnviadoNacional: registro.EnvioNacional = now; break;
+      case RegistroStatus.RegistroNacional: registro.RegistroNacional = now; break;
+    }
   }
 
   private async Task<Gestion> GetGestion()

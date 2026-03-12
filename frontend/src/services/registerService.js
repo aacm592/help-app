@@ -53,3 +53,35 @@ export async function getGroupAdminsRegisters() {
     throw new Error("No se pudo cargar los registros de admins del grupo.");
   }
 }
+
+export const registerDistrito = async (r) => {
+  if (!r) throw new Error("No hay registros.");
+  try {
+    const response = await api.post("/Registro/register/distrito", r);
+    return response.data;
+  } catch (error) {
+    console.error("Error al registrar scouts", error);
+    throw new Error("No se pudo completar los registros.");
+  }
+};
+
+export const getResumenGrupo = async () => {
+  try {
+    const response = await api.get(`/GrupoScout/registros/resumen`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener el resumen del grupo", error);
+    throw new Error("No se pudo cargar el resumen del grupo.");
+  }
+};
+
+export const senRegistrosDistrito = async (r) => {
+  if (!r) throw new Error("No hay registros.");
+  try {
+    const response = await api.post("/Registro/send/distrito", r);
+    return response.data;
+  } catch (error) {
+    console.error("Error al registrar scouts", error);
+    throw new Error("No se pudo completar los registros.");
+  }
+};

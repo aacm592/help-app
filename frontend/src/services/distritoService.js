@@ -9,3 +9,13 @@ export const getDistritos = async () => {
     throw new Error("No se pudo cargar la lista de distritos.");
   }
 };
+
+export const getResumenEnviadosAlDistrito = async () => {
+  try {
+    const response = await api.get("/Distrito/registers");
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener Distritos", error);
+    throw new Error("No se pudo cargar la lista de distritos.");
+  }
+};

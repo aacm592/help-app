@@ -89,5 +89,17 @@ export const getNavigation = (user) => {
     });
   }
 
+  const distritoLinks = [
+    { label: "Registros recividos", path: "/distrito/enviados" },
+  ];
+
+  if (user?.permisos.find((x) => x.id == 3 || x.id == 4)) {
+    sections.push({
+      icon: "groups_3",
+      title: "Distrito",
+      links: distritoLinks,
+    });
+  }
+
   return sections;
 };

@@ -29,6 +29,7 @@ import RegisterMembersPage from "./pages/group/RegisterMembersPage";
 import RegistrosGrupoPage from "./pages/group/RegistrosGrupoPage";
 import GroupAdminsPage from "./pages/group/GroupAdminsPage";
 import RegisterGroupAdminsPage from "./pages/group/RegisterGroupAdminsPage";
+import RegisterDistritoPage from "./pages/distrito/RegisterDistritoPage";
 
 function App() {
   return (
@@ -94,6 +95,13 @@ function App() {
               <Route
                 path="/grupo/registrar/admins"
                 element={<RegisterGroupAdminsPage />}
+              />
+            </Route>
+
+            <Route element={<PermisoProtectedRoute allowedPermisos={[3, 4]} />}>
+              <Route
+                path="/distrito/enviados"
+                element={<RegisterDistritoPage />}
               />
             </Route>
           </Route>

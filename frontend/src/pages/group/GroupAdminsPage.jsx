@@ -45,7 +45,7 @@ export default function GroupAdminsPage() {
       setAdminUsername("");
       fetchAdmins();
     } catch (error) {
-      alert(error.response?.data || "Error al añadir administrador");
+      alert(error || "Error al añadir administrador");
     } finally {
       setIsSubmitting(false);
     }

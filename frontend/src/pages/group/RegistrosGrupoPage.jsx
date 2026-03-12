@@ -4,13 +4,17 @@ import LoadingPage from "../../components/LoadingPage";
 import {
   getGroupAdminsRegisters,
   getGroupRegisters,
+  getResumenGrupo,
+  senRegistrosDistrito,
 } from "../../services/registerService";
 import GenericTable from "../../components/GenericTable";
 import MemberRow from "../../components/pageComponents/group/MemberRow";
+import RegistersResumen from "../../components/pageComponents/group/RegistersResumen";
 
 export default function RegistrosGrupoPage() {
   const [unidades, setUnidades] = useState([]);
   const [admins, setAdmins] = useState([]);
+  const [resumen, setResumen] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const thClassName =
     "border-y border-gray-100 px-2 py-5 text-purple-900 font-bold";
@@ -18,30 +22,51 @@ export default function RegistrosGrupoPage() {
   const tableClassName = "bg-violet-300";
   const trClassName = "hover:bg-violet-100 transition-colors";
 
-  useEffect(() => {
-    const getResumen = async () => {
-      setIsLoading(true);
-      try {
-        const grupo = await getGroupRegisters();
-        const a = await getGroupAdminsRegisters();
-        setUnidades(grupo);
-        setAdmins(a);
-      } catch (error) {
-        console.error("Error al obtener resumenes", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const getResumen = async () => {
+    setIsLoading(true);
+    try {
+      const grupo = await getGroupRegisters();
+      const a = await getGroupAdminsRegisters();
+      const r = await getResumenGrupo();
 
+      setUnidades(grupo);
+      setAdmins(a);
+      setResumen(r);
+    } catch (error) {
+      console.error("Error al obtener resumenes", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     getResumen();
   }, []);
 
+  const enviarRegistros = async () => {
+    setIsLoading(true);
+    try {
+      await senRegistrosDistrito(resumen.registrosGrupo);
+      alert("Usuarios registrados con éxito");
+    } catch (error) {
+      console.error("Error al enviar resumen", error);
+      alert(error || "No se pudo completar el registro");
+    } finally {
+      setIsLoading(false);
+    }
+    await getResumen();
+  };
   if (isLoading) return <LoadingPage />;
   return (
     <div className="w-full md:px-10 px-4 py-4">
       <h1 className="text-purple-900 md:text-left text-center">
-        Miembros del grupo
+        Registros del grupo
       </h1>
+      <RegistersResumen
+        grupo={resumen}
+        onClick={enviarRegistros}
+        buttonMessage={"Enviar al distrito"}
+      />
       <div className="flex flex-col py-6 gap-10">
         {unidades.map((u) => (
           <MiembrosUnidadTable
