@@ -81,15 +81,14 @@ public class RegistroRepository: IRegistroRepository
       .ToListAsync();
   }
   
-  public async Task<IEnumerable<Registro>> GetRegistersByDistritoAndGrupoName(string distrito, string grupo, int gestionId)
+  public async Task<IEnumerable<Registro>> GetRegistersByDistritoAndGrupoName(string distrito, string grupo, int gestionId, List<RegistroStatus> status)
   { 
     return await _context.Registros
       .Include(r => r.RegistroDiri)
       .Include(r => r.RegistroScout)
-      .Where(r => r.Distrito == distrito && r.GestionId == gestionId && r.Grupo == grupo)
+      .Where(r => r.Distrito == distrito && r.GestionId == gestionId && r.Grupo == grupo && status.Contains(r.Status))
       .ToListAsync();
   }
-  
   
   public async Task<IEnumerable<Registro?>> GetRegistersByPermisoAndArea(int[] permisoIds, int areaId, int gestionId)
   {

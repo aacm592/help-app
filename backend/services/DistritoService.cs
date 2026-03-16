@@ -1,4 +1,6 @@
 using AutoMapper;
+using backend.data.models;
+using backend.data.models.registros;
 using backend.dtos.registros;
 using backend.dtos.responses;
 using backend.enums;
@@ -66,6 +68,28 @@ public class DistritoService : IDistritoService
 
   public async Task<UnidadRegistrosDto> GetRegistrosDistrito(int userId, List<RegistroStatus> status)
   {
+    var (distrito, gestion) = await GetDistritoAndGestion(userId);
+    var registros = (await _registroRepository.GetRegistersByDistritoName(distrito.Nombre, gestion.Id, status)).ToList();    
+    return await GetRegistrosDistrito(distrito, registros);
+  }
+  
+  private async Task<UnidadRegistrosDto> GetRegistrosDistrito(Distrito distrito, List<Registro> registros)
+  {
+    var r = new UnidadRegistrosDto()
+    {
+      Id = distrito.Id,
+      Nombre = distrito.Nombre,
+      Dirigentes =
+        _mapper.Map<List<UserRegistrosDto<DiriInfoDto>>>(registros.Where(x => x.RegistroDiri != null).ToList()),
+      Scouts = _mapper.Map<List<UserRegistrosDto<ScoutInfoDto>>>(registros
+        .Where(x => x.RegistroScout != null && x.RegistroDiri == null).ToList()),
+    };
+    
+    return r;
+  }
+
+  private async Task<(Distrito distrito, Gestion gestion)> GetDistritoAndGestion(int userId)
+  {
     var gestion = await _gestionRepository.GetGestionActual();
     
     if (gestion == null)
@@ -79,19 +103,7 @@ public class DistritoService : IDistritoService
     var distrito = await _distritoRepository.GetDistritoById(p.AreaId);
     if (distrito == null)
       throw new Exception("El distrito no existe");
-    
-    var registros = (await _registroRepository.GetRegistersByDistritoName(distrito.Nombre, gestion.Id, status)).ToList();
-    
-    var r = new UnidadRegistrosDto()
-    {
-      Id = distrito.Id,
-      Nombre = distrito.Nombre,
-      Dirigentes =
-        _mapper.Map<List<UserRegistrosDto<DiriInfoDto>>>(registros.Where(x => x.RegistroDiri != null).ToList()),
-      Scouts = _mapper.Map<List<UserRegistrosDto<ScoutInfoDto>>>(registros
-        .Where(x => x.RegistroScout != null && x.RegistroDiri == null).ToList()),
-    };
-    
-    return r;
+
+    return (distrito, gestion);
   }
 }
