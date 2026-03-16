@@ -12,7 +12,7 @@ export const getDistritos = async () => {
 
 export const getResumenEnviadosAlDistrito = async () => {
   try {
-    const response = await api.get("/Distrito/registers");
+    const response = await api.get("/Distrito/registers/enviadosDistrito");
     return response.data;
   } catch (error) {
     console.error("Error al obtener Distritos", error);

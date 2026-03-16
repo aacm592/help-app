@@ -1,6 +1,7 @@
 using AutoMapper;
 using backend.dtos.registros;
 using backend.dtos.responses;
+using backend.enums;
 using backend.repositories.interfaces;
 using backend.services.interfaces;
 
@@ -29,7 +30,7 @@ public class DistritoService : IDistritoService
     return _mapper.Map<IEnumerable<CatalogDto>>(distritos);
   }
 
-  public async Task<IEnumerable<GroupRegistroResumen>> GetResumenRegistrosByDistritoId(int userId)
+  public async Task<IEnumerable<GroupRegistroResumen>> GetResumenRegistrosByDistritoId(int userId, List<RegistroStatus> status)
   {
     var gestion = await _gestionRepository.GetGestionActual();
     
@@ -45,7 +46,7 @@ public class DistritoService : IDistritoService
     if (distrito == null)
       throw new Exception("El distrito no existe");
     
-    var registros = await _registroRepository.GetRegistersByDistritoName(distrito.Nombre, gestion.Id);
+    var registros = await _registroRepository.GetRegistersByDistritoName(distrito.Nombre, gestion.Id, status);
     
     var resumen = registros
       .GroupBy(r => r.Grupo)

@@ -22,11 +22,13 @@ public class RegisterProfile : Profile
     CreateMap<Registro, UserRegistrosDto<ScoutInfoDto>>()
       .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.UserId))
       .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.Nombre))
+      .ForMember(dest => dest.FechaNacimiento, opt => opt.MapFrom(src => src.FechaNacimiento))
       .ForMember(dest => dest.Rol, opt => opt.MapFrom(src => src.Rama))
       .ForMember(dest => dest.Edad, opt => opt.MapFrom(src => 
          CalculateAge(src.FechaNacimiento)))
       .ForMember(dest => dest.Distrito, opt => opt.MapFrom(src => src.Distrito))
       .ForMember(dest => dest.Grupo, opt => opt.MapFrom(src => src.Grupo))
+      .ForMember(dest => dest.Rama, opt => opt.MapFrom(src => src.Rama))
       .ForMember(dest => dest.RegistroStatus, opt => opt.MapFrom(src => src.Status.ToString()))
       .ForMember(dest => dest.Datos, opt => opt.MapFrom(src => src.RegistroScout));
 
