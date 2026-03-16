@@ -55,8 +55,8 @@ public class DistritoController : ControllerBase
   
   [Authorize(Roles = "2")]
   [Authorize(Roles = "p3, p4")]
-  [HttpGet ("registers/registridosDistrito")]
-  public async Task<IActionResult> GetRegisters()
+  [HttpGet ("registers/resumen")]
+  public async Task<IActionResult> GetRegistersResumen()
   {
     try
     {
@@ -72,6 +72,37 @@ public class DistritoController : ControllerBase
       };
       
       var resultado = await _distritoService.GetResumenRegistrosByDistritoId(userId, status);
+      return Ok(resultado);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
+  
+  [Authorize(Roles = "2")]
+  [Authorize(Roles = "p3, p4")]
+  [HttpGet ("registers/")]
+  public async Task<IActionResult> GetRegisters()
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      var status = new List<RegistroStatus>()
+      {
+        RegistroStatus.RegistroDistrito,
+        RegistroStatus.EnviadoNacional,
+        RegistroStatus.RegistroNacional
+      };
+      
+      var resultado = await _distritoService.GetRegistrosDistrito(userId, status);
       return Ok(resultado);
     }
     catch (ApplicationException ex)

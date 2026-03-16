@@ -63,4 +63,35 @@ public class DistritoService : IDistritoService
       .ToList();
     return resumen;
   }
+
+  public async Task<UnidadRegistrosDto> GetRegistrosDistrito(int userId, List<RegistroStatus> status)
+  {
+    var gestion = await _gestionRepository.GetGestionActual();
+    
+    if (gestion == null)
+      throw new Exception("No hay gestión actual");
+    
+    var permisos = await _permisoRepository.GetPermisosByUserId(userId);
+    var p = permisos.FirstOrDefault(x => x.PermisoId == 3 || x.PermisoId == 4);
+    if (p == null)
+      throw new Exception("No tienes los permisos suficientes");
+    
+    var distrito = await _distritoRepository.GetDistritoById(p.AreaId);
+    if (distrito == null)
+      throw new Exception("El distrito no existe");
+    
+    var registros = (await _registroRepository.GetRegistersByDistritoName(distrito.Nombre, gestion.Id, status)).ToList();
+    
+    var r = new UnidadRegistrosDto()
+    {
+      Id = distrito.Id,
+      Nombre = distrito.Nombre,
+      Dirigentes =
+        _mapper.Map<List<UserRegistrosDto<DiriInfoDto>>>(registros.Where(x => x.RegistroDiri != null).ToList()),
+      Scouts = _mapper.Map<List<UserRegistrosDto<ScoutInfoDto>>>(registros
+        .Where(x => x.RegistroScout != null && x.RegistroDiri == null).ToList()),
+    };
+    
+    return r;
+  }
 }
