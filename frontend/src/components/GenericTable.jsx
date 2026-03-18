@@ -2,6 +2,7 @@ export default function GenericTable({
   title,
   headers,
   children,
+  theadClassName,
   tableClassName,
   thClassName,
 }) {
@@ -9,8 +10,8 @@ export default function GenericTable({
     <div>
       <h2 className="text-xl font-bold text-purple-800 mb-4">{title}</h2>
       <div className="overflow-x-auto rounded-2xl border border-gray-300 shadow-sm">
-        <table className="w-full border-collapse">
-          <thead className={tableClassName}>
+        <table className={`${tableClassName} w-full border-collapse`}>
+          <thead className={theadClassName}>
             <tr>
               {headers.map((header) => (
                 <th key={header} className={thClassName}>

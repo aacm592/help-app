@@ -11,7 +11,7 @@ export default function ScoutsTable({
   return (
     <GenericTable
       title=""
-      tableClassName={tableClassName}
+      theadClassName={tableClassName}
       thClassName={thClassName}
       headers={[
         "Grupo",
