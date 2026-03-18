@@ -91,6 +91,7 @@ export const getNavigation = (user) => {
 
   const distritoLinks = [
     { label: "Registros recividos", path: "/distrito/enviados" },
+    { label: "Ver Registros", path: "/distrito/registros" },
   ];
 
   if (user?.permisos.find((x) => x.id == 3 || x.id == 4)) {
