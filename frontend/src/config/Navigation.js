@@ -95,6 +95,13 @@ export const getNavigation = (user) => {
     { label: "Resumen Registros", path: "/distrito/registros/resumen" },
   ];
 
+    if (user?.permisos.find((x) => x.id == 3)) {
+      distritoLinks.push({
+        label: "Ver administradores",
+        path: "/distrito/admins",
+      });
+    }
+
   if (user?.permisos.find((x) => x.id == 3 || x.id == 4)) {
     sections.push({
       icon: "groups_3",

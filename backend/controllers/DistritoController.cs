@@ -114,4 +114,28 @@ public class DistritoController : ControllerBase
       return StatusCode(500, $"Error interno: {ex.Message}");
     }
   }
+  
+  [Authorize(Roles = "2")]
+  [Authorize(Roles = "p3")]
+  [HttpGet ("admins")]
+  public async Task<IActionResult> GetAdmins()
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+      
+      var resultado = await _distritoService.GetAdmins(userId);
+      return Ok(resultado);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
 }

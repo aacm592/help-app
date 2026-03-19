@@ -15,15 +15,17 @@ public class DistritoService : IDistritoService
   private readonly IRegistroRepository _registroRepository;
   private readonly IGestionRepository _gestionRepository;
   private readonly IPermisoRepository _permisoRepository;
+  private readonly IUserRepository _userRepository;
   private readonly IMapper _mapper;
 
-  public DistritoService(IDistritoRepository distritoRepository, IMapper mapper, IRegistroRepository registroRepository, IGestionRepository gestionRepository, IPermisoRepository permisoRepository)
+  public DistritoService(IDistritoRepository distritoRepository, IMapper mapper, IRegistroRepository registroRepository, IGestionRepository gestionRepository, IPermisoRepository permisoRepository, IUserRepository userRepository)
   {
     _distritoRepository = distritoRepository;
     _mapper = mapper;
     _registroRepository = registroRepository;
     _gestionRepository = gestionRepository;
     _permisoRepository = permisoRepository;
+    _userRepository = userRepository;
   }
 
   public async Task<IEnumerable<CatalogDto>> GetAllAsync()
@@ -72,7 +74,28 @@ public class DistritoService : IDistritoService
     var registros = (await _registroRepository.GetRegistersByDistritoName(distrito.Nombre, gestion.Id, status)).ToList();    
     return await GetRegistrosDistrito(distrito, registros);
   }
-  
+
+  public async Task<IEnumerable<AdminInfoDto>> GetAdmins(int userId)
+  {
+    var user = await _userRepository.GetByIdWithTipoAndUnidadesAsync(userId);
+    if (user == null) throw new ApplicationException("Usuario no encontrado.");
+    
+    var permiso = user.UserPermisos.FirstOrDefault(x => x.PermisoId == 3);
+    if (permiso == null || permiso.AreaId <= 0)
+      throw new ApplicationException("El usuario no tiene permisos suficientes.");
+
+    var gestion = await _gestionRepository.GetUltimaGestion();
+    int gestionId = 0;
+    if (gestion != null) gestionId = gestion.Id;
+
+    var permissionList = new List<int> { 3, 4 };
+    var allAdmins = await _userRepository.GetUsersByPermisoAndArea(permissionList.ToArray(), permiso.AreaId, gestionId);
+
+    var tupleList = allAdmins.Select(u => (user: u, permisos: permissionList));
+
+    return _mapper.Map<IEnumerable<AdminInfoDto>>(tupleList);
+  }
+
   private async Task<UnidadRegistrosDto> GetRegistrosDistrito(Distrito distrito, List<Registro> registros)
   {
     var r = new UnidadRegistrosDto()

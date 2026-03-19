@@ -32,6 +32,7 @@ import RegisterGroupAdminsPage from "./pages/group/RegisterGroupAdminsPage";
 import RegisterDistritoPage from "./pages/distrito/RegisterDistritoPage";
 import RegistrosDistritoPage from "./pages/distrito/RegistrosDistritoPage";
 import ResRegistrosDistPage from "./pages/distrito/ResRegistrosDistPage";
+import AdminsDistritoPage from "./pages/distrito/AdminsDistritoPage";
 
 function App() {
   return (
@@ -115,6 +116,7 @@ function App() {
                 path="/distrito/registros/resumen"
                 element={<ResRegistrosDistPage />}
               />
+              <Route path="/distrito/admins" element={<AdminsDistritoPage />} />
             </Route>
           </Route>
         </Route>

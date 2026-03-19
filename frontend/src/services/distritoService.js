@@ -39,3 +39,13 @@ export const getRegistrosDistrito = async () => {
     throw new Error("No se pudo cargar los registros del distrito.");
   }
 };
+
+export const getAdminsDistrito = async () => {
+  try {
+    const response = await api.get("/Distrito/admins");
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener Distritos", error);
+    throw new Error("No se pudo cargar los registros del distrito.");
+  }
+};

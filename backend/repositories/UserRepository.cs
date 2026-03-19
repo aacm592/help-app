@@ -68,6 +68,7 @@ public class UserRepository : IUserRepository
       .Include(u => u.Registros.Where(r => r.GestionId == gestionId))
       .Include(u => u.Tipo)
       .Include(u => u.UserPermisos)
+      .ThenInclude(p => p.Permiso)
       .Where(u => u.UserPermisos.Any(p => permisoIds.Contains(p.PermisoId) && p.AreaId == areaId))
       .ToListAsync();
   }

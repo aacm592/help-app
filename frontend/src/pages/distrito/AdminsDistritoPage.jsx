@@ -1,28 +1,30 @@
 import { useEffect, useState } from "react";
 import LoadingPage from "../../components/LoadingPage";
-import { getAdminsDeGrupo } from "../../services/grupoService";
 import GenericTable from "../../components/GenericTable";
 import Button from "../../components/Button";
-import { addGroupAdmin, deleteGroupAdmin } from "../../services/permisoService";
-import AdminRow from "../../components/pageComponents/group/AdminRow";
+import { getAdminsDistrito } from "../../services/distritoService";
+import {
+  addDistritoAdmin,
+  deleteDistritoAdmin,
+} from "../../services/permisoService";
 
-export default function GroupAdminsPage() {
+
+export default function AdminsDistritoPage() {
   const [admins, setAdmins] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [adminUserName, setAdminUsername] = useState("");
 
-  const thClassName =
-    "border-y border-gray-100 px-2 py-5 text-green-900 font-bold";
-  const tdClassName = "border-y border-gray-300 px-2 py-4";
+  const thClassName = "border-y border-gray-100 px-2 py-5 text-green-900 font-bold";
+  const tdClassName = "border-y border-gray-300 px-2 py-4 items-center";
   const tableClassName = "bg-sky-200";
   const trClassName = "hover:bg-indigo-50 transition-colors";
   const buttonClassName =
-    "w-full p-2 justify-center rounded-md bg-red-600 text-yellow-300 border-red-950";
+    "w-fit p-2 justify-center rounded-md bg-red-600 text-yellow-300 border-red-950 text-sm md:text-base";
 
   const fetchAdmins = async () => {
     try {
-      const a = await getAdminsDeGrupo();
+      const a = await getAdminsDistrito();
       setAdmins(a);
     } catch (error) {
       console.error("Error al obtener administradores", error);
@@ -40,7 +42,7 @@ export default function GroupAdminsPage() {
 
     setIsSubmitting(true);
     try {
-      await addGroupAdmin(adminUserName);
+      await addDistritoAdmin(adminUserName);
       alert("Administrador añadido con éxito");
       setAdminUsername("");
       fetchAdmins();
@@ -52,9 +54,11 @@ export default function GroupAdminsPage() {
   };
 
   const handleDeleteAdmin = async (id) => {
+    if (!window.confirm("¿Estás seguro de que quieres quitar este administrador?")) return;
+    
     setIsSubmitting(true);
     try {
-      await deleteGroupAdmin(id);
+      await deleteDistritoAdmin(id);
       alert("Administrador eliminado con éxito");
       fetchAdmins();
     } catch (error) {
@@ -65,12 +69,14 @@ export default function GroupAdminsPage() {
   };
 
   if (isLoading) return <LoadingPage />;
+
   return (
     <div className="w-full md:px-10 px-4 py-4">
-      <h1 className="text-purple-900 md:text-left text-center">
+      <h1 className="text-purple-900 md:text-left text-center text-2xl font-bold mb-4">
         Administradores
       </h1>
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col md:flex-row gap-4 items-end">
+
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col md:flex-row gap-4 items-end mb-8">
         <div className="flex flex-col gap-2 w-full md:w-1/3">
           <label className="text-sm font-semibold text-gray-600">
             Username del usuario
@@ -86,40 +92,40 @@ export default function GroupAdminsPage() {
         <Button
           onClick={handleAddAdmin}
           disabled={isSubmitting}
-          className="w'fit px-4 py-2 rounded-md"
+          className="px-4 py-2 rounded-md"
         >
           {isSubmitting ? "Añadiendo..." : "Añadir administrador"}
         </Button>
       </div>
+
       <GenericTable
-        title="Administradores"
+        title="Listado de Administradores"
         tableClassName={tableClassName}
         thClassName={thClassName}
-        headers={[
-          "Nombre",
-          "Edad",
-          "Rol",
-          "Profesión",
-          "Ocupación",
-          "Cargo 1",
-          "Cargo 2",
-          "Estado",
-          "",
-        ]}
+        headers={["Nombre", "Estado de registro", "Acciones"]}
       >
         {admins.map((d) => (
-          <AdminRow
-            key={d.id}
-            member={d}
-            fields={["profesion", "ocupacion", "cargo1", "cargo2"]}
-            tdClassName={tdClassName}
-            trClassName={trClassName}
-            buttonClassName={buttonClassName}
-            hasButton
-            onDelete={() => {
-              handleDeleteAdmin(d.id);
-            }}
-          />
+          <tr key={d.id} className={trClassName}>
+            <td className={tdClassName}>{d.nombre}</td>
+            <td className={tdClassName}>{d.registroStatus}</td>
+            <td className="border-y border-gray-300 p-4">
+              <div className="flex flex-col items-center justify-center">
+                {d.permiso !== "Director de distrito" ? (
+                  <Button
+                    className={buttonClassName}
+                    onClick={() => handleDeleteAdmin(d.id)}
+                    disabled={isSubmitting}
+                  >
+                    Quitar Administrador
+                  </Button>
+                ) : (
+                  <span className="text-gray-400 italic text-sm">
+                    Protegido
+                  </span>
+                )}
+              </div>
+            </td>
+          </tr>
         ))}
       </GenericTable>
     </div>
