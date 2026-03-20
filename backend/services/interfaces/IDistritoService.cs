@@ -10,4 +10,5 @@ public interface IDistritoService
   Task<IEnumerable<GroupRegistroResumen>> GetResumenRegistrosByDistritoId(int userId, List<RegistroStatus> status);
   Task<UnidadRegistrosDto> GetRegistrosDistrito(int userId, List<RegistroStatus> status);
   Task<IEnumerable<AdminInfoDto>> GetAdmins(int userId);
+  Task<IEnumerable<AdminGrupoInfoDto>> GetResponsablesGrupo(int userId);
 }

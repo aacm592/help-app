@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using backend.dtos.responses;
 using backend.services.interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -101,6 +102,54 @@ public class PermisoController : ControllerBase
         return Unauthorized("Token de usuario inválido.");
 
       await _permisosService.DeleteDistritoAdmin(userId, scoutId);
+      return Ok(new { Message = "Administrador eliminado" });
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
+  
+  [Authorize(Roles = "2")]
+  [Authorize(Roles = "p3")]
+  [HttpPost("responsable/grupo")]
+  public async Task<IActionResult> AddGrupoResponsable([FromBody] CatalogDto user)
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      await _permisosService.AddResponsableGrupo(userId, user);
+      return Ok(new { Message = "Administrador agregado" });
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
+
+  [Authorize(Roles = "2")]
+  [Authorize(Roles = "p3")]
+  [HttpDelete("responsable/grupo/{scoutId}")]
+  public async Task<IActionResult> DeleteGrupoResponsable(int scoutId)
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      await _permisosService.DeleteResponsableGrupo(userId, scoutId);
       return Ok(new { Message = "Administrador eliminado" });
     }
     catch (ApplicationException ex)

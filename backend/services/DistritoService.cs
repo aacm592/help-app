@@ -16,9 +16,10 @@ public class DistritoService : IDistritoService
   private readonly IGestionRepository _gestionRepository;
   private readonly IPermisoRepository _permisoRepository;
   private readonly IUserRepository _userRepository;
+  private readonly IGrupoScoutRepository _grupoScoutRepository;
   private readonly IMapper _mapper;
 
-  public DistritoService(IDistritoRepository distritoRepository, IMapper mapper, IRegistroRepository registroRepository, IGestionRepository gestionRepository, IPermisoRepository permisoRepository, IUserRepository userRepository)
+  public DistritoService(IDistritoRepository distritoRepository, IMapper mapper, IRegistroRepository registroRepository, IGestionRepository gestionRepository, IPermisoRepository permisoRepository, IUserRepository userRepository, IGrupoScoutRepository grupoScoutRepository)
   {
     _distritoRepository = distritoRepository;
     _mapper = mapper;
@@ -26,6 +27,7 @@ public class DistritoService : IDistritoService
     _gestionRepository = gestionRepository;
     _permisoRepository = permisoRepository;
     _userRepository = userRepository;
+    _grupoScoutRepository = grupoScoutRepository;
   }
 
   public async Task<IEnumerable<CatalogDto>> GetAllAsync()
@@ -72,7 +74,7 @@ public class DistritoService : IDistritoService
   {
     var (distrito, gestion) = await GetDistritoAndGestion(userId);
     var registros = (await _registroRepository.GetRegistersByDistritoName(distrito.Nombre, gestion.Id, status)).ToList();    
-    return await GetRegistrosDistrito(distrito, registros);
+    return GetRegistrosDistrito(distrito, registros);
   }
 
   public async Task<IEnumerable<AdminInfoDto>> GetAdmins(int userId)
@@ -91,12 +93,61 @@ public class DistritoService : IDistritoService
     var permissionList = new List<int> { 3, 4 };
     var allAdmins = await _userRepository.GetUsersByPermisoAndArea(permissionList.ToArray(), permiso.AreaId, gestionId);
 
-    var tupleList = allAdmins.Select(u => (user: u, permisos: permissionList));
+    var tupleList = allAdmins!.Select(u => (user: u, permisos: permissionList));
 
     return _mapper.Map<IEnumerable<AdminInfoDto>>(tupleList);
   }
+  
+  public async Task<IEnumerable<AdminGrupoInfoDto>> GetResponsablesGrupo(int userId)
+  {
+    var user = await _userRepository.GetByIdWithTipoAndUnidadesAsync(userId);
+    if (user == null) 
+        throw new KeyNotFoundException("Usuario no encontrado.");
+    
+    var permisoEjecutor = user.UserPermisos.FirstOrDefault(x => x.PermisoId == 3 || x.PermisoId == 4);
+    if (permisoEjecutor == null || permisoEjecutor.AreaId <= 0)
+        throw new UnauthorizedAccessException("Permisos insuficientes.");
 
-  private async Task<UnidadRegistrosDto> GetRegistrosDistrito(Distrito distrito, List<Registro> registros)
+    var gruposRaw = await _grupoScoutRepository.GetByDistritoIdAsync(permisoEjecutor.AreaId);
+    var grupos = gruposRaw.ToList();
+
+    if (!grupos.Any()) 
+        return Enumerable.Empty<AdminGrupoInfoDto>();
+
+    var gestion = await _gestionRepository.GetUltimaGestion();
+    int gestionId = gestion?.Id ?? 0;
+
+    var permissionList = new[] { 1 };
+    var responsablesRaw = await _userRepository.GetUsersByPermiso(permissionList, gestionId);
+    
+    var todosLosResponsables = (responsablesRaw ?? Enumerable.Empty<User>()).ToList();
+
+    var grupoIds = grupos.Select(g => g.Id).ToList();
+
+    var responsablesLookup = todosLosResponsables
+        .SelectMany(u => u.UserPermisos
+            .Where(p => p.PermisoId == 1 && grupoIds.Contains(p.AreaId)), 
+            (usuario, permiso) => new { permiso.AreaId, usuario })
+        .ToLookup(x => x.AreaId, x => x.usuario);
+
+    return grupos.Select(grupoScout => 
+    {
+        var responsable = responsablesLookup[grupoScout.Id].FirstOrDefault();
+
+        return new AdminGrupoInfoDto()
+        {
+            Id = responsable?.Id ?? 0, 
+            Nombre = responsable?.Profile != null 
+                ? $"{responsable.Profile.Nombre} {responsable.Profile.Apellido}" 
+                : "Sin responsable",
+            Permiso = "Responsable de grupo",
+            Grupo = grupoScout.Nombre,
+            GrupoId = grupoScout.Id,
+        };
+    }).ToList();
+  }
+
+  private UnidadRegistrosDto GetRegistrosDistrito(Distrito distrito, List<Registro> registros)
   {
     var r = new UnidadRegistrosDto()
     {
