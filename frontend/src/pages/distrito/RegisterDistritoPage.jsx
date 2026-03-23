@@ -39,7 +39,7 @@ export default function RegisterDistritoPage() {
         Registros recividos
       </h1>
       <div className="flex flex-col justify-center w-full items-center">
-        <div className="w-full md:w-1/3 flex flex-col space-y-10">
+        <div className="w-full lg:w-1/3 md:w-1/2 flex flex-col space-y-10">
           {grupos.map((g, i) => (
             <div key={i}>
               <GroupRegisters

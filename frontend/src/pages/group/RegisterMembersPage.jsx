@@ -96,7 +96,7 @@ export default function RegisterMembersPage() {
         rama={unidad.rama}
         thClassName={thClassName}
         tdClassName={tdClassName}
-        tableClassName={tableClassName}
+        theadClassName={tableClassName}
         trClassName={trClassName}
         deletLevel={"RegistroGrupo"}
         hasButon

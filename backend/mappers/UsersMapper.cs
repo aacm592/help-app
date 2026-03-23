@@ -3,6 +3,7 @@ using backend.data.models;
 using backend.data.models.profile;
 using backend.data.models.registros;
 using backend.dtos.registros;
+using backend.dtos.responses;
 
 namespace backend.mappers;
 
@@ -43,6 +44,21 @@ public class UsersMapper: Profile
         src.Registros.FirstOrDefault() != null ? src.Registros.FirstOrDefault()!.Status.ToString() : "No registrado"))
       .ForMember(dest => dest.Datos, opt => opt.MapFrom(src => src.Profile!.ScoutProfile));
 
+    CreateMap<(User user, List<int> permisos), AdminInfoDto>()
+      .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.user.Id))
+      .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => 
+        src.user.Profile != null 
+          ? $"{src.user.Profile.Nombre} {src.user.Profile.Apellido}" 
+          : "Sin Nombre"))
+      .ForMember(dest => dest.RegistroStatus, opt => opt.MapFrom(src => 
+        src.user.Registros
+          .Select(r => r.Status.ToString())
+          .FirstOrDefault() ?? "No registrado"))
+      .ForMember(dest => dest.Permiso, opt => opt.MapFrom(src => 
+        src.user.UserPermisos
+          .Where(x => src.permisos.Contains(x.PermisoId))
+          .Select(x => x.Permiso.Nombre)
+          .FirstOrDefault() ?? "Sin Permisos"));
   }
 
     private static int CalculateAge(DateTime birthDate)

@@ -30,6 +30,10 @@ import RegistrosGrupoPage from "./pages/group/RegistrosGrupoPage";
 import GroupAdminsPage from "./pages/group/GroupAdminsPage";
 import RegisterGroupAdminsPage from "./pages/group/RegisterGroupAdminsPage";
 import RegisterDistritoPage from "./pages/distrito/RegisterDistritoPage";
+import RegistrosDistritoPage from "./pages/distrito/RegistrosDistritoPage";
+import ResRegistrosDistPage from "./pages/distrito/ResRegistrosDistPage";
+import AdminsDistritoPage from "./pages/distrito/AdminsDistritoPage";
+import ResponsablesGrupoPage from "./pages/distrito/ResponsablesGrupoPage";
 
 function App() {
   return (
@@ -80,6 +84,7 @@ function App() {
             <Route path="/diri/profile" element={<ProfilePage />} />
             <Route path="/diri/unidad/:unidadId" element={<UnidadPage />} />
 
+            {/* --- Rutas Grupo (Permisos 1 y 2) --- */}
             <Route element={<PermisoProtectedRoute allowedPermisos={[1, 2]} />}>
               <Route path="/grupo/miembros" element={<GroupMembersPage />} />
               <Route path="/grupo/admins" element={<GroupAdminsPage />} />
@@ -98,10 +103,24 @@ function App() {
               />
             </Route>
 
+            {/* --- Rutas Distrito (Permisos 3 y 4) --- */}
             <Route element={<PermisoProtectedRoute allowedPermisos={[3, 4]} />}>
               <Route
                 path="/distrito/enviados"
                 element={<RegisterDistritoPage />}
+              />
+              <Route
+                path="/distrito/registros"
+                element={<RegistrosDistritoPage />}
+              />
+              <Route
+                path="/distrito/registros/resumen"
+                element={<ResRegistrosDistPage />}
+              />
+              <Route path="/distrito/admins" element={<AdminsDistritoPage />} />
+              <Route
+                path="/distrito/responsables-grupo"
+                element={<ResponsablesGrupoPage />}
               />
             </Route>
           </Route>

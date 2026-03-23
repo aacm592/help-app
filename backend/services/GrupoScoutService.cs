@@ -213,7 +213,15 @@ public class GrupoScoutService : IGrupoScoutService
     if (grupo == null)
       throw new Exception("El grupo no existe");
 
-    var registrosEnumerable = await _registroRepository.GetRegistersByDistritoAndGrupoName(grupo.Distrito.Nombre, grupo.Nombre, gestion.Id);
+    var status = new List<RegistroStatus>()
+    {
+      RegistroStatus.EnviadoDistrito,
+      RegistroStatus.EnviadoNacional,
+      RegistroStatus.RegistroDistrito,
+      RegistroStatus.RegistroNacional,
+      RegistroStatus.RegistroGrupo
+    };
+    var registrosEnumerable = await _registroRepository.GetRegistersByDistritoAndGrupoName(grupo.Distrito.Nombre, grupo.Nombre, gestion.Id, status);
     var registros = registrosEnumerable.ToList();
     
     var resumen = new ResumenRegistrosDto

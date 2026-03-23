@@ -43,7 +43,7 @@ export default function GroupMembersPage() {
             rama={u.rama}
             thClassName={thClassName}
             tdClassName={tdClassName}
-            tableClassName={tableClassName}
+            theadClassName={tableClassName}
             trClassName={trClassName}
           />
         ))}

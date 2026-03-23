@@ -1,4 +1,5 @@
 using backend.data.models;
+using backend.dtos.responses;
 using backend.repositories.interfaces;
 using backend.services.interfaces;
 
@@ -10,7 +11,7 @@ public class PermisosService : IPermisosService
   private readonly IUserRepository _userRepository;
   private readonly IGrupoScoutRepository _grupoScoutRepository;
 
-  public PermisosService(IPermisoRepository permisoRepository, IUserRepository userRepository, IGrupoScoutRepository grupoScoutRepository)
+  public PermisosService(IPermisoRepository permisoRepository, IUserRepository userRepository, IGrupoScoutRepository grupoScoutRepository, IGestionRepository gestionRepository)
   {
     _permisoRepository = permisoRepository;
     _userRepository = userRepository;
@@ -140,7 +141,78 @@ public class PermisosService : IPermisosService
 
     await _permisoRepository.Delete(permisoAEliminar);
   }
+  
+  public async Task AddResponsableGrupo(int userId, CatalogDto responsableIfo)
+  {
+    int groupId = responsableIfo.Id;
+    string username = responsableIfo.Nombre;
+    
+    var adminGrupo = await _userRepository.GetUsersByPermisoAndArea(new [] {1}, groupId, 1);
+    if (adminGrupo!.Any())
+        throw new ApplicationException("El grupo ya tiene un administrador de grupo");
+      
+    var user = await _userRepository.GetByIdWithTipoAndUnidadesAsync(userId);
+    if (user == null)
+        throw new ApplicationException("Usuario no encontrado");
 
+    var permisoDistrito = user.UserPermisos.FirstOrDefault(p => p.PermisoId == 3);
+    if (permisoDistrito == null)
+        throw new ApplicationException("No tienes los permisos necesarios.");
+
+    var scout = await _userRepository.GetByUsernameAsync(username);
+    if (scout == null)
+        throw new ApplicationException("Usuario no encontrado");
+
+    if (VerifyPermisos(scout.UserPermisos, 1))
+        throw new ApplicationException("El usuario ya posee el cargo de 'Responsable de grupo'.");
+    
+    if (scout.Unidades.Any())
+    {
+      var unidad = scout.Unidades.First();
+      var grupo = await _grupoScoutRepository.GetById(unidad.GrupoScoutId);
+      
+      if (grupo == null || grupo.Id != groupId) 
+        throw new ApplicationException("El usuario pertenece a un grupo distinto.");
+    }
+
+    if (VerifyPermisos(scout.UserPermisos, 2))
+    {
+      var permisoAEliminar = scout.UserPermisos.FirstOrDefault(p => 
+        p.PermisoId == 2);
+      await _permisoRepository.Delete(permisoAEliminar!);
+    }
+
+    var newPermiso = new UserPermiso()
+    {
+      PermisoId = 1,
+      UserId = scout.Id,
+      AreaId = groupId
+    };
+
+    await _permisoRepository.AddPermiso(newPermiso); 
+  }
+  
+  public async Task DeleteResponsableGrupo(int userId, int adminId)
+  {
+    var user = await _userRepository.GetByIdWithTipoAndUnidadesAsync(userId);
+    if (user == null)
+      throw new ApplicationException("Usuario no encontrado");
+
+    var permisoEjecutor = user.UserPermisos.FirstOrDefault(p => p.PermisoId == 3);
+    if (permisoEjecutor == null)
+      throw new ApplicationException("No tienes los permisos necesarios");
+
+    var permisosAdminEliminar = await _permisoRepository.GetPermisosByUserId(adminId);
+    
+    var permisoAEliminar = permisosAdminEliminar.FirstOrDefault(p => 
+      (p.PermisoId == 1));
+
+    if (permisoAEliminar == null)
+      throw new ApplicationException("El usuario no es responsable de grupo");
+
+    await _permisoRepository.Delete(permisoAEliminar);
+  }
+  
   private bool VerifyPermisos(IEnumerable<UserPermiso> permisos, int permiso)
   {
     if (permisos.FirstOrDefault(p => p.PermisoId == permiso) != null)

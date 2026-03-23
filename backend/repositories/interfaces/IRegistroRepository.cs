@@ -1,6 +1,6 @@
 using backend.data.models;
 using backend.data.models.registros;
-using backend.dtos.registros;
+using backend.enums;
 
 namespace backend.repositories.interfaces;
 
@@ -13,7 +13,7 @@ public interface IRegistroRepository
   Task<GrupoScout?> GetGroupRegisters(int id, int gestionId);
   Task<GrupoScout?> GetGroupRegistersByRama(int id, int gestionId, int ramaId);
   Task<IEnumerable<Registro?>> GetRegistersByPermisoAndArea(int[] permisoIds, int areaId, int gestionId);
-  Task<IEnumerable<Registro>> GetRegistersByDistritoName(string distrito, int gestionId);
-  Task<IEnumerable<Registro>> GetRegistersByDistritoAndGrupoName(string distrito, string grupo, int gestionId);
+  Task<IEnumerable<Registro>> GetRegistersByDistritoName(string distrito, int gestionId, List<RegistroStatus> status);
+  Task<IEnumerable<Registro>> GetRegistersByDistritoAndGrupoName(string distrito, string grupo, int gestionId, List<RegistroStatus> status);
   Task Delete(Registro registro);
 }

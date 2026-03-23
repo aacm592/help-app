@@ -6,7 +6,7 @@ export default function MiembrosUnidadTable({
   rama,
   scouts,
   dirigentes,
-  tableClassName,
+  theadClassName,
   thClassName,
   tdClassName,
   trClassName,
@@ -38,7 +38,7 @@ export default function MiembrosUnidadTable({
 
       <GenericTable
         title="Scouts"
-        tableClassName={tableClassName}
+        theadClassName={theadClassName}
         thClassName={thClassName}
         headers={[
           "Nombre",
@@ -63,7 +63,7 @@ export default function MiembrosUnidadTable({
 
       <GenericTable
         title="Dirigentes"
-        tableClassName={tableClassName}
+        theadClassName={theadClassName}
         thClassName={thClassName}
         headers={[
           "Nombre",

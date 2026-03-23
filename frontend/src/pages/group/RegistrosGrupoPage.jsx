@@ -77,7 +77,7 @@ export default function RegistrosGrupoPage() {
             rama={u.rama}
             thClassName={thClassName}
             tdClassName={tdClassName}
-            tableClassName={tableClassName}
+            theadClassName={tableClassName}
             trClassName={trClassName}
           />
         ))}
