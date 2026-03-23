@@ -49,3 +49,13 @@ export const getAdminsDistrito = async () => {
     throw new Error("No se pudo cargar los registros del distrito.");
   }
 };
+
+export const getRespGrupo = async () => {
+  try {
+    const response = await api.get("/Distrito/groups/responsables");
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener responsables de grupo", error);
+    throw new Error("No se pudo cargar los responsables de grupo.");
+  }
+};

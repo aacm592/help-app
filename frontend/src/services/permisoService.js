@@ -67,3 +67,40 @@ export async function deleteDistritoAdmin(userId) {
     }
   }
 }
+
+export async function addRespGrupo(userName, grupoId) {
+  if (!userName) {
+    throw new Error("El userName del Scout es requerido.");
+  }
+  try {
+    const response = await api.post(`/Permiso/responsable/grupo`, {
+      id: grupoId,
+      nombre: userName,
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw new Error(error.response.data);
+    } else {
+      console.error("Error al registrar miembro:", error.message);
+      throw new Error("No se pudo conectar con el servidor.");
+    }
+  }
+}
+
+export async function deleteRespGrupo(userId) {
+  if (!userId) {
+    throw new Error("El userId es requerido.");
+  }
+  try {
+    const response = await api.delete(`/Permiso/responsable/grupo/${userId}`);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw new Error(error.response.data);
+    } else {
+      console.error("Error al registrar miembro:", error.message);
+      throw new Error("No se pudo conectar con el servidor.");
+    }
+  }
+}

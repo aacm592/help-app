@@ -93,14 +93,15 @@ export const getNavigation = (user) => {
     { label: "Registros recividos", path: "/distrito/enviados" },
     { label: "Ver Registros", path: "/distrito/registros" },
     { label: "Resumen Registros", path: "/distrito/registros/resumen" },
+    { label: "Responsables de grupo", path: "/distrito/responsables-grupo" },
   ];
 
-    if (user?.permisos.find((x) => x.id == 3)) {
-      distritoLinks.push({
-        label: "Ver administradores",
-        path: "/distrito/admins",
-      });
-    }
+  if (user?.permisos.find((x) => x.id == 3)) {
+    distritoLinks.push({
+      label: "Ver administradores",
+      path: "/distrito/admins",
+    });
+  }
 
   if (user?.permisos.find((x) => x.id == 3 || x.id == 4)) {
     sections.push({

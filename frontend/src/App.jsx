@@ -33,6 +33,7 @@ import RegisterDistritoPage from "./pages/distrito/RegisterDistritoPage";
 import RegistrosDistritoPage from "./pages/distrito/RegistrosDistritoPage";
 import ResRegistrosDistPage from "./pages/distrito/ResRegistrosDistPage";
 import AdminsDistritoPage from "./pages/distrito/AdminsDistritoPage";
+import ResponsablesGrupoPage from "./pages/distrito/ResponsablesGrupoPage";
 
 function App() {
   return (
@@ -117,6 +118,10 @@ function App() {
                 element={<ResRegistrosDistPage />}
               />
               <Route path="/distrito/admins" element={<AdminsDistritoPage />} />
+              <Route
+                path="/distrito/responsables-grupo"
+                element={<ResponsablesGrupoPage />}
+              />
             </Route>
           </Route>
         </Route>

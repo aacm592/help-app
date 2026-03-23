@@ -133,16 +133,21 @@ public class DistritoService : IDistritoService
     return grupos.Select(grupoScout => 
     {
         var responsable = responsablesLookup[grupoScout.Id].FirstOrDefault();
-
+        var primerRegistro = responsable?.Registros.FirstOrDefault();
+        
         return new AdminGrupoInfoDto()
         {
-            Id = responsable?.Id ?? 0, 
-            Nombre = responsable?.Profile != null 
-                ? $"{responsable.Profile.Nombre} {responsable.Profile.Apellido}" 
-                : "Sin responsable",
-            Permiso = "Responsable de grupo",
-            Grupo = grupoScout.Nombre,
-            GrupoId = grupoScout.Id,
+          Id = responsable?.Id ?? 0, 
+          Nombre = responsable?.Profile != null 
+            ? $"{responsable.Profile.Nombre} {responsable.Profile.Apellido}" 
+            : "Sin responsable",
+          Telf = responsable?.Profile?.Telf ?? 0,
+          Permiso = "Responsable de grupo",
+          Grupo = grupoScout.Nombre,
+          GrupoId = grupoScout.Id,
+          RegistroStatus = primerRegistro != null 
+            ? primerRegistro.Status.ToString()! 
+            : "Sin Registro",
         };
     }).ToList();
   }

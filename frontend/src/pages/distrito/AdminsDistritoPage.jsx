@@ -8,14 +8,14 @@ import {
   deleteDistritoAdmin,
 } from "../../services/permisoService";
 
-
 export default function AdminsDistritoPage() {
   const [admins, setAdmins] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [adminUserName, setAdminUsername] = useState("");
 
-  const thClassName = "border-y border-gray-100 px-2 py-5 text-green-900 font-bold";
+  const thClassName =
+    "border-y border-gray-100 px-2 py-5 text-green-900 font-bold";
   const tdClassName = "border-y border-gray-300 px-2 py-4 items-center";
   const tableClassName = "bg-sky-200";
   const trClassName = "hover:bg-indigo-50 transition-colors";
@@ -54,8 +54,11 @@ export default function AdminsDistritoPage() {
   };
 
   const handleDeleteAdmin = async (id) => {
-    if (!window.confirm("¿Estás seguro de que quieres quitar este administrador?")) return;
-    
+    if (
+      !window.confirm("¿Estás seguro de que quieres quitar este administrador?")
+    )
+      return;
+
     setIsSubmitting(true);
     try {
       await deleteDistritoAdmin(id);
