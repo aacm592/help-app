@@ -70,6 +70,7 @@ public class AuthService: IAuthService
       Contrasena = hashedPassword,
       TipoId = tipo.Id,
       Profile = userProfile,
+      DateCreated = DateTime.UtcNow
     };
     
     var userGuardado = await _userRepository.AddAsync(newUser);
@@ -91,6 +92,9 @@ public class AuthService: IAuthService
     string token = GenerateJwtToken(user);
     var userResponse = _mapper.Map<UserResponseDto>(user);
 
+    user.LastSesion = DateTime.UtcNow;
+    
+    await _userRepository.UpdateAsync(user);
     return new LoginResponseDto 
     { 
       Token = token, 

@@ -12,10 +12,10 @@ public class User
   [MaxLength(50)] public string NombreUsuario { get; set; } = string.Empty;
 
   [MaxLength(80)] public string Contrasena { get; set; } = string.Empty;
-
+  public DateTime DateCreated { get; set; }
+  public DateTime LastSesion { get; set; }
   public int TipoId { get; set; }
   public Tipo Tipo { get; set; } = null!;
-
   public ICollection<Unidad> Unidades { get; set; } = new List<Unidad>();
   public ICollection<ObjetivoUsuario> ObjetivosUsuario { get; set; } = new List<ObjetivoUsuario>();
   
