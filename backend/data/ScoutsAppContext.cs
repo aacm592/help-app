@@ -2,7 +2,6 @@ using backend.data.models;
 using backend.data.models.especialidades;
 using backend.data.models.profile;
 using backend.data.models.registros;
-using backend.data.seeders;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.data;

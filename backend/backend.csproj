@@ -40,8 +40,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <Link>Requisitos - Especialidades.csv</Link>
     </None>
-    
-    
   </ItemGroup>
 
 </Project>
