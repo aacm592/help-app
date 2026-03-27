@@ -55,6 +55,7 @@ public class AuthService: IAuthService
     var userProfile = new UserProfile
     {
       Nombre = registerDto.Nombre,
+      Apellido = registerDto.Apellido,
       FechaNacimiento = fechaNacimientoUtc,
     };
 
@@ -69,6 +70,7 @@ public class AuthService: IAuthService
       Contrasena = hashedPassword,
       TipoId = tipo.Id,
       Profile = userProfile,
+      DateCreated = DateTime.UtcNow
     };
     
     var userGuardado = await _userRepository.AddAsync(newUser);
@@ -90,6 +92,9 @@ public class AuthService: IAuthService
     string token = GenerateJwtToken(user);
     var userResponse = _mapper.Map<UserResponseDto>(user);
 
+    user.LastSesion = DateTime.UtcNow;
+    
+    await _userRepository.UpdateAsync(user);
     return new LoginResponseDto 
     { 
       Token = token, 
@@ -185,6 +190,10 @@ public class AuthService: IAuthService
       new Claim(ClaimTypes.Role, user.TipoId.ToString()),
       new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
     };
+    
+    if (user.UserPermisos.FirstOrDefault() != null)
+      foreach (var up in user.UserPermisos)
+        claims.Add(new Claim(ClaimTypes.Role, "p" + up.PermisoId));
     
     var tokenDescriptor = new SecurityTokenDescriptor
     {

@@ -11,4 +11,5 @@ public interface IUnidadService
   Task SalirDeUnidadAsync(int unidadId, int usuarioId);
   Task RemoverDeUnidadAsync(int unidadId, int usuarioARemoverId, int dirigenteId);
   Task<IEnumerable<UserResponseDto>> GetMiembrosUnidadAsync(int unidadId, int dirigenteId);
+  Task<UnidadUsersDto> GetUnidadMembersAndRegisters(int userId, int unidadId);  
 }

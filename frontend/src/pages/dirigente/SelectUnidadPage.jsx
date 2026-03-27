@@ -7,48 +7,20 @@ import LogOutButton from "../../components/pageComponents/LogoutButton";
 export default function SelectUnidadPage() {
   const { user } = useAuth();
   const nav = useNavigate();
-  const tieneUnidades = user?.unidades && user.unidades.length > 0;
-
-  const handleUnidadClick = (unidadId) => {
-    nav(`/diri/unidad/${unidadId}/home`);
-  };
 
   return (
     <div className="bg-purple-600 min-h-screen h-full w-full py-10 flex flex-col">
       <LogOutButton dark />
 
       <div className="flex flex-col justify-center items-center h-full w-full gap-y-8 grow">
-        <h1 className="text-white text-center">Bienvenido, {user?.nombre || "Usuario"}</h1>
+        <h1 className="text-white text-center">
+          Bienvenido, {user?.nombre || "Usuario"}
+        </h1>
         <img
           src={logo}
           alt="Flor de Liz Nacional"
           className="w-1/2 md:w-auto"
         />
-
-        {tieneUnidades ? (
-          <>
-            <p className="text-white text-2xl font-semibold">
-              Selecciona una Unidad
-            </p>
-            <div className="lg:w-1/4 md:w-1/2 w-3/4 flex flex-col gap-4">
-              {user.unidades.map((unidad) => (
-                <Button
-                  key={unidad.id}
-                  dark
-                  className="justify-center px-6 py-1.5"
-                  onClick={() => handleUnidadClick(unidad.id)}
-                >
-                  <p className="text-[16px] md:text-[20px] text-white">
-                    {unidad.nombre}
-                  </p>
-                </Button>
-              ))}
-            </div>
-            <hr className="w-3/4 md:w-1/2 lg:w-1/4 my-4 border-t-2 border-white" />
-          </>
-        ) : (
-          <p className="text-white">Aún no estás dentro de una unidad</p>
-        )}
 
         <div className="lg:w-1/4 md:w-1/2 w-3/4 flex flex-col gap-8">
           <Button
@@ -71,7 +43,7 @@ export default function SelectUnidadPage() {
               dark
               className="space-x-5 px-6 py-1.5"
               onClick={() => {
-                nav("/diri/crear-unidad");
+                nav("/crear-unidad");
               }}
             >
               <span className="material-symbols-outlined text-white text-4xl!">

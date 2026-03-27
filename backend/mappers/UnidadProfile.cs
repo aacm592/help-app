@@ -1,5 +1,6 @@
 using AutoMapper;
 using backend.data.models;
+using backend.dtos.registros;
 using backend.dtos.responses;
 
 namespace backend.mappers;
@@ -13,5 +14,26 @@ public class UnidadProfile: Profile
         opt => opt.MapFrom(src => src.Rama.Nombre))
       .ForMember(dest => dest.GrupoScoutNombre, 
         opt => opt.MapFrom(src => src.GrupoScout.Nombre));
+
+    CreateMap<Unidad, UnidadUsersDto>()
+      .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+      .ForMember(dest => dest.Rama, opt => opt.MapFrom(src => src.Rama.Nombre))
+      .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.Nombre))
+      .ForMember(dest => dest.Dirigentes, opt => opt.MapFrom(src => 
+        src.Usuarios.Where(u => u.Profile!.DiriProfile != null)))
+      .ForMember(dest => dest.Scouts, opt => opt.MapFrom(src => 
+        src.Usuarios.Where(u => u.Profile!.ScoutProfile != null && u.Profile.DiriProfile == null)));
+    
+    CreateMap<Unidad, UnidadRegistrosDto>()
+      .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+      .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.Nombre))
+      .ForMember(dest => dest.Dirigentes, opt => opt.MapFrom(src => 
+        src.Usuarios
+          .Where(u => u.Registros.FirstOrDefault()!.RegistroDiri != null)
+          .Select(u => u.Registros.FirstOrDefault())))
+      .ForMember(dest => dest.Scouts, opt => opt.MapFrom(src => 
+        src.Usuarios
+          .Where(u => u.Registros.FirstOrDefault()!.RegistroScout != null)
+          .Select(u => u.Registros.FirstOrDefault())));
   }
 }

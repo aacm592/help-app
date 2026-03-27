@@ -42,6 +42,9 @@ builder.Services.AddScoped<IObjetivoUsuarioRepository, ObjetivoUsuarioRepository
 builder.Services.AddScoped<IRequisitoEspRepository, RequisitoEspRepository>();
 builder.Services.AddScoped<IEspecialidadRepository, EspecialidadRepository>();
 builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
+builder.Services.AddScoped<IRegistroRepository, RegistroRepository>();
+builder.Services.AddScoped<IGestionRepository, GestionRepository>();
+builder.Services.AddScoped<IPermisoRepository, PermisoRepository>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUnidadService, UnidadService>();
@@ -53,6 +56,9 @@ builder.Services.AddScoped<IObjetivoEducativoService, ObjetivoEducativoService>(
 builder.Services.AddScoped<IObjetivoUsuarioService, ObjetivoUsuarioService>();
 builder.Services.AddScoped<IEspecialidadServer, EspecialidadServer>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
+builder.Services.AddScoped<IRegistroService, RegistroService>();
+builder.Services.AddScoped<IGestionService, GestionService>();
+builder.Services.AddScoped<IPermisosService, PermisosService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -140,36 +146,7 @@ using (var scope = app.Services.CreateScope())
   var db = services.GetRequiredService<ScoutsAppContext>();
   
   db.Database.Migrate();
-
-  if (!db.Especialidades.Any())
-  {
-    var especialidades = backend.data.seeders.EspecialidadesCsvSeeder.GetData();
-    db.Especialidades.AddRange(especialidades);
-    db.SaveChanges();
-  }
-
-  if (!db.RequisitosEsp.Any())
-  {
-    var requisitos = backend.data.seeders.RequisitosEspecialidadesCsvSeeder.GetData();
-    db.RequisitosEsp.AddRange(requisitos);
-    db.SaveChanges();
-  }
-  
-  if (!db.ObjetivosEducativos.Any())
-  {
-    var requisitos = backend.data.seeders.ObjetivoEducativoCsvSeeder.GetData();
-    db.ObjetivosEducativos.AddRange(requisitos);
-    db.SaveChanges();
-  }
-  
-  if (!db.GruposScout.Any())
-  {
-    var requisitos = backend.data.seeders.GrupoScoutCsvSeeder.GetData();
-    db.GruposScout.AddRange(requisitos);
-    db.SaveChanges();
-  }
 }
-
 
 app.UseSwagger();
 app.UseSwaggerUI();

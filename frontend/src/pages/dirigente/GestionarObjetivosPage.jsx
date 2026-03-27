@@ -1,20 +1,18 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import ObjetivoPendienteItem from "../../components/pageComponents/ObjetivoPendienteItem.jsx";
-import Button from "../../components/Button.jsx";
 import { useAuth } from "../../contexts/AuthContext.jsx";
 import { getPendientesPorUnidad } from "../../services/objetivosService.js";
 
 export default function GestionarObjetivosPage() {
   const { unidadId } = useParams();
   const { user } = useAuth();
-  const nav = useNavigate();
 
   const [pendientes, setPendientes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [apiError, setApiError] = useState(null);
 
-  const unidadActual = user?.unidades.find((u) => u.id.toString() === unidadId);
+  const unidad = user?.unidades.find((u) => u.id.toString() === unidadId);
 
   useEffect(() => {
     const cargarPendientes = async () => {
@@ -35,7 +33,7 @@ export default function GestionarObjetivosPage() {
 
   const handleAccionCompletada = (objetivoIdEliminado) => {
     setPendientes((prevPendientes) =>
-      prevPendientes.filter((p) => p.objetivoId !== objetivoIdEliminado)
+      prevPendientes.filter((p) => p.objetivoId !== objetivoIdEliminado),
     );
   };
 
@@ -83,26 +81,19 @@ export default function GestionarObjetivosPage() {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-gray-50 text-black p-8 w-screen">
-      <div className="w-full max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex-1">
-            <h1 className="text-purple-900">Validar Objetivos</h1>
-            {unidadActual && (
-              <p className="text-xl text-gray-700">{unidadActual.nombre}</p>
-            )}
-          </div>
-          <Button
-            className="px-4 py-2"
-            onClick={() => nav(`/diri/unidad/${unidadId}/home`)}
-          >
-            <span className="material-symbols-outlined mr-2">arrow_back</span>
-            Volver
-          </Button>
-        </div>
-
-        {renderContent()}
+    <div className="w-full lg:md:w-3/4 md:w-4/5 mx-auto p-4 md:p-8">
+      <div className="flex-1">
+        <h1 className="text-purple-900 md:text-left text-center">
+          Gestionar Objetivos
+        </h1>
+        {unidad && (
+          <p className="text-xl text-violet-600 font-extrabold">
+            Unidad: {unidad.nombre}
+          </p>
+        )}
       </div>
+
+      {renderContent()}
     </div>
   );
 }

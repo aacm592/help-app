@@ -22,3 +22,33 @@ export const getGruposScoutPorDistrito = async (distritoId) => {
     throw new Error("No se pudo cargar la lista de grupos.");
   }
 };
+
+export async function getGroupMembers() {
+  try {
+    const response = await api.get(`/GrupoScout/unidades/users`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener miembros por unidad del grupo", error);
+    throw new Error("No se pudo cargar la lista de miembros por unidad.");
+  }
+}
+
+export async function getUnidadeDeGrupo() {
+  try {
+    const response = await api.get(`/GrupoScout/unidades/`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener unidades del grupo", error);
+    throw new Error("No se pudo cargar la lista de unidades.");
+  }
+}
+
+export async function getAdminsDeGrupo() {
+  try {
+    const response = await api.get(`/GrupoScout/admins`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener administradores del grupo", error);
+    throw new Error("No se pudo cargar la lista de administradores del grupo.");
+  }
+}

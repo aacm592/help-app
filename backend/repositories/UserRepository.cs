@@ -18,6 +18,8 @@ public class UserRepository : IUserRepository
     return await _context.Users
       .Include(u => u.Profile)
       .Include(u => u.Tipo)
+      .Include(u => u.UserPermisos)
+      .ThenInclude(u => u.Permiso)
       .Include(u => u.Unidades)
       .ThenInclude(un => un.Rama)
       .Include(u => u.Unidades)
@@ -44,12 +46,46 @@ public class UserRepository : IUserRepository
   {
     return await _context.Users
       .Include(u => u.Profile)
+      .ThenInclude(p => p!.ScoutProfile)
+      .Include(u => u.Profile)
+      .ThenInclude(p => p!.DiriProfile)
       .Include(u => u.Tipo)
+      .Include(u => u.UserPermisos)
       .Include(u => u.Unidades)
         .ThenInclude(un => un.Rama)
       .Include(u => u.Unidades)
         .ThenInclude(un => un.GrupoScout)
       .FirstOrDefaultAsync(u => u.Id == userId);
+  }
+
+  public async Task<IEnumerable<User>?> GetUsersByPermiso(int[] permisoIds, int gestionId)
+  {
+    return await _context.Users
+      .Include(u => u.Profile)
+      .ThenInclude(p => p!.ScoutProfile)
+      .Include(u => u.Profile)
+      .ThenInclude(p => p!.DiriProfile)     
+      .Include(u => u.Registros.Where(r => r.GestionId == gestionId))
+      .Include(u => u.Tipo)
+      .Include(u => u.UserPermisos)
+      .ThenInclude(p => p.Permiso)
+      .Where(u => u.UserPermisos.Any(p => permisoIds.Contains(p.PermisoId)))
+      .ToListAsync();
+  }
+  
+  public async Task<IEnumerable<User>?> GetUsersByPermisoAndArea(int[] permisoIds, int areaId, int gestionId)
+  {
+    return await _context.Users
+      .Include(u => u.Profile)
+      .ThenInclude(p => p!.ScoutProfile)
+      .Include(u => u.Profile)
+      .ThenInclude(p => p!.DiriProfile)     
+      .Include(u => u.Registros.Where(r => r.GestionId == gestionId))
+      .Include(u => u.Tipo)
+      .Include(u => u.UserPermisos)
+      .ThenInclude(p => p.Permiso)
+      .Where(u => u.UserPermisos.Any(p => permisoIds.Contains(p.PermisoId) && p.AreaId == areaId))
+      .ToListAsync();
   }
   
   public async Task UpdateAsync(User user)

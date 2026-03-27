@@ -134,4 +134,28 @@ public class UnidadController : ControllerBase
       return StatusCode(500, $"Error interno: {ex.Message}");
     }
   }
+  
+  [Authorize(Roles = "2")]
+  [Authorize(Roles = "p1, p2")]
+  [HttpGet("{unidadId}/registers")]
+  public async Task<IActionResult> GetUnidadById(int unidadId)
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      var resultado = await _unidadService.GetUnidadMembersAndRegisters(userId, unidadId);
+      return Ok(resultado);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
 }

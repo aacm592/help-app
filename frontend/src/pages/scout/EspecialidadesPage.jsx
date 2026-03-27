@@ -42,8 +42,8 @@ export default function EspecialidadesPage() {
   }, [unidad, nav]);
 
   const selectReq = (id) => {
-    const newEsp = especialidades.map((r) =>
-      r.id === id ? { ...r, status: "En Progreso" } : r
+    const newEsp = especialidades.map((e) =>
+      e.idEspecialidad === id ? { ...e, status: "En Progreso" } : e,
     );
     setEspecialidades(newEsp);
   };
@@ -51,8 +51,10 @@ export default function EspecialidadesPage() {
   if (isLoading) return <LoadingPage />;
 
   return (
-    <div className="flex flex-col items-center p-4 gap-6">
-      <h1 className="text-3xl font-bold text-gray-800">Especialidades</h1>
+    <div className="flex flex-col justify-center items-center w-full lg:md:w-3/4 md:w-4/5 mx-auto p-4 md:p-8">
+      <h1 className="text-purple-900 md:text-left text-center">
+        Especialidades
+      </h1>
 
       <div className="md:w-3/4 lg:w-2/3 w-full">
         <SearchBar
@@ -62,16 +64,16 @@ export default function EspecialidadesPage() {
         />
       </div>
 
-      <div className="md:w-3/4 lg:w-2/3 w-full space-y-4">
+      <div className="w-full space-y-4">
         {especialidadesFiltradas.length > 0 ? (
           especialidadesFiltradas.map((e) => (
             <SpecialitItem
-              key={e.id || e.nombre}
+              key={e.idEspecialidad || e.nombre}
               name={e.nombre}
               status={e.status}
               description={e.descripcion}
               req={e.requerimientos}
-              onSelect={() => selectReq(e.id)}
+              onSelect={() => selectReq(e.idEspecialidad)}
             />
           ))
         ) : (

@@ -40,12 +40,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <Link>Requisitos - Especialidades.csv</Link>
     </None>
-    
-    
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="dtos\request\especialidades\" />
   </ItemGroup>
 
 </Project>

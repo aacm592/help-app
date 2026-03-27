@@ -16,7 +16,7 @@ export default function ObjetivoPendienteItem({
     objetivoId,
     objetivoDescripcion,
     areaNombre,
-    fechaSeleccion, // <-- NUEVO DATO
+    fechaSeleccion,
   } = pendiente;
 
   const handleAccion = async (accionFn) => {

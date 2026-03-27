@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using backend.services.interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,5 +29,197 @@ public class GrupoScoutController : ControllerBase
   {
     var grupos = await _grupoScoutService.GetByDistritoIdAsync(distritoId);
     return Ok(grupos);
+  }
+  
+  [Authorize(Roles = "2")]
+  [Authorize(Roles = "p1, p2")]
+  [HttpGet("unidades/users")]
+  public async Task<IActionResult> GetUsers()
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      var resultado = await _grupoScoutService.UsersById(userId);
+      return Ok(resultado);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
+  
+  [Authorize(Roles = "2")]
+  [Authorize(Roles = "p1, p2")]
+  [HttpGet("unidades/users/rama/{id}")]
+  public async Task<IActionResult> GetUsers(int id)
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      var resultado = await _grupoScoutService.GetUsersByRamaId(userId, id);
+      return Ok(resultado);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
+  
+  [Authorize(Roles = "2")]
+  [Authorize(Roles = "p1, p2")]
+  [HttpGet("unidades/registros")]
+  public async Task<IActionResult> GetRegistros()
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      var resultado = await _grupoScoutService.GetRegistros(userId);
+      return Ok(resultado);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
+  
+  [Authorize(Roles = "2")]
+  [Authorize(Roles = "p1, p2")]
+  [HttpGet("unidades/registros/rama/{id}")]
+  public async Task<IActionResult> GetRegistros(int id)
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      var resultado = await _grupoScoutService.GetRegistrosByRama(userId, id);
+      return Ok(resultado);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
+  
+  [Authorize(Roles = "2")]
+  [Authorize(Roles = "p1, p2")]
+  [HttpGet("unidades")]
+  public async Task<IActionResult> GetUnidadesResumen()
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      var resultado = await _grupoScoutService.GetUnidadesResumenByGrupo(userId);
+      return Ok(resultado);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
+  
+  [Authorize(Roles = "2")]
+  [Authorize(Roles = "p1, p2")]
+  [HttpGet("admins")]
+  public async Task<IActionResult> GetAdmins()
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      var resultado = await _grupoScoutService.GetAdmins(userId);
+      return Ok(resultado);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
+  
+  [Authorize(Roles = "2")]
+  [Authorize(Roles = "p1, p2")]
+  [HttpGet("admins/registros")]
+  public async Task<IActionResult> GetAdminsRegisters()
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      var resultado = await _grupoScoutService.GetAdminsRegisters(userId);
+      return Ok(resultado);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
+  
+  [Authorize(Roles = "2")]
+  [Authorize(Roles = "p1, p2")]
+  [HttpGet("registros/resumen")]
+  public async Task<IActionResult> GetResumen()
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      var resultado = await _grupoScoutService.GetResumenRegistros(userId);
+      return Ok(resultado);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
   }
 }

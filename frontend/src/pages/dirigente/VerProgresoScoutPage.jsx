@@ -39,9 +39,9 @@ export default function VerProgresoScoutPage() {
   if (isLoading) return <LoadingPage />;
 
   return (
-    <div className="w-full">
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-2">
+    <div className="w-full p-4">
+      <div className="flex lg:flex-row flex-col-reverse justify-between md:items-center mb-6">
+        <div className="flex lg:flex-row flex-col items-center gap-2">
           <h1 className="text-purple-900">Progreso de:</h1>
           <p className="text-5xl font-bold text-violet-800">{scoutNombre}</p>
         </div>
@@ -54,19 +54,22 @@ export default function VerProgresoScoutPage() {
         </Button>
       </div>
 
-      <h2 className="text-purple-900 text-3xl font-bold">
-        Progresión personal
-      </h2>
-      {resumenObjetivos.map((e, i) => (
-        <ResumenProgresionScout
-          key={i}
-          etapa={e.etapa}
-          areas={e.objetivosAreaResume}
-        />
-      ))}
+      <div className="w-full overflow-x-auto">
+        <h2 className="text-purple-900 text-3xl font-bold">
+          Progresión personal
+        </h2>
 
-      <h2 className="text-purple-900 text-3xl font-bold">Especialidades</h2>
-      <ResumenEspecialidadesScout especialidades={resumenEspecialidades} />
+        {resumenObjetivos.map((e, i) => (
+          <ResumenProgresionScout
+            key={i}
+            etapa={e.etapa}
+            areas={e.objetivosAreaResume}
+          />
+        ))}
+
+        <h2 className="text-purple-900 text-3xl font-bold">Especialidades</h2>
+        <ResumenEspecialidadesScout especialidades={resumenEspecialidades} />
+      </div>
     </div>
   );
 }
