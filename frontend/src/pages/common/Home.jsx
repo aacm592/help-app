@@ -20,10 +20,10 @@ export default function Home() {
       <div className="flex flex-col items-center space-y-6">
         <img src={logo} alt="Foto de perfil" className="w-40 h-40 p-2" />
         <div className="flex flex-col items-center text-center">
-          <h2 className="text-3xl font-bold text-purple-800">
+          <h2 className="text-3xl font-bold text-[#0094B4]">
             {`${user.nombre} ${user.apellidos}`}
           </h2>
-          <h2 className="text-2xl font-bold text-purple-500 saturate-40">
+          <h2 className="text-2xl font-bold text-[#82e6de] saturate-40">
             {user.nombreUsuario}
           </h2>
         </div>
