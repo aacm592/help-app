@@ -7,9 +7,9 @@ export default function GroupMembersPage() {
   const [unidades, setUnidades] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const thClassName =
-    "border-y border-gray-100 px-2 py-5 text-green-900 font-bold";
+    "border-y border-gray-100 px-2 py-5 font-bold";
   const tdClassName = "border-y border-gray-300 px-2 py-4";
-  const tableClassName = "bg-sky-200";
+  const tableClassName = "bg-[#ffae80]";
   const trClassName = "hover:bg-indigo-50 transition-colors";
   useEffect(() => {
     const getResumen = async () => {
