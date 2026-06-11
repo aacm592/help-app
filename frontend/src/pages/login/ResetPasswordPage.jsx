@@ -77,9 +77,9 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center w-full py-8 bg-purple-600 min-h-screen h-full">
+    <div className="flex flex-col justify-center items-center w-full py-8 bg-[#622599] min-h-screen h-full">
       <h2 className="text-3xl text-white font-bold mb-8 ">
-        Resetear Contraseña
+        Cambiar Contraseña
       </h2>
 
       {apiError && (
@@ -112,7 +112,7 @@ export default function ResetPasswordPage() {
           />
 
           <Input
-            label="Código de Reseteo"
+            label="Código de Recuperación"
             name="resetCode"
             type="text"
             placeholder="Ej: ABC123"
@@ -142,7 +142,7 @@ export default function ResetPasswordPage() {
               disabled={isLoading}
             >
               <span className={`${iconClass} text-green-600`}>check</span>
-              <p className={textClass}>Resetear</p>
+              <p className={textClass}>Actualizar</p>
             </Button>
             <Button
               dark

@@ -111,14 +111,14 @@ export default function CreateUnidadPage() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-purple-600">
+      <div className="flex justify-center items-center min-h-screen bg-[#622599]">
         <h2 className="text-3xl text-white font-bold">Cargando...</h2>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col justify-center items-center w-full py-8 bg-purple-600 min-h-screen h-full">
+    <div className="flex flex-col justify-center items-center w-full py-8 bg-[#622599] min-h-screen h-full">
       <h2 className="text-3xl text-white font-bold mb-8 ">Crear Unidad</h2>
 
       {apiError && (
