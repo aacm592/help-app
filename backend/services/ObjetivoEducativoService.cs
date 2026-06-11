@@ -5,7 +5,7 @@ using backend.services.interfaces;
 
 namespace backend.services;
 
-public class ObjetivoEducativoService: IObjetivoEducativoService
+public class ObjetivoEducativoService : IObjetivoEducativoService
 {
   private readonly IObjetivoEducativoRepository _objetivoRepository;
   private readonly IObjetivoUsuarioRepository _objetivoUsuarioRepository;
@@ -21,14 +21,20 @@ public class ObjetivoEducativoService: IObjetivoEducativoService
   public async Task<IEnumerable<ObjetivoEducativoDto>> GetByEtapaIdAsync(int etapaId, int usuarioId)
   {
     var allObjetivos = await _objetivoRepository.GetByEtapaIdAsync(etapaId);
-    var userObjetivoIds = await _objetivoUsuarioRepository.GetUserObjetivoIdsAsync(usuarioId);
+    var userObjetivoIds = await _objetivoUsuarioRepository.GetByUsuarioIdAsync(usuarioId);
 
-    if (userObjetivoIds.Count == 0)
-      return _mapper.Map<IEnumerable<ObjetivoEducativoDto>>(allObjetivos);
+    var mappedObjetivos = _mapper.Map<IEnumerable<ObjetivoEducativoDto>>(allObjetivos);
 
-    var filteredObjetivos = allObjetivos
-      .Where(obj => !userObjetivoIds.Contains(obj.Id));
+    if (userObjetivoIds.FirstOrDefault() == null)
+      return mappedObjetivos;
 
-    return _mapper.Map<IEnumerable<ObjetivoEducativoDto>>(filteredObjetivos);
+    foreach (var obj in mappedObjetivos)
+    {
+      var objUser = userObjetivoIds.FirstOrDefault(x => x.ObjetivoEducativoId == obj.Id);
+      if (objUser != null)
+        obj.Status = objUser.Status.ToString();
+    }
+
+    return mappedObjetivos;
   }
 }

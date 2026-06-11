@@ -4,7 +4,7 @@ using backend.dtos.responses;
 
 namespace backend.mappers;
 
-public class ObjetivoEducativoProfile: Profile
+public class ObjetivoEducativoProfile : Profile
 {
   public ObjetivoEducativoProfile()
   {
