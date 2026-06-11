@@ -118,9 +118,13 @@ export default function ObjetivosPage() {
       await elegirObjetivo(objetivoId);
       setSuccessMessage("¡Objetivo seleccionado! Esperando validación.");
 
-      setObjetivos((prevObjetivos) =>
-        prevObjetivos.filter((o) => o.id !== objetivoId),
+      const newObj = objetivos.map((prevObj) =>
+        prevObj.id === objetivoId
+          ? { ...prevObj, status: "Pendiente" }
+          : prevObj,
       );
+
+      setObjetivos(newObj);
     } catch (error) {
       setApiError(error.message);
     } finally {
