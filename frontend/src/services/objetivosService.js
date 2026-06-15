@@ -14,6 +14,22 @@ export const getObjetivosPorEtapa = async (etapaId) => {
   }
 };
 
+export const getObjetivosScoutPorEtapa = async (etapaId, scoutId) => {
+  if (!etapaId) {
+    throw new Error("El ID de la etapa es requerido.");
+  }
+
+  try {
+    const response = await api.get(
+      `/ObjetivoEducativo/etapa/${etapaId}/${scoutId}`,
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener objetivos por etapa", error);
+    throw new Error("No se pudo cargar la lista de objetivos.");
+  }
+};
+
 export const elegirObjetivo = async (objetivoId) => {
   if (!objetivoId) {
     throw new Error("El ID del objetivo es requerido.");
@@ -51,6 +67,26 @@ export const validarObjetivo = async ({ usuarioId, objetivoId }) => {
   }
 };
 
+export const asignarObjetivo = async (usuarioId, objetivoId) => {
+  if (!objetivoId || !usuarioId) {
+    throw new Error("El ID del objetivo y del usuario son requeridos.");
+  }
+
+  try {
+    const response = await api.post("/ObjetivoUsuario/asignar", {
+      usuarioId,
+      objetivoId,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al asignar el objetivo", error);
+    const errorMessage =
+      error.response?.data ||
+      "No se pudo asignar el objetivo. Intenta más tarde.";
+    throw new Error(errorMessage);
+  }
+};
+
 export const getPendientesPorUnidad = async (unidadId) => {
   if (!unidadId) {
     throw new Error("El ID de la unidad es requerido.");
@@ -58,7 +94,7 @@ export const getPendientesPorUnidad = async (unidadId) => {
 
   try {
     const response = await api.get(
-      `/ObjetivoUsuario/unidad/${unidadId}/pendientes`
+      `/ObjetivoUsuario/unidad/${unidadId}/pendientes`,
     );
     return response.data;
   } catch (error) {
@@ -77,7 +113,7 @@ export const getProgresoAgrupado = async (scoutId) => {
 
   try {
     const response = await api.get(
-      `/ObjetivoUsuario/scout/${scoutId}/agrupados`
+      `/ObjetivoUsuario/scout/${scoutId}/agrupados`,
     );
     return response.data;
   } catch (error) {

@@ -34,6 +34,7 @@ import RegistrosDistritoPage from "./pages/distrito/RegistrosDistritoPage";
 import ResRegistrosDistPage from "./pages/distrito/ResRegistrosDistPage";
 import AdminsDistritoPage from "./pages/distrito/AdminsDistritoPage";
 import ResponsablesGrupoPage from "./pages/distrito/ResponsablesGrupoPage";
+import AsignarObjetivosPage from "./pages/dirigente/AsignarObjetivosPage";
 
 function App() {
   return (
@@ -62,9 +63,15 @@ function App() {
               element={<HomeUnidadDirigente />}
             />
             <Route
+              path="/diri/unidad/:unidadId/asignar-objetivos/:scoutId"
+              element={<AsignarObjetivosPage />}
+            />
+
+            <Route
               path="/diri/unidad/:unidadId/gestionar-objetivos"
               element={<GestionarObjetivosPage />}
             />
+
             <Route
               path="/diri/unidad/:unidadId/gestionar-especialidades"
               element={<GestionarEspecialidadesPage />}
