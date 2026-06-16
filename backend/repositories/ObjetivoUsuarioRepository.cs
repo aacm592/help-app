@@ -27,7 +27,7 @@ public class ObjetivoUsuarioRepository : IObjetivoUsuarioRepository
     return await _context.ObjetivosUsuario
       .AnyAsync(ou => ou.UsuarioId == usuarioId && ou.ObjetivoEducativoId == objetivoId);
   }
-  
+
   public async Task<IEnumerable<ObjetivoUsuario>> GetPendingByScoutIdsAsync(IEnumerable<int> scoutIds)
   {
     return await _context.ObjetivosUsuario
@@ -40,7 +40,7 @@ public class ObjetivoUsuarioRepository : IObjetivoUsuarioRepository
       .OrderBy(ou => ou.User.Profile == null ? "" : ou.User.Profile.Nombre)
       .ToListAsync();
   }
-  
+
   public async Task<ObjetivoUsuario?> GetByUsuarioYObjetivoAsync(int usuarioId, int objetivoId)
   {
     return await _context.ObjetivosUsuario
@@ -53,13 +53,13 @@ public class ObjetivoUsuarioRepository : IObjetivoUsuarioRepository
     _context.ObjetivosUsuario.Update(objetivoUsuario);
     await _context.SaveChangesAsync();
   }
-  
+
   public async Task DeleteAsync(ObjetivoUsuario objetivoUsuario)
   {
     _context.ObjetivosUsuario.Remove(objetivoUsuario);
     await _context.SaveChangesAsync();
   }
-  
+
   public async Task<ISet<int>> GetUserObjetivoIdsAsync(int usuarioId)
   {
     var ids = await _context.ObjetivosUsuario
@@ -69,7 +69,7 @@ public class ObjetivoUsuarioRepository : IObjetivoUsuarioRepository
 
     return ids.ToHashSet();
   }
-  
+
   public async Task<IEnumerable<ObjetivoUsuario>> GetByUsuarioIdAsync(int usuarioId)
   {
     return await _context.ObjetivosUsuario
@@ -84,7 +84,7 @@ public class ObjetivoUsuarioRepository : IObjetivoUsuarioRepository
       .ThenBy(ou => ou.ObjetivoEducativo.Descripcion)
       .ToListAsync();
   }
-  
+
   public async Task<IEnumerable<ObjetivoUsuario>> GetByUsuarioIdWithFullTreeAsync(int usuarioId)
   {
     return await _context.ObjetivosUsuario

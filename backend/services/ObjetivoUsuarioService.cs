@@ -9,7 +9,7 @@ using backend.services.interfaces;
 
 namespace backend.services;
 
-public class ObjetivoUsuarioService: IObjetivoUsuarioService
+public class ObjetivoUsuarioService : IObjetivoUsuarioService
 {
   private readonly IUserRepository _userRepository;
   private readonly IObjetivoEducativoRepository _objetivoEducativoRepository;
@@ -29,13 +29,13 @@ public class ObjetivoUsuarioService: IObjetivoUsuarioService
     _mapper = mapper;
     _unidadRepository = unidadRepository;
   }
-  
+
   public async Task<ObjetivoUsuarioResponseDto> ElegirObjetivoAsync(int objetivoId, int usuarioId)
   {
     var user = await _userRepository.GetByIdWithTipoAndUnidadesAsync(usuarioId);
     if (user == null)
       throw new ApplicationException("Usuario no encontrado.");
-    
+
     if (user.Tipo.Nombre != "Scout")
       throw new ApplicationException("Solo los Scouts pueden elegir sus objetivos.");
 
@@ -46,7 +46,7 @@ public class ObjetivoUsuarioService: IObjetivoUsuarioService
     var unidadDelUsuario = user.Unidades.FirstOrDefault();
     if (unidadDelUsuario == null)
       throw new ApplicationException("Debes pertenecer a una unidad para elegir objetivos.");
-        
+
     if (unidadDelUsuario.RamaId != objetivo.EtapaProgresion.RamaId)
       throw new ApplicationException("Este objetivo no pertenece a tu rama.");
 
@@ -62,12 +62,60 @@ public class ObjetivoUsuarioService: IObjetivoUsuarioService
     };
 
     var relacionGuardada = await _objetivoUsuarioRepository.AddAsync(nuevaRelacion);
-        
-    relacionGuardada.ObjetivoEducativo = objetivo; 
-        
+
+    relacionGuardada.ObjetivoEducativo = objetivo;
+
     return _mapper.Map<ObjetivoUsuarioResponseDto>(relacionGuardada);
   }
-  
+
+  public async Task<ObjetivoUsuarioResponseDto> AsignarObjetivo(ValidarObjetivoDto dto, int diriId)
+  {
+    var scout = await _userRepository.GetByIdWithTipoAndUnidadesAsync(dto.UsuarioId);
+    if (scout == null || !scout.Unidades.Any())
+      throw new ApplicationException("El Scout no se encuentra o no pertenece a ninguna unidad.");
+
+    var dirigente = await _userRepository.GetByIdWithTipoAndUnidadesAsync(diriId);
+    if (dirigente == null)
+      throw new ApplicationException("Dirigente no encontrado.");
+
+    var unidadDelScout = scout.Unidades.First();
+    var dirigenteEstaEnUnidad = dirigente.Unidades.Any(u => u.Id == unidadDelScout.Id);
+
+    if (!dirigenteEstaEnUnidad)
+      throw new ApplicationException("El scout no pertenece a tu unidad.");
+
+    var user = await _userRepository.GetByIdWithTipoAndUnidadesAsync(dto.UsuarioId);
+    if (user == null)
+      throw new ApplicationException("Usuario no encontrado.");
+
+    if (user.Tipo.Nombre != "Scout")
+      throw new ApplicationException("Solo los Scouts pueden elegir sus objetivos.");
+
+    var objetivo = await _objetivoEducativoRepository.GetByIdAsync(dto.ObjetivoId);
+    if (objetivo == null)
+      throw new ApplicationException("Objetivo no encontrado.");
+
+    if (unidadDelScout.RamaId != objetivo.EtapaProgresion.RamaId)
+      throw new ApplicationException("Este objetivo no pertenece a la rama del scout.");
+
+    if (await _objetivoUsuarioRepository.ExistsAsync(dto.UsuarioId, dto.ObjetivoId))
+      throw new ApplicationException("El usuario ya tiene este objetivo.");
+
+    var nuevaRelacion = new ObjetivoUsuario
+    {
+      UsuarioId = dto.UsuarioId,
+      ObjetivoEducativoId = dto.ObjetivoId,
+      Status = ObjetivoStatus.Cumplido,
+      FechaSeleccion = DateTime.UtcNow
+    };
+
+    var relacionGuardada = await _objetivoUsuarioRepository.AddAsync(nuevaRelacion);
+
+    relacionGuardada.ObjetivoEducativo = objetivo;
+
+    return _mapper.Map<ObjetivoUsuarioResponseDto>(relacionGuardada);
+  }
+
   public async Task<IEnumerable<PendingObjetivoDto>> GetPendingObjetivosByUnidadAsync(int unidadId, int dirigenteId)
   {
     var unidad = await _unidadRepository.GetByIdWithMiembrosAsync(unidadId);
@@ -76,7 +124,7 @@ public class ObjetivoUsuarioService: IObjetivoUsuarioService
 
     var esMiembroDirigente = unidad.Usuarios
       .Any(u => u.Id == dirigenteId && u.Tipo.Nombre == "Dirigente");
-        
+
     if (!esMiembroDirigente)
       throw new ApplicationException("No tienes permiso para ver los objetivos de esta unidad.");
 
@@ -91,7 +139,7 @@ public class ObjetivoUsuarioService: IObjetivoUsuarioService
 
     return _mapper.Map<IEnumerable<PendingObjetivoDto>>(objetivosPendientes);
   }
-  
+
   public async Task<ObjetivoUsuarioResponseDto> ValidarObjetivoAsync(ValidarObjetivoDto dto, int dirigenteId)
   {
     var objetivoUsuario = await _objetivoUsuarioRepository.GetByUsuarioYObjetivoAsync(dto.UsuarioId, dto.ObjetivoId);
@@ -106,8 +154,8 @@ public class ObjetivoUsuarioService: IObjetivoUsuarioService
     if (scout == null || !scout.Unidades.Any())
       throw new ApplicationException("El Scout no se encuentra o no pertenece a ninguna unidad.");
 
-    var unidadDelScout = scout.Unidades.First(); 
-    
+    var unidadDelScout = scout.Unidades.First();
+
     var dirigente = await _userRepository.GetByIdWithTipoAndUnidadesAsync(dirigenteId);
     if (dirigente == null)
       throw new ApplicationException("Dirigente no encontrado.");
@@ -125,7 +173,7 @@ public class ObjetivoUsuarioService: IObjetivoUsuarioService
 
     return _mapper.Map<ObjetivoUsuarioResponseDto>(objetivoUsuario);
   }
-  
+
   public async Task DenegarObjetivoAsync(ValidarObjetivoDto dto, int dirigenteId)
   {
     var objetivoUsuario = await _objetivoUsuarioRepository.GetByUsuarioYObjetivoAsync(dto.UsuarioId, dto.ObjetivoId);
@@ -140,8 +188,8 @@ public class ObjetivoUsuarioService: IObjetivoUsuarioService
     if (scout == null || !scout.Unidades.Any())
       throw new ApplicationException("El Scout no se encuentra o no pertenece a ninguna unidad.");
 
-    var unidadDelScout = scout.Unidades.First(); 
-    
+    var unidadDelScout = scout.Unidades.First();
+
     var dirigente = await _userRepository.GetByIdWithTipoAndUnidadesAsync(dirigenteId);
     if (dirigente == null)
       throw new ApplicationException("Dirigente no encontrado.");
@@ -153,7 +201,7 @@ public class ObjetivoUsuarioService: IObjetivoUsuarioService
 
     await _objetivoUsuarioRepository.DeleteAsync(objetivoUsuario);
   }
-  
+
   public async Task<IEnumerable<ObjetivoUsuarioResponseDto>> GetMisObjetivosAsync(int usuarioId)
   {
     var objetivosDelUsuario = await _objetivoUsuarioRepository.GetByUsuarioIdAsync(usuarioId);
@@ -182,7 +230,7 @@ public class ObjetivoUsuarioService: IObjetivoUsuarioService
       if (dirigenteEstaEnUnidad)
         tienePermiso = true;
     }
-    
+
     if (!tienePermiso)
       throw new ApplicationException("No tienes permiso para ver los objetivos de este Scout.");
 
@@ -204,7 +252,7 @@ public class ObjetivoUsuarioService: IObjetivoUsuarioService
 
     var resumen = objetivosCatalogo
       .GroupBy(oe => new { oe.EtapaProgresionId, oe.EtapaProgresion.Nombre })
-      .OrderBy(g => g.Key.EtapaProgresionId) 
+      .OrderBy(g => g.Key.EtapaProgresionId)
       .Select(etapaGroup => new ObjetivoEtapaResumeDto
       {
         Etapa = etapaGroup.Key.Nombre,
@@ -214,9 +262,9 @@ public class ObjetivoUsuarioService: IObjetivoUsuarioService
           {
             Area = areaGroup.Key,
             TotalQuantity = areaGroup.Count(),
-            InProgressQuantity = areaGroup.Count(oe => 
+            InProgressQuantity = areaGroup.Count(oe =>
               dictProgreso.TryGetValue(oe.Id, out var p) && p.Status == ObjetivoStatus.Pendiente),
-            DoneQuantity = areaGroup.Count(oe => 
+            DoneQuantity = areaGroup.Count(oe =>
               dictProgreso.TryGetValue(oe.Id, out var p) && p.Status == ObjetivoStatus.Cumplido)
           })
           .OrderBy(a => a.Area)
@@ -237,7 +285,7 @@ public class ObjetivoUsuarioService: IObjetivoUsuarioService
     if (dirigente == null)
       throw new ApplicationException("Dirigente no encontrado.");
 
-    var unidadDelScout = scout.Unidades.First(); 
+    var unidadDelScout = scout.Unidades.First();
     var dirigenteEstaEnUnidad = dirigente.Unidades.Any(u => u.Id == unidadDelScout.Id);
 
     if (!dirigenteEstaEnUnidad)
@@ -262,8 +310,8 @@ public class ObjetivoUsuarioService: IObjetivoUsuarioService
           {
             Id = grupoEtapa.Key.Id,
             Nombre = grupoEtapa.Key.Nombre,
-            
-            Areas = grupoEtapa 
+
+            Areas = grupoEtapa
               .GroupBy(ou => ou.ObjetivoEducativo.AreaCrecimiento)
               .Select(grupoArea => new AreaObjetivosDto
               {
