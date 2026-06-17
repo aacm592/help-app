@@ -35,6 +35,7 @@ import ResRegistrosDistPage from "./pages/distrito/ResRegistrosDistPage";
 import AdminsDistritoPage from "./pages/distrito/AdminsDistritoPage";
 import ResponsablesGrupoPage from "./pages/distrito/ResponsablesGrupoPage";
 import AsignarObjetivosPage from "./pages/dirigente/AsignarObjetivosPage";
+import AsignarEspecialidadPage from "./pages/dirigente/AsignarEspecialidadPage";
 
 function App() {
   return (
@@ -65,6 +66,11 @@ function App() {
             <Route
               path="/diri/unidad/:unidadId/asignar-objetivos/:scoutId"
               element={<AsignarObjetivosPage />}
+            />
+
+            <Route
+              path="/diri/unidad/:unidadId/asignar-especialidades/:scoutId"
+              element={<AsignarEspecialidadPage />}
             />
 
             <Route
