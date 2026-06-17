@@ -2,26 +2,31 @@ import { useEffect, useState } from "react";
 import SpecialitItem from "../../components/pageComponents/especialidades/SpecialityItem";
 import { useAuth } from "../../contexts/AuthContext";
 import {
-  getEspecialidades,
-  selectRequerimiento,
+  asignarRequerimiento,
+  getEspecialidadesScout,
 } from "../../services/especialidadService";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import LoadingPage from "../../components/LoadingPage";
 import SearchBar from "../../components/SearchBar";
 
-export default function EspecialidadesPage() {
+export default function AsignarEspecialidadPage() {
+  const location = useLocation();
+  const nav = useNavigate();
+
   const { user } = useAuth();
   const unidad = user?.unidades?.[0];
+
   const [especialidades, setEspecialidades] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const [searchTerm, setSearchTerm] = useState("");
 
+  const { scoutId } = useParams();
+  const scoutNombre = location.state?.scoutNombre || "Scout---";
+
   const especialidadesFiltradas = especialidades.filter((esp) =>
     esp.nombre.toLowerCase().includes(searchTerm.toLowerCase()),
   );
-
-  const nav = useNavigate();
 
   useEffect(() => {
     if (!unidad) {
@@ -32,7 +37,7 @@ export default function EspecialidadesPage() {
     const cargarEspecialidades = async () => {
       setIsLoading(true);
       try {
-        const esp = await getEspecialidades(unidad.ramaId);
+        const esp = await getEspecialidadesScout(unidad.ramaId, scoutId);
         setEspecialidades(esp);
       } catch (error) {
         console.error("No se pudieron cargar las especialidades", error);
@@ -42,17 +47,17 @@ export default function EspecialidadesPage() {
     };
 
     cargarEspecialidades();
-  }, [unidad, nav]);
+  }, [unidad, nav, scoutId]);
 
   const selectReq = async (reqId, id) => {
     try {
-      await selectRequerimiento(reqId);
+      await asignarRequerimiento(scoutId, reqId);
 
       const req = especialidades.find(
         (e) => e.idEspecialidad === id,
       ).requerimientos;
       const newReq = req.map((r) =>
-        reqId === r.id ? { ...r, status: "Pendiente" } : r,
+        reqId === r.id ? { ...r, status: "Cumplido" } : r,
       );
 
       const newEsp = especialidades.map((e) =>
@@ -71,7 +76,7 @@ export default function EspecialidadesPage() {
   return (
     <div className="flex flex-col justify-center items-center w-full lg:md:w-3/4 md:w-4/5 mx-auto p-4 md:p-8">
       <h1 className="text-purple-900 md:text-left text-center">
-        Especialidades
+        Especialidades {scoutNombre}
       </h1>
 
       <div className="md:w-3/4 lg:w-2/3 w-full">

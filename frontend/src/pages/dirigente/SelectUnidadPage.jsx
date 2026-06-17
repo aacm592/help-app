@@ -9,7 +9,7 @@ export default function SelectUnidadPage() {
   const nav = useNavigate();
 
   return (
-    <div className="bg-purple-600 min-h-screen h-full w-full py-10 flex flex-col">
+    <div className="bg-[#622599] min-h-screen h-full w-full py-10 flex flex-col">
       <LogOutButton dark />
 
       <div className="flex flex-col justify-center items-center h-full w-full gap-y-8 grow">

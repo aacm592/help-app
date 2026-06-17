@@ -6,7 +6,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import EspecialidadPendienteItem from "../../components/pageComponents/especialidades/EspecialidadPendienteItem";
 import { useAuth } from "../../contexts/AuthContext";
-import Button from "../../components/Button";
 
 export default function GestionarEspecialidadesPage() {
   const { user } = useAuth();
