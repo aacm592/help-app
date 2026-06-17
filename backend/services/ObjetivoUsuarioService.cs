@@ -106,7 +106,9 @@ public class ObjetivoUsuarioService : IObjetivoUsuarioService
       UsuarioId = dto.UsuarioId,
       ObjetivoEducativoId = dto.ObjetivoId,
       Status = ObjetivoStatus.Cumplido,
-      FechaSeleccion = DateTime.UtcNow
+      FechaSeleccion = DateTime.UtcNow,
+      FechaAprobacion = DateTime.UtcNow,
+      DirigenteAproboId = diriId
     };
 
     var relacionGuardada = await _objetivoUsuarioRepository.AddAsync(nuevaRelacion);

@@ -41,7 +41,13 @@ export default function MiembroUnidadItem({
     nav(`/diri/unidad/${unidadId}/asignar-objetivos/${miembroId}`, {
       state: { scoutNombre: nombre },
     });
-  }
+  };
+
+  const handleAsignarEsp = () => {
+    nav(`/diri/unidad/${unidadId}/asignar-especialidades/${miembroId}`, {
+      state: { scoutNombre: nombre },
+    });
+  };
 
   return (
     <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all duration-200">
@@ -119,6 +125,17 @@ export default function MiembroUnidadItem({
                   person
                 </span>
                 Asignar Objetivos
+              </Button>
+
+              <Button
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 text-sm bg-white border border-purple-200 text-purple-700 hover:bg-purple-50 rounded-md transition-colors min-w-[120px]"
+                onClick={handleAsignarEsp}
+                disabled={isActionDisabled}
+              >
+                <span className="material-symbols-outlined text-base">
+                  workspace_premium
+                </span>
+                Asignar Especialidades
               </Button>
             </>
           )}

@@ -10,6 +10,34 @@ export const getEspecialidades = async (ramaId) => {
   }
 };
 
+export const getEspecialidadesScout = async (ramaId, scoutId) => {
+  if (!scoutId) {
+    throw new Error("El ID de la especialidad es requerida.");
+  }
+
+  try {
+    const response = await api.get(`/Especialidad/rama/${ramaId}/${scoutId}`);
+
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener objetivos por etapa", error);
+    throw new Error("No se pudo cargar la lista de objetivos.");
+  }
+};
+
+export async function asignarRequerimiento(usuarioId, objetivoId) {
+  try {
+    const response = await api.post("/Especialidad/req/asignar", {
+      usuarioId,
+      objetivoId,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener las especialidades", error);
+    throw new Error("No se pudo cargar la lista de especialidades.");
+  }
+}
+
 export async function selectRequerimiento(id) {
   try {
     const response = await api.post(`/Especialidad/req/select/${id}`);

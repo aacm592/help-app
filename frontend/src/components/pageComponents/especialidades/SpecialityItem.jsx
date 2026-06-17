@@ -1,25 +1,15 @@
 import { useState } from "react";
 import SpecialityReqItem from "./SpecialityReqItem";
 import Button from "../../Button";
-import { selectRequerimiento } from "../../../services/especialidadService";
 
-export default function SpecialityItem({ name, status, description, req, onSelect }) {
+export default function SpecialityItem({
+  name,
+  status,
+  description,
+  req,
+  onSelect,
+}) {
   const [isOpen, setIsOpen] = useState(false);
-  const [requerimientos, setRequerimientos] = useState(req);
-
-  const selectReq = async (id) => {
-    try {
-      const newReq = requerimientos.map((r) =>
-        id === r.id ? { ...r, status: "En Progreso" } : r
-      );
-
-      setRequerimientos(newReq);
-      await selectRequerimiento(id);
-      onSelect();
-    } catch (error) {
-      console.error("error al seleccionar el requisito", error);
-    }
-  };
 
   return (
     <div className="w-full border-2 p-4 my-3 rounded-2xl">
@@ -31,8 +21,8 @@ export default function SpecialityItem({ name, status, description, req, onSelec
               status === "Completada"
                 ? "text-green-800"
                 : status === "En Progreso"
-                ? "text-yellow-600"
-                : "text-gray-500"
+                  ? "text-yellow-600"
+                  : "text-gray-500"
             }`}
           >
             {status}
@@ -51,13 +41,13 @@ export default function SpecialityItem({ name, status, description, req, onSelec
       </div>
       {isOpen && (
         <div className="">
-          {requerimientos.map((r, i) => (
+          {req.map((r, i) => (
             <SpecialityReqItem
               key={i}
               status={r.status}
               info={r.descripcion}
               id={r.id}
-              onSelect={(x) => selectReq(x)}
+              onSelect={(reqId) => onSelect(reqId)}
             />
           ))}
         </div>
