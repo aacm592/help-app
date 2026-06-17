@@ -42,7 +42,7 @@ export default function JoinUnidadPage() {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center w-full py-8 bg-purple-600 min-h-screen h-full">
+    <div className="flex flex-col justify-center items-center w-full py-8 bg-[#622599] min-h-screen h-full">
       <h2 className="text-3xl text-white font-bold mb-8 ">Unirse a Unidad</h2>
 
       {apiError && (

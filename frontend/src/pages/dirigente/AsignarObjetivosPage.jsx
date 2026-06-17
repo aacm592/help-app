@@ -1,19 +1,23 @@
 import { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { getEtapasPorRama } from "../../services/etapasService";
 import {
-  elegirObjetivo,
-  getObjetivosPorEtapa,
+  asignarObjetivo,
+  getObjetivosScoutPorEtapa,
 } from "../../services/objetivosService";
 import ObjetivoItem from "../../components/pageComponents/ObjetivoItem";
 
 const TODOS = "TODOS";
 
-export default function ObjetivosPage() {
+export default function AsignarObjetivosPage() {
   const { user } = useAuth();
   const nav = useNavigate();
+  const location = useLocation();
+
   const unidad = user?.unidades?.[0];
+  const { scoutId } = useParams();
+  const scoutNombre = location.state?.scoutNombre || "Scout---";
 
   const [etapas, setEtapas] = useState([]);
   const [selectedEtapaId, setSelectedEtapaId] = useState("");
@@ -66,7 +70,10 @@ export default function ObjetivosPage() {
       setSelectedAreaNombre("");
 
       try {
-        const objetivosData = await getObjetivosPorEtapa(selectedEtapaId);
+        const objetivosData = await getObjetivosScoutPorEtapa(
+          selectedEtapaId,
+          scoutId,
+        );
         setObjetivos(objetivosData);
 
         const areasUnicas = [
@@ -83,7 +90,7 @@ export default function ObjetivosPage() {
     };
 
     cargarObjetivosYAreas();
-  }, [selectedEtapaId]);
+  }, [scoutId, selectedEtapaId]);
 
   const objetivosAgrupados = useMemo(() => {
     if (selectedAreaNombre !== TODOS || objetivos.length === 0) {
@@ -114,12 +121,12 @@ export default function ObjetivosPage() {
     setSuccessMessage(null);
 
     try {
-      await elegirObjetivo(objetivoId);
-      setSuccessMessage("¡Objetivo seleccionado! Esperando validación.");
+      await asignarObjetivo(scoutId, objetivoId);
+      setSuccessMessage("¡Objetivo asignado!");
 
       const newObj = objetivos.map((prevObj) =>
         prevObj.id === objetivoId
-          ? { ...prevObj, status: "Pendiente" }
+          ? { ...prevObj, status: "Cumplido" }
           : prevObj,
       );
 
@@ -141,7 +148,9 @@ export default function ObjetivosPage() {
 
   return (
     <div className="flex flex-col justify-center items-center w-full lg:md:w-3/4 md:w-4/5 mx-auto p-4 md:p-8">
-      <h1 className="text-purple-900 md:text-left text-center">Objetivos</h1>
+      <h1 className="text-purple-900 md:text-left text-center">
+        Objetivos {scoutNombre}
+      </h1>
 
       {apiError && (
         <div
@@ -259,12 +268,6 @@ export default function ObjetivosPage() {
                   isLoading={selectingObjetivoId === objetivo.id}
                 />
               ))}
-              {objetivosFiltrados.length === 0 && (
-                <p className="text-center text-gray-600 text-lg p-6 bg-gray-100 rounded-lg">
-                  ¡Felicidades! Parece que ya has seleccionado todos los
-                  objetivos de esta área.
-                </p>
-              )}
             </div>
           </section>
         ) : null}
