@@ -9,7 +9,7 @@ namespace backend.controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class EspecialidadController: ControllerBase
+public class EspecialidadController : ControllerBase
 {
   private readonly IEspecialidadServer _especialidadServer;
 
@@ -26,8 +26,31 @@ public class EspecialidadController: ControllerBase
       var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
       if (!int.TryParse(userIdString, out var userId))
         return Unauthorized("Token de usuario inválido.");
-      
-      var especialidades = await _especialidadServer.GetEspecialidadesByRama(ramaId,  userId);
+
+      var especialidades = await _especialidadServer.GetEspecialidadesByRama(ramaId, userId);
+      return Ok(especialidades);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
+
+  [Authorize(Roles = "2")]
+  [HttpGet("rama/{ramaId}/{scoutId}")]
+  public async Task<IActionResult> GetByRama(int ramaId, int scoutId)
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      var especialidades = await _especialidadServer.GetEspecialidadesByRama(ramaId, scoutId, userId);
       return Ok(especialidades);
     }
     catch (ApplicationException ex)
@@ -62,7 +85,7 @@ public class EspecialidadController: ControllerBase
       return StatusCode(500, $"Error interno: {ex.Message}");
     }
   }
-  
+
   [Authorize(Roles = "2")]
   [HttpPost("req/val")]
   public async Task<IActionResult> Validar(ValidarObjetivoDto dto)
@@ -85,7 +108,7 @@ public class EspecialidadController: ControllerBase
       return StatusCode(500, $"Error interno: {ex.Message}");
     }
   }
-  
+
   [Authorize(Roles = "2")]
   [HttpGet("unidad/{unidadId}")]
   public async Task<IActionResult> Validar(int unidadId)
@@ -98,6 +121,29 @@ public class EspecialidadController: ControllerBase
 
       var requests = await _especialidadServer.GetReqByUnidad(unidadId, userId);
       return Ok(requests);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Error interno: {ex.Message}");
+    }
+  }
+
+  [Authorize(Roles = "2")]
+  [HttpPost("req/asignar")]
+  public async Task<IActionResult> Asignar(ValidarObjetivoDto dto)
+  {
+    try
+    {
+      var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (!int.TryParse(userIdString, out var userId))
+        return Unauthorized("Token de usuario inválido.");
+
+      await _especialidadServer.AsignarRequerimiento(dto, userId);
+      return Ok(new { Message = "Requerimiento asignado correctamente." });
     }
     catch (ApplicationException ex)
     {
@@ -131,8 +177,8 @@ public class EspecialidadController: ControllerBase
       return StatusCode(500, $"Error interno: {ex.Message}");
     }
   }
-  
-  
+
+
   [Authorize(Roles = "2")]
   [HttpGet("resume/{scoutId}")]
   public async Task<IActionResult> GetResume(int scoutId)
