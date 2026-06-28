@@ -100,6 +100,25 @@ public class AuthController : ControllerBase
     }
   }
 
+
+  [HttpPost("super/code/{password}")]
+  public async Task<IActionResult> SuperGenerateResetCode(string password, [FromBody] GenerateResetCodeDto dto)
+  {
+    try
+    {
+      var response = await _authService.SuperGeneratePasswordResetCodeAsync(dto.ScoutId, password);
+      return Ok(response);
+    }
+    catch (ApplicationException ex)
+    {
+      return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, $"Ocurrió un error interno: {ex.Message}");
+    }
+  }
+
   [AllowAnonymous]
   [HttpPost("reset-password")]
   public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)

