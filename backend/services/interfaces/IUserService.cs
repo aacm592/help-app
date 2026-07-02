@@ -1,6 +1,8 @@
+using backend.dtos.auth;
+
 namespace backend.services.interfaces;
 
 public interface IUserService
 {
-  Task ChangeUserToDiri(int UserId);
+  Task<LoginResponseDto> ChangeUserToDiri(int UserId);
 }
