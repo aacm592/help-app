@@ -1,4 +1,3 @@
-using backend.data.models;
 using backend.dtos.request;
 using backend.dtos.responses;
 
