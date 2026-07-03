@@ -25,7 +25,7 @@ public class UserController : ControllerBase
       if (!int.TryParse(userIdString, out var userId))
         return Unauthorized("Token de usuario inválido.");
 
-      var response =  await _userService.ChangeUserToDiri(userId);
+      var response = await _userService.ChangeUserToDiri(userId);
       return Ok(response);
     }
     catch (ApplicationException ex)
