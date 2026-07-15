@@ -59,6 +59,7 @@ builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IRegistroService, RegistroService>();
 builder.Services.AddScoped<IGestionService, GestionService>();
 builder.Services.AddScoped<IPermisosService, PermisosService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -128,7 +129,7 @@ builder.Services.AddSwaggerGen(options =>
       {
         new OpenApiSecurityScheme
         {
-          Reference = new OpenApiReference 
+          Reference = new OpenApiReference
           {
             Type = ReferenceType.SecurityScheme,
             Id = "Bearer"
@@ -145,7 +146,7 @@ using (var scope = app.Services.CreateScope())
 {
   var services = scope.ServiceProvider;
   var db = services.GetRequiredService<ScoutsAppContext>();
-  
+
   db.Database.Migrate();
 }
 
